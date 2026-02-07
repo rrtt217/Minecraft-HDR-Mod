@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "xyz.rrtt217.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+    "MixinRenderSystem",
+    "MixinWindow"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
