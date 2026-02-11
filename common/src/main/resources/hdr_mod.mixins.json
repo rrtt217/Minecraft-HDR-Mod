@@ -9,6 +9,8 @@
     "MixinWindow"
   ],
   "mixins": [
+    "compat.iris.MixinIrisExclusiveUniforms",
+    "compat.iris.MixinStandardMacros"
   ],
   "injectors": {
     "defaultRequire": 1

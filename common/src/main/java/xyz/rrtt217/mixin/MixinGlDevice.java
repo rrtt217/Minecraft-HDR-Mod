@@ -3,10 +3,12 @@ package xyz.rrtt217.mixin;
 import com.mojang.blaze3d.opengl.GlConst;
 import com.mojang.blaze3d.opengl.GlDevice;
 import com.mojang.blaze3d.textures.TextureFormat;
+import me.shedaniel.autoconfig.AutoConfig;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.lwjgl.opengl.GL30;
+import xyz.rrtt217.config.HDRModConfig;
 
 @Mixin(GlDevice.class)
 public class MixinGlDevice {
@@ -15,7 +17,8 @@ public class MixinGlDevice {
     @ModifyArg(method = "createTexture(Ljava/lang/String;ILcom/mojang/blaze3d/textures/TextureFormat;IIII)Lcom/mojang/blaze3d/textures/GpuTexture;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlStateManager;_texImage2D(IIIIIIIILjava/nio/ByteBuffer;)V", ordinal = 1),index = 2 )
     private int hdr_mod$upgradeColorBufferFormat$0(int i)
     {
-        if(i == GlConst.toGlInternalId(TextureFormat.RGBA8)) {
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(config.enableHDR && i == GlConst.toGlInternalId(TextureFormat.RGBA8)) {
             return GL30.GL_RGBA16F;
         }
         return i;

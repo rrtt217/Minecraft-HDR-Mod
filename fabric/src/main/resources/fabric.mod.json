@@ -20,6 +20,9 @@
     ],
     "client": [
       "xyz.rrtt217.fabric.client.HDRModFabricClient"
+    ],
+    "modmenu":[
+      "xyz.rrtt217.fabric.client.compat.HDRModModMenuIntegration"
     ]
   },
   "mixins": [
