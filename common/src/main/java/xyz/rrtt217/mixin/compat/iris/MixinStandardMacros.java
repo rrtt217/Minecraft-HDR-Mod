@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.rrtt217.HDRMod;
 import xyz.rrtt217.config.HDRModConfig;
+import xyz.rrtt217.util.Enums;
 
 import java.util.ArrayList;
 
@@ -24,6 +25,12 @@ public class MixinStandardMacros {
             defines.add(new StringPair("HDR_ENABLED", ""));
             defines.add(new StringPair("CURRENT_PRIMARIES", config.overridePrimaries ? config.primaries.toString() : HDRMod.WindowPrimaries.toString()));
             defines.add(new StringPair("CURRENT_TRANSFER_FUNCTION", config.overrideTransferFunction ? config.transferFunction.toString() : HDRMod.WindowTransferFunction.toString()));
+            for(Enums.Primaries p : Enums.Primaries.values()) {
+                defines.add(new StringPair(p.toString(), String.valueOf(p.getId())));
+            }
+            for(Enums.TransferFunction tf : Enums.TransferFunction.values()) {
+                defines.add(new StringPair(tf.toString(), String.valueOf(tf.getId())));
+            }
         }
         else{
             // Always set SRGB on non-HDR.
