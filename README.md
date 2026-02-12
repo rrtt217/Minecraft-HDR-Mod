@@ -1,7 +1,5 @@
 # Minecraft HDR Mod
 A minecraft mod that enables native HDR on Windows/Linux with Iris shaders. Currently in early development.
-## For users
-Build https://github.com/Tom94/glfw/tree/color-management as a shared lbrary, and load it with JVM parameter `-Dorg.lwjgl.glfw.libname=<lib path>`.
 ## For shader patches
 ### Macros
 - HDR_MOD_INSTALLED
