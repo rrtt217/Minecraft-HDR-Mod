@@ -20,9 +20,16 @@ public class MixinStandardMacros {
         var defines = new ArrayList<>(cir.getReturnValue());
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         defines.add(new StringPair("HDR_MOD_INSTALLED",""));
-        defines.add(new StringPair("HDR_ENABLED",""));
-        defines.add(new StringPair("CURRENT_PRIMARIES", config.overridePrimaries ? config.primaries.toString() : HDRMod.WindowPrimaries.toString()));
-        defines.add(new StringPair("CURRENT_TRANSFER_FUNCTION", config.overrideTransferFunction ? config.transferFunction.toString() : HDRMod.WindowTransferFunction.toString()));
+        if(config.enableHDR) {
+            defines.add(new StringPair("HDR_ENABLED", ""));
+            defines.add(new StringPair("CURRENT_PRIMARIES", config.overridePrimaries ? config.primaries.toString() : HDRMod.WindowPrimaries.toString()));
+            defines.add(new StringPair("CURRENT_TRANSFER_FUNCTION", config.overrideTransferFunction ? config.transferFunction.toString() : HDRMod.WindowTransferFunction.toString()));
+        }
+        else{
+            // Always set SRGB on non-HDR.
+            defines.add(new StringPair("CURRENT_PRIMARIES", "SRGB"));
+            defines.add(new StringPair("CURRENT_TRANSFER_FUNCTION", "SRGB"));
+        }
         cir.setReturnValue(ImmutableList.copyOf(defines));
     }
 }
