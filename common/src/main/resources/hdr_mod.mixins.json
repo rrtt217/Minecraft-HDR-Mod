@@ -5,7 +5,9 @@
   "minVersion": "0.8",
   "client": [
     "MixinGlDevice",
+    "MixinMinecraft",
     "MixinRenderSystem",
+    "MixinRenderTarget",
     "MixinWindow"
   ],
   "mixins": [

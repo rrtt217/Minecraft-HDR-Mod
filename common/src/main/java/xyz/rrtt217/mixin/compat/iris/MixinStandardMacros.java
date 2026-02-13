@@ -26,10 +26,10 @@ public class MixinStandardMacros {
             defines.add(new StringPair("CURRENT_PRIMARIES", config.overridePrimaries ? config.primaries.toString() : HDRMod.WindowPrimaries.toString()));
             defines.add(new StringPair("CURRENT_TRANSFER_FUNCTION", config.overrideTransferFunction ? config.transferFunction.toString() : HDRMod.WindowTransferFunction.toString()));
             for(Enums.Primaries p : Enums.Primaries.values()) {
-                defines.add(new StringPair(p.toString(), String.valueOf(p.getId())));
+                defines.add(new StringPair("PRIMARIES_"+p.toString(), String.valueOf(p.getId())));
             }
             for(Enums.TransferFunction tf : Enums.TransferFunction.values()) {
-                defines.add(new StringPair(tf.toString(), String.valueOf(tf.getId())));
+                defines.add(new StringPair("TRANSFER_FUNCTION_"+tf.toString(), String.valueOf(tf.getId())));
             }
         }
         else{
