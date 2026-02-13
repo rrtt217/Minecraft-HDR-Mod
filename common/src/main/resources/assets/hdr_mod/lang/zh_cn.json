@@ -2,14 +2,16 @@
   "text.autoconfig.hdr_mod.option.enableHDR": "启用HDR（重启游戏后生效）",
   "text.autoconfig.hdr_mod.option.useSDRWhiteLevelAsUiLuminance": "使用自动获取的SDR白电平作为UI亮度",
   "text.autoconfig.hdr_mod.option.UiLuminance": "UI/SDR内容亮度",
-  "text.autoconfig.hdr_mod.option.overrideSDRWhiteLevel": "是否覆盖自动获取的SDR白电平",
+  "text.autoconfig.hdr_mod.option.overrideSDRWhiteLevel": "覆盖自动获取的SDR白电平",
   "text.autoconfig.hdr_mod.option.SDRWhiteLevel": "SDR白电平",
-  "text.autoconfig.hdr_mod.option.overrideMinLuminance": "是否覆盖自动获取的最小亮度",
+  "text.autoconfig.hdr_mod.option.overrideMinLuminance": "覆盖自动获取的最小亮度",
   "text.autoconfig.hdr_mod.option.MinLuminance": "最小亮度",
-  "text.autoconfig.hdr_mod.option.overrideMaxLuminance": "是否覆盖自动获取的最大亮度",
+  "text.autoconfig.hdr_mod.option.overrideMaxLuminance": "覆盖自动获取的最大亮度",
   "text.autoconfig.hdr_mod.option.MaxLuminance": "最大亮度",
-  "text.autoconfig.hdr_mod.option.overridePrimaries": "是否覆盖自动获取的显示色域",
+  "text.autoconfig.hdr_mod.option.overridePrimaries": "覆盖自动获取的显示色域",
   "text.autoconfig.hdr_mod.option.primaries": "显示色域",
-  "text.autoconfig.hdr_mod.option.overrideTransferFunction": "是否覆盖自动获取的转换函数",
-  "text.autoconfig.hdr_mod.option.transferFunction": "转换函数"
+  "text.autoconfig.hdr_mod.option.overrideTransferFunction": "覆盖自动获取的转换函数",
+  "text.autoconfig.hdr_mod.option.transferFunction": "转换函数",
+  "key.hdr_mod.open_config_menu": "打开配置菜单",
+  "key.category.hdr_mod.main": "HDR Mod"
 }

@@ -3,6 +3,7 @@ package xyz.rrtt217.mixin;
 import com.mojang.blaze3d.shaders.ShaderSource;
 import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderSystem;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.VanillaPackResources;
@@ -14,6 +15,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.rrtt217.config.HDRModConfig;
 import xyz.rrtt217.core.BeforeBlitRenderer;
 import xyz.rrtt217.util.LibraryExtractor;
 
@@ -38,6 +40,8 @@ public class MixinMinecraft {
     // Similar to preloadUiShader, because common resource manager have not yet initialized at this time.
     @Inject(method = "<init>(Lnet/minecraft/client/main/GameConfig;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;preloadUiShader(Lnet/minecraft/server/packs/resources/ResourceProvider;)V",shift = At.Shift.AFTER))
     private void hdr_mod$preloadBeforeBlitShader(CallbackInfo ci) {
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(!config.enableHDR) return;
         GpuDevice gpuDevice = RenderSystem.getDevice();
         ShaderSource shaderSource = (identifier, shaderType) -> {
             Identifier identifier2 = shaderType.idConverter().idToFile(identifier);

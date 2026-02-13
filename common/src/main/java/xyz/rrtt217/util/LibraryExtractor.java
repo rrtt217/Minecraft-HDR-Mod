@@ -31,7 +31,7 @@ public class LibraryExtractor {
             } else if (osArch.contains("aarch64") || osArch.contains("arm64")) {
                 subDirectory += "arm64";
             } else {
-                throw new FileNotFoundException("Unknown Architecture: " + osArch + "and no libraries found!");
+                subDirectory += osArch;
             }
         } else if (osName.contains("mac")) {
             fullLibName = platformLibNameMap.get("mac") + ".dylib";
@@ -45,7 +45,7 @@ public class LibraryExtractor {
             } else if (osArch.contains("aarch64") || osArch.contains("arm64")) {
                 subDirectory += "arm64";
             } else {
-                throw new FileNotFoundException("Unknown Architecture: " + osArch + "and no libraries found!");
+                subDirectory += osArch;
             }
         } else if (osName.contains("linux")) {
             fullLibName = platformLibNameMap.get("linux") + ".so";
@@ -59,10 +59,23 @@ public class LibraryExtractor {
             } else if (osArch.contains("aarch64") || osArch.contains("arm64")) {
                 subDirectory += "arm64";
             } else {
-                throw new FileNotFoundException("Unknown Architecture: " + osArch + "and no libraries found!");
+                subDirectory += osArch;
             }
         } else {
-            throw new FileNotFoundException("Unknown OS: " + osName + "and no libraries found!");
+            if(platformLibNameMap.get(osName) != null) fullLibName = platformLibNameMap.get(osName) + ".so";
+            else fullLibName = platformLibNameMap.get("linux") + ".so";
+            subDirectory = osName+"/";
+            if (osArch.contains("amd64") || osArch.contains("x86_64")) {
+                subDirectory += "x64";
+            } else if (osArch.contains("i386") || osArch.contains("i686")) {
+                subDirectory += "i386";
+            } else if (osArch.contains("arm")) {
+                subDirectory += "arm";
+            } else if (osArch.contains("aarch64") || osArch.contains("arm64")) {
+                subDirectory += "arm64";
+            } else {
+                subDirectory += osArch;
+            }
         }
         ClassLoader loader = LibraryExtractor.class.getClassLoader();
         try (InputStream is = loader.getResourceAsStream("libraries/" + subDirectory + "/" + fullLibName)) {

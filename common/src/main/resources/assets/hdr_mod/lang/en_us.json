@@ -11,5 +11,7 @@
   "text.autoconfig.hdr_mod.option.overridePrimaries": "Override auto-get primaries/colorspace",
   "text.autoconfig.hdr_mod.option.primaries": "Primaries",
   "text.autoconfig.hdr_mod.option.overrideTransferFunction": "Override auto-get transfer function",
-  "text.autoconfig.hdr_mod.option.transferFunction": "Transfer function"
+  "text.autoconfig.hdr_mod.option.transferFunction": "Transfer function",
+  "key.hdr_mod.open_config_menu": "Open Config Menu",
+  "key.category.hdr_mod.main": "HDR Mod"
 }
