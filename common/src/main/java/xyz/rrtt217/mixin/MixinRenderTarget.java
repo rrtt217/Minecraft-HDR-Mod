@@ -37,16 +37,20 @@ public class MixinRenderTarget {
     private void hdr_mod$beforeBlitRenderer(CallbackInfo ci) {
         RenderSystem.assertOnRenderThread();
         if (!BeforeBlitRenderer.isBeforeBlitReady) return;
+
+        // If texture / textureView have not been created yet, create them.
         if (BeforeBlitRenderer.beforeBlitTexture == null) {
-            BeforeBlitRenderer.beforeBlitTexture = RenderSystem.getDevice().createTexture(() -> "Before Blit texture", 15, TextureFormat.RGBA8, this.width, this.height, 1, 1);
+            BeforeBlitRenderer.beforeBlitTexture = RenderSystem.getDevice().createTexture(() -> "Before Blit Ping-pong Texture", 15, TextureFormat.RGBA8, this.width, this.height, 1, 1);
         }
         if(BeforeBlitRenderer.beforeBlitTextureView == null) {
             BeforeBlitRenderer.beforeBlitTextureView = RenderSystem.getDevice().createTextureView(BeforeBlitRenderer.beforeBlitTexture);
         }
+
+        // Resize the texture on main render target resize.
         if (BeforeBlitRenderer.beforeBlitTexture.getHeight(0) != this.height || BeforeBlitRenderer.beforeBlitTexture.getWidth(0) != this.width) {
             BeforeBlitRenderer.beforeBlitTextureView.close();
             BeforeBlitRenderer.beforeBlitTexture.close();
-            BeforeBlitRenderer.beforeBlitTexture = RenderSystem.getDevice().createTexture(() -> "Before Blit texture", 15, TextureFormat.RGBA8, this.width, this.height, 1, 1);
+            BeforeBlitRenderer.beforeBlitTexture = RenderSystem.getDevice().createTexture(() -> "Before Blit Ping-pong Texture", 15, TextureFormat.RGBA8, this.width, this.height, 1, 1);
             BeforeBlitRenderer.beforeBlitTextureView = RenderSystem.getDevice().createTextureView(BeforeBlitRenderer.beforeBlitTexture);
         }
 
