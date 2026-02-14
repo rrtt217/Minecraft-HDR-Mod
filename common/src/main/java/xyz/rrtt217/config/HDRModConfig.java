@@ -12,14 +12,16 @@ public class HDRModConfig implements ConfigData {
     public float uiBrightness = 203.0f;
 
     public boolean autoSetGamePaperWhiteBrightness = true;
-    public float customGamePaperWhiteBrightness = 80.0f;
+    public float customGamePaperWhiteBrightness = 203.0f;
     public boolean autoSetGamePeakBrightness = true;
-    public float customGamePeakBrightness = 203.0f;
+    public float customGamePeakBrightness = 1000.0f;
     public boolean autoSetGameMinimumBrightness = true;
-    public float customGameMinimumBrightness = 1.0f;
+    public float customGameMinimumBrightness = 0.0f;
 
     public boolean autoSetPrimaries = true;
     public Primaries customPrimaries = Primaries.SRGB;
     public boolean autoSetTransferFunction = true;
     public TransferFunction customTransferFunction = TransferFunction.SRGB;
+
+    public boolean forceDisableGlfwWorkound = false;
 }
