@@ -44,6 +44,13 @@ void main() {
     #elif CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_EXT_LINEAR
         // scRGB encode
         color.rgb *= uiLuminance / 80.0;
+    #elif CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_SRGB
+        // sRGB encode
+        s = sign(color.rgb);
+        cutoff = lessThan(color.rgb, vec3(0.0031308));
+        higher = vec3(1.055) * pow(color.rgb, vec3(1.0 / 2.4)) - vec3(0.055);
+        lower = color.rgb * vec3(12.92);
+        color.rgb = mix(higher, lower, cutoff) * s;
     #endif
     fragColor = color;
 }
