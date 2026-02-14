@@ -12,6 +12,7 @@
   "text.autoconfig.hdr_mod.option.customPrimaries": "自定义基色（仅调试）",
   "text.autoconfig.hdr_mod.option.autoSetTransferFunction": "自动设置传递函数",
   "text.autoconfig.hdr_mod.option.customTransferFunction": "自定义传递函数（仅调试）",
+  "text.autoconfig.hdr_mod.option.forceDisableGlfwWorkound": "强行关闭针对特定平台的GLFW规避措施 (仅调试)",
   "text.autoconfig.hdr_mod.title": "HDR Mod配置",
   "key.hdr_mod.open_config_menu": "打开配置菜单",
   "key.category.hdr_mod.main": "HDR Mod"

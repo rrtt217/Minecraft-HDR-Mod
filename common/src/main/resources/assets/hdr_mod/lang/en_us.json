@@ -12,6 +12,7 @@
   "text.autoconfig.hdr_mod.option.customPrimaries": "Custom Primaries (Only For Debug)",
   "text.autoconfig.hdr_mod.option.autoSetTransferFunction": "Auto Set Transfer Function",
   "text.autoconfig.hdr_mod.option.customTransferFunction": "Custom Transfer Function (Only For Debug)",
+  "text.autoconfig.hdr_mod.option.forceDisableGlfwWorkound": "Force Disable GLFW Workround (Only For Debug)",
   "text.autoconfig.hdr_mod.title": "HDR Mod Config",
   "key.hdr_mod.open_config_menu": "Open Config Menu",
   "key.category.hdr_mod.main": "HDR Mod"
