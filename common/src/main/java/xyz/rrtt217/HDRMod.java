@@ -31,7 +31,7 @@ public final class HDRMod {
     public static boolean hasglfwLib = false;
 
     // Global UI brightness UBO.
-    public static SingleFloatUBO UiLuminanceUBO;
+    public static SingleFloatUBO UiBrightnessUBO;
 
     // Key Mapping.
     public static final KeyMapping CUSTOM_KEYMAPPING = new KeyMapping(

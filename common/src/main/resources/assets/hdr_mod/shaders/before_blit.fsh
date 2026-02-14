@@ -1,8 +1,8 @@
 #version 330
 
 uniform sampler2D InSampler;
-layout(std140) uniform UiLuminance {
-    float uiLuminance;
+layout(std140) uniform HdrUIBrightness {
+    float uiBrightness;
 };
 
 in vec2 texCoord;
@@ -37,15 +37,16 @@ void main() {
 
     #if CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_ST2084_PQ
         // PQ encode
-        color.rgb = color.rgb * uiLuminance / 10000.0;
+        color.rgb *= uiBrightness / 10000.0;
         color.rgb = pow(color.rgb, vec3(PQ_M1));
         color.rgb = (vec3(PQ_C1) + vec3(PQ_C2) * color.rgb) / (vec3(1.0) + vec3(PQ_C3) * color.rgb);
         color.rgb = pow(color.rgb, vec3(PQ_M2));
     #elif CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_EXT_LINEAR
         // scRGB encode
-        color.rgb *= uiLuminance / 80.0;
+        color.rgb *= uiBrightness / 80.0;
     #elif CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_SRGB
         // sRGB encode
+        color.rgb *= uiBrightness / 203.0;
         s = sign(color.rgb);
         cutoff = lessThan(color.rgb, vec3(0.0031308));
         higher = vec3(1.055) * pow(color.rgb, vec3(1.0 / 2.4)) - vec3(0.055);

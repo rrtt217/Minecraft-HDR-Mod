@@ -1,7 +1,6 @@
 package xyz.rrtt217.mixin;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -24,7 +23,7 @@ import xyz.rrtt217.util.GLFWColorManagement;
 
 import java.util.OptionalInt;
 
-import static xyz.rrtt217.HDRMod.UiLuminanceUBO;
+import static xyz.rrtt217.HDRMod.UiBrightnessUBO;
 
 @Mixin(RenderTarget.class)
 public class MixinRenderTarget {
@@ -65,14 +64,14 @@ public class MixinRenderTarget {
 
         if (this.colorTexture != null) {
             RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(this.colorTexture, BeforeBlitRenderer.beforeBlitTexture, 0, 0, 0, 0, 0, this.width, this.height);
-            if(UiLuminanceUBO == null) UiLuminanceUBO = new SingleFloatUBO("UiLuminance");
+            if(UiBrightnessUBO == null) UiBrightnessUBO = new SingleFloatUBO("HdrUIBrightness");
             HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-            GpuBuffer gpuBuffer = UiLuminanceUBO.update(config.useSDRWhiteLevelAsUiLuminance ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.UiLuminance);
+            GpuBuffer gpuBuffer = UiBrightnessUBO.update(config.autoSetUIBrightness ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness);
             if (this.colorTextureView != null) {
                 try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Before blit", this.colorTextureView, OptionalInt.empty())) {
                     renderPass.setPipeline(BeforeBlitRenderer.BEFORE_BLIT);
                     RenderSystem.bindDefaultUniforms(renderPass);
-                    if(UiLuminanceUBO != null) renderPass.setUniform("UiLuminance", gpuBuffer);
+                    if(UiBrightnessUBO != null) renderPass.setUniform("HdrUIBrightness", gpuBuffer);
                     renderPass.bindTexture("InSampler", BeforeBlitRenderer.beforeBlitTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
                     renderPass.draw(0, 3);
                 }

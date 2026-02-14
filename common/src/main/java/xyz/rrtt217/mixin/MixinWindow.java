@@ -65,7 +65,7 @@ import xyz.rrtt217.config.HDRModConfig;
             for(Enums.TransferFunction tf : Enums.TransferFunction.values()) {
                 builder = builder.withShaderDefine("TRANSFER_FUNCTION_"+tf.toString(), tf.getId());
             }
-            builder.withUniform("UiLuminance", UniformType.UNIFORM_BUFFER);
+            builder.withUniform("HdrUIBrightness", UniformType.UNIFORM_BUFFER);
 
             BeforeBlitRenderer.renderPipelineBuilder = builder;
             BeforeBlitRenderer.BEFORE_BLIT = builder.build();

@@ -5,6 +5,8 @@ A minecraft mod that enables native HDR on Windows/Linux with Iris shaders. Curr
 - UI color correction by a BEFORE_BLIT pass;
 - Ingame config using Cloth Config API(May switch to Sodium Options API later)
 ## For users
+- Adjust the config ingame using a key binding(default F9);
+- If your game is too bright/dark, try to disable auto set brightness and adjust the custom values yourself;
 - If you're on Windows, don't forget to install the latest Visual C++ Redistributable.
 - Clean temp file if your game doesn't start (path can be found in log, %TEMP%/glfw on Windows and /tmp/glfw on Linux).
 ## For shader patches
@@ -14,10 +16,10 @@ A minecraft mod that enables native HDR on Windows/Linux with Iris shaders. Curr
 - `CURRENT_PRIMARIES`: One of `PRIMARIES_SRGB`, `PRIMARIES_PAL_M`, `PRIMARIES_PAL`, `PRIMARIES_NTSC`, `PRIMARIES_GENERIC_FILM`, `PRIMARIES_BT2020`, `PRIMARIES_CIE1931_XYZ`, `PRIMARIES_DCI_P3`, `PRIMARIES_DISPLAY_P3`, `PRIMARIES_ADOBE_RGB`;
 - `CURRENT_TRANSFER_FUNCTION`: One of `TRANSFER_FUNCTION_BT1886`, `TRANSFER_FUNCTION_GAMMA22`, `TRANSFER_FUNCTION_GAMMA28`, `TRANSFER_FUNCTION_ST240`, `TRANSFER_FUNCTION_EXT_LINEAR`, `TRANSFER_FUNCTION_LOG_100`, `TRANSFER_FUNCTION_LOG_316`, `TRANSFER_FUNCTION_XVYCC`, `TRANSFER_FUNCTION_SRGB`, `TRANSFER_FUNCTION_EXT_SRGB`, `TRANSFER_FUNCTION_ST2084_PQ`, `TRANSFER_FUNCTION_ST428`, `TRANSFER_FUNCTION_HLG`.
 ### Uniforms
-- `float MinBrightness`;
-- `float MaxBrightness`;
-- `float SDRWhiteLevel`;
-- `float UIBrightness`;
+- `float HdrGameMinimumBrightness`;
+- `float HdrGamePeakBrightness`;
+- `float HdrGamePaperWhiteBrightness`;
+- `float HdrUIBrightness`;
 
 Use these uniforms inside `#if HDR_MOD_INSTALLED` block.
 ### Output

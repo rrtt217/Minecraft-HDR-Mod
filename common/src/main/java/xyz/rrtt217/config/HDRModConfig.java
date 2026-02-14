@@ -8,17 +8,18 @@ import xyz.rrtt217.util.Enums.*;
 public class HDRModConfig implements ConfigData {
     public boolean enableHDR = true;
 
-    public boolean useSDRWhiteLevelAsUiLuminance = false;
-    public float UiLuminance = 203.0f;
+    public boolean autoSetUIBrightness = false;
+    public float uiBrightness = 203.0f;
 
-    public boolean overrideSDRWhiteLevel = false;
-    public float SDRWhiteLevel = 80.0f;
-    public boolean overrideMinLuminance = false;
-    public float MinLuminance = 1.0f;
-    public boolean overrideMaxLuminance = false;
-    public float MaxLuminance = 203.0f;
-    public boolean overridePrimaries = false;
-    public Primaries primaries = Primaries.SRGB;
-    public boolean overrideTransferFunction = false;
-    public TransferFunction transferFunction = TransferFunction.SRGB;
+    public boolean autoSetGamePaperWhiteBrightness = true;
+    public float customGamePaperWhiteBrightness = 80.0f;
+    public boolean autoSetGamePeakBrightness = true;
+    public float customGamePeakBrightness = 203.0f;
+    public boolean autoSetGameMinimumBrightness = true;
+    public float customGameMinimumBrightness = 1.0f;
+
+    public boolean autoSetPrimaries = true;
+    public Primaries customPrimaries = Primaries.SRGB;
+    public boolean autoSetTransferFunction = true;
+    public TransferFunction customTransferFunction = TransferFunction.SRGB;
 }
