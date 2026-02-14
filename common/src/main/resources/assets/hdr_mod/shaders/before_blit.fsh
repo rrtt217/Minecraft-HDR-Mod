@@ -35,7 +35,7 @@ void main() {
     color.rgb = BT709_TO_BT2020_MAT * color.rgb;
     #endif
 
-    #if CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_PQ
+    #if CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_ST2084_PQ
         // PQ encode
         color.rgb = color.rgb * uiLuminance / 10000.0;
         color.rgb = pow(color.rgb, vec3(PQ_M1));

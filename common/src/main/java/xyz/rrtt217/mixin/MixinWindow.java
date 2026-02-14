@@ -58,7 +58,7 @@ import xyz.rrtt217.config.HDRModConfig;
             HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
 
             // Update BeforeBlit. Also add UIBrightness UBO here.
-            RenderPipeline.Builder builder = BeforeBlitRenderer.renderPipelineBuilder.withShaderDefine("CURRENT_PRIMARIES",HDRMod.WindowPrimaries.getId()).withShaderDefine("CURRRENT_TRANSFER_FUNCTION",HDRMod.WindowTransferFunction.getId());
+            RenderPipeline.Builder builder = BeforeBlitRenderer.renderPipelineBuilder.withShaderDefine("CURRENT_PRIMARIES",HDRMod.WindowPrimaries.getId()).withShaderDefine("CURRENT_TRANSFER_FUNCTION",HDRMod.WindowTransferFunction.getId());
             for(Enums.Primaries p : Enums.Primaries.values()) {
                 builder = builder.withShaderDefine("PRIMARIES_"+p.toString(), p.getId());
             }
@@ -67,6 +67,7 @@ import xyz.rrtt217.config.HDRModConfig;
             }
             builder.withUniform("UiLuminance", UniformType.UNIFORM_BUFFER);
 
+            BeforeBlitRenderer.renderPipelineBuilder = builder;
             BeforeBlitRenderer.BEFORE_BLIT = builder.build();
         }
     }
