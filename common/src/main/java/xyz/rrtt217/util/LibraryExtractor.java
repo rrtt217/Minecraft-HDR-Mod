@@ -83,13 +83,12 @@ public class LibraryExtractor {
         }
         ClassLoader loader = LibraryExtractor.class.getClassLoader();
         HDRMod.LOGGER.info("Finding libraries in path {}", "libraries/" + subDirectory + "/" + fullLibName);
-        try (InputStream is = loader.getResourceAsStream("libraries/" + subDirectory + "/" + fullLibName)) {
-            if (is == null) {
-                throw new FileNotFoundException("Could not find library file: " + fullLibName);
-            }
-            else{
-                Path outputLibPath = libExtractDir.resolve(fullLibName);
-                if(!Files.exists(outputLibPath)){
+        Path outputLibPath = libExtractDir.resolve(fullLibName);
+        if(!Files.exists(outputLibPath)) {
+            try (InputStream is = loader.getResourceAsStream("libraries/" + subDirectory + "/" + fullLibName)) {
+                if (is == null) {
+                    throw new FileNotFoundException("Could not find library file: " + fullLibName);
+                } else {
                     Files.copy(is, outputLibPath);
                 }
             }
