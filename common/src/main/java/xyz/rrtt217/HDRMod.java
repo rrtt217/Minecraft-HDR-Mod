@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.system.Configuration;
 import org.slf4j.LoggerFactory;
+import xyz.rrtt217.core.PngjHDRScreenshot;
 import xyz.rrtt217.core.SingleFloatUBO;
 import xyz.rrtt217.util.Enums.*;
 import org.slf4j.Logger;
@@ -34,11 +35,18 @@ public final class HDRMod {
     public static SingleFloatUBO UiBrightnessUBO;
 
     // Key Mapping.
+    public static final KeyMapping.Category HDRModCategory = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("hdr_mod","main"));
     public static final KeyMapping CUSTOM_KEYMAPPING = new KeyMapping(
             "key.hdr_mod.open_config_menu", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             InputConstants.KEY_F9, // The default keycode
-            KeyMapping.Category.register(Identifier.fromNamespaceAndPath("hdr_mod","main")) // The category translation key used to categorize in the Controls screen
+            HDRModCategory // The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping CUSTOM_KEYMAPPING_2 = new KeyMapping(
+            "key.hdr_mod.take_hdr_screenshot", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            InputConstants.KEY_F10, // The default keycode
+            HDRModCategory // The category translation key used to categorize in the Controls screen
     );
     public HDRMod() {
     }
@@ -73,7 +81,17 @@ public final class HDRMod {
                 Minecraft.getInstance().setScreen(AutoConfigClient.getConfigScreen(HDRModConfig.class, Minecraft.getInstance().screen).get());
             }
         });
-
+        KeyMappingRegistry.register(CUSTOM_KEYMAPPING_2);
+        ClientTickEvent.CLIENT_POST.register(minecraft -> {
+            while (CUSTOM_KEYMAPPING_2.consumeClick()) {
+                PngjHDRScreenshot.grab(Minecraft.getInstance().gameDirectory, Minecraft.getInstance().getMainRenderTarget(), (component) -> Minecraft.getInstance().execute(() -> {
+                    if (Minecraft.getInstance().player != null) {
+                        Minecraft.getInstance().player.displayClientMessage(component,false);
+                    }
+                    else {LOGGER.warn("Failed to send player client message");}
+                }));
+            }
+        });
         LOGGER.debug("HDRMod Initialized!");
     }
 }

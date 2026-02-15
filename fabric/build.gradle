@@ -51,6 +51,9 @@ dependencies {
     implementation "org.antlr:antlr4-runtime:4.13.1"
     implementation "io.github.douira:glsl-transformer:3.0.0-pre3"
 
+    implementation 'ar.com.hjg:pngj:2.1.0'
+    include 'ar.com.hjg:pngj:2.1.0'
+
     modLocalRuntime "maven.modrinth:renderscale:1.3.6"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }

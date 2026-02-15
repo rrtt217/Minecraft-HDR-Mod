@@ -25,4 +25,5 @@ dependencies {
     modImplementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
 
     implementation 'com.github.oshi:oshi-core:6.9.3'
+    implementation 'ar.com.hjg:pngj:2.1.0'
 }
