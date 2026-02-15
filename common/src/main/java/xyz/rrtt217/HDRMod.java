@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import xyz.rrtt217.config.HDRModConfig;
 import xyz.rrtt217.util.LibraryExtractor;
 
+import java.time.Instant;
 import java.util.HashMap;
 
 public final class HDRMod {
@@ -84,11 +85,9 @@ public final class HDRMod {
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING_2);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
             while (CUSTOM_KEYMAPPING_2.consumeClick()) {
-                PngjHDRScreenshot.grab(Minecraft.getInstance().gameDirectory, Minecraft.getInstance().getMainRenderTarget(), (component) -> Minecraft.getInstance().execute(() -> {
-                    if (Minecraft.getInstance().player != null) {
-                        Minecraft.getInstance().player.displayClientMessage(component,false);
-                    }
-                    else {LOGGER.warn("Failed to send player client message");}
+                PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
+                    minecraft.gui.getChat().addMessage(arg);
+                    minecraft.getNarrator().saySystemChatQueued(arg);
                 }));
             }
         });
