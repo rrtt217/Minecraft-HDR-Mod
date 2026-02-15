@@ -80,7 +80,7 @@ void main() {
     //EOTF Emulate / Gamma Correction 2.2
     if (eoftEmulate > 0) {
         color.xyz *= uiBrightness / 203.; //scale 203 as 1
-        color.rgb = EOTFEmulate(color.rgb, eoftEmulate);
+        color.rgb = EOTFEmulate(color.rgb, eoftEmulate / 203.);
         color.xyz /= uiBrightness / 203.; //scale back
     }
 
