@@ -8,7 +8,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.lwjgl.opengl.GL30;
+import xyz.rrtt217.HDRMod;
 import xyz.rrtt217.config.HDRModConfig;
+import xyz.rrtt217.util.HDRModInjectHooks;
 
 @Mixin(GlDevice.class)
 public class MixinGlDevice {
@@ -18,7 +20,7 @@ public class MixinGlDevice {
     private int hdr_mod$upgradeColorBufferFormat$0(int i)
     {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(config.enableHDR && i == GlConst.toGlInternalId(TextureFormat.RGBA8)) {
+        if(config.enableHDR && i == GlConst.toGlInternalId(TextureFormat.RGBA8) && (!config.onlyUpgradeNecessaryTexture || HDRModInjectHooks.isInjectEnabled())) {
             return GL30.GL_RGBA16F;
         }
         return i;

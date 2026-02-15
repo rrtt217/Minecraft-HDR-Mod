@@ -11,13 +11,18 @@
   "text.autoconfig.hdr_mod.option.customGameMinimumBrightness.@Tooltip": "In nits, the minimum the display can output. Set it negative to use display reported value. Leave 0 if unsure.",
   "text.autoconfig.hdr_mod.option.customGamePeakBrightness.@Tooltip": "In nits, the maximum the display can output. Set it negative to use display reported value.",
   "text.autoconfig.hdr_mod.option.customEotfEmulate.@Tooltip": "Correct raised shadows to match SDR. Use if OS or display doesn't do so already. Set it negative to use display reported SDR paper white.",
+
+  "text.autoconfig.hdr_mod.option.onlyUpgradeNecessaryTexture": "(Advanced) Only Upgrade Necessary Texture",
+  "text.autoconfig.hdr_mod.option.onlyUpgradeNecessaryTexture.@Tooltip": "Only upgrade necessary texture from RGBA8 to RGBA16F. When enabled, only color texture of a render target or the BEFORE_BLIT ping-pong texture will be upgraded. When disabled, all color textures created by vanilla will be upgraded.",
   "text.autoconfig.hdr_mod.option.autoSetPrimaries": "Auto Set Primaries",
-  "text.autoconfig.hdr_mod.option.customPrimaries": "Custom Primaries (Only For Debug)",
+  "text.autoconfig.hdr_mod.option.customPrimaries": "(Debug) Custom Primaries ",
   "text.autoconfig.hdr_mod.option.autoSetTransferFunction": "Auto Set Transfer Function",
-  "text.autoconfig.hdr_mod.option.customTransferFunction": "Custom Transfer Function (Only For Debug)",
-  "text.autoconfig.hdr_mod.option.forceDisableGlfwWorkound": "Force Disable GLFW Workaround (Only For Debug)",
+  "text.autoconfig.hdr_mod.option.customTransferFunction": "(Debug) Custom Transfer Function ",
+  "text.autoconfig.hdr_mod.option.forceDisableGlfwWorkound": "(Debug) Force Disable GLFW Workaround",
+  "text.autoconfig.hdr_mod.option.forceDisableBeforeBlitPipeline": "(Debug) Force Disable the BEFORE_BLIT Pipeline",
 
   "text.autoconfig.hdr_mod.title": "HDR Mod Config",
   "key.hdr_mod.open_config_menu": "Open Config Menu",
+  "key.hdr_mod.take_hdr_screenshot": "Take HDR Screenshot",
   "key.category.hdr_mod.main": "HDR Mod"
 }

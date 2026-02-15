@@ -21,10 +21,14 @@ public class HDRModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     public float customEotfEmulate = System.getProperty("os.name").startsWith("Windows") ? -1.0f : 0.0f;
 
+    @ConfigEntry.Gui.Tooltip
+    public boolean onlyUpgradeNecessaryTexture = false;
+
     public boolean autoSetPrimaries = true;
     public Primaries customPrimaries = Primaries.SRGB;
     public boolean autoSetTransferFunction = true;
     public TransferFunction customTransferFunction = TransferFunction.SRGB;
 
     public boolean forceDisableGlfwWorkound = false;
+    public boolean forceDisableBeforeBlitPipeline = false;
 }

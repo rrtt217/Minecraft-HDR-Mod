@@ -6,6 +6,7 @@
   "client": [
     "MixinGlCommandEncoder",
     "MixinGlDevice",
+    "MixinMainTarget",
     "MixinMinecraft",
     "MixinRenderSystem",
     "MixinRenderTarget",
