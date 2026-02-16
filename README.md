@@ -1,18 +1,22 @@
 # Minecraft HDR Mod
 A minecraft mod that enables native HDR on Windows/Linux with Iris shaders. Currently in early development.
+[![PhotonHDRPic](https://i.postimg.cc/tgRwc3x5/2026-02-15-20-07-37-hdr.png)](https://postimg.cc/LJ7xYZvY)
+([Photon](https://modrinth.com/shader/photon-shader) w/ [Patrix](https://www.curseforge.com/minecraft/texture-packs/patrix-32x), taken by mod's screenshot feature.)
 ## What the mod have achieved
 - Native HDR, both for Windows scRGB and HDR10/PQ;
 - UI color correction by a BEFORE_BLIT pass;
 - Ingame config using Cloth Config API;
 - Ingame HDR screenshot.
-## For users
-- Adjust the config ingame using a key binding (default F9);
-- Take an HDR screenshot ingame using a key binding (default F10);
-- If your game is too bright/dark, try adjust the custom brightness values yourself;
-- If you're on Windows, don't forget to install the latest Visual C++ Redistributable.
-- If your game crashes on NeoForge, disable `earlyWindowControl` in `<game folder>/config/fml.toml`
-- Clean temp file if your game doesn't start (path can be found in log, %TEMP%/glfw on Windows and /tmp/glfw on Linux).
-## For shader patches
+## For Users
+- See XgarhontX's temporary patches for HDR output and tonemapping on select shaderpacks with support for this mod: [Google Sheets](https://docs.google.com/spreadsheets/d/1WgOqKED2FxC11-2oyW4aBIyl8tAHo-8WJ7JPxhYAO2Q/edit?gid=0#gid=0)
+- Adjust the HDR Brightness values with config menu. (Default keybind: F9)
+- Take a HDR screenshot ingame. (Default keybind: F10)
+- *Troubleshooting*: ReShade is currently not compatible, failing to load and breaking sky.
+- *Troubleshooting*: If your game is too bright/dark, try adjust the custom brightness values yourself.
+- *Troubleshooting*: If you're on Windows, don't forget to install the latest Visual C++ Redistributable.
+- *Troubleshooting*: If your game crashes on NeoForge, disable `earlyWindowControl` in `<game folder>/config/fml.toml`
+- *Troubleshooting*: Clean temp file if your game doesn't start (path can be found in log, %TEMP%/glfw on Windows and /tmp/glfw on Linux).
+## For Shader Packs
 ### Macros
 - `HDR_MOD_INSTALLED`
 - `HDR_ENABLED`
