@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.config.HDRModConfig;
 import xyz.rrtt217.core.BeforeBlitRenderer;
@@ -87,24 +88,47 @@ public class MixinRenderTarget {
         }
 
         if (this.colorTexture != null) {
-            RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(this.colorTexture, BeforeBlitRenderer.beforeBlitTexture, 0, 0, 0, 0, 0, this.width, this.height);
-            if(UiBrightnessUBO == null) UiBrightnessUBO = new FloatNumberUBO("HdrUIBrightness", 2);
+            if (UiBrightnessUBO == null) UiBrightnessUBO = new FloatNumberUBO("HdrUIBrightness", 2);
             GpuBuffer gpuBuffer = UiBrightnessUBO.update(new Float[]{
                     config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
                     config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate
             });
-            if (this.colorTextureView != null) {
-                try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Before blit", this.colorTextureView, OptionalInt.empty())) {
-                    renderPass.setPipeline(BeforeBlitRenderer.BEFORE_BLIT);
-                    RenderSystem.bindDefaultUniforms(renderPass);
-                    if(UiBrightnessUBO != null) renderPass.setUniform("HdrUIBrightness", gpuBuffer);
-                    renderPass.bindTexture("InSampler", BeforeBlitRenderer.beforeBlitTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
-                    renderPass.draw(0, 3);
+            if(config.writeBeforeBlitToMainTarget) {
+                // Common ping-pong pipeline.
+                RenderSystem.getDevice().createCommandEncoder().copyTextureToTexture(this.colorTexture, BeforeBlitRenderer.beforeBlitTexture, 0, 0, 0, 0, 0, this.width, this.height);
+                if (this.colorTextureView != null) {
+                    try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Before blit", this.colorTextureView, OptionalInt.empty())) {
+                        renderPass.setPipeline(BeforeBlitRenderer.BEFORE_BLIT);
+                        RenderSystem.bindDefaultUniforms(renderPass);
+                        if (UiBrightnessUBO != null) renderPass.setUniform("HdrUIBrightness", gpuBuffer);
+                        renderPass.bindTexture("InSampler", BeforeBlitRenderer.beforeBlitTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
+                        renderPass.draw(0, 3);
+                    }
+                } else {
+                    throw new IllegalStateException("colorTexture is null");
                 }
-            } else {
-                throw new IllegalStateException("colorTexture is null");
+            }
+            else{
+                // Only do a render pass, no copy.
+                if (BeforeBlitRenderer.beforeBlitTextureView != null) {
+                    try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Before blit", BeforeBlitRenderer.beforeBlitTextureView, OptionalInt.empty())) {
+                        renderPass.setPipeline(BeforeBlitRenderer.BEFORE_BLIT);
+                        RenderSystem.bindDefaultUniforms(renderPass);
+                        if (UiBrightnessUBO != null) renderPass.setUniform("HdrUIBrightness", gpuBuffer);
+                        renderPass.bindTexture("InSampler", this.colorTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
+                        renderPass.draw(0, 3);
+                    }
+                } else {
+                    throw new IllegalStateException("colorTexture is null");
+                }
             }
         }
+    }
+    @ModifyArg(method = "blitToScreen", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;presentTexture(Lcom/mojang/blaze3d/textures/GpuTextureView;)V"), index = 0)
+    private GpuTextureView hdr_mod$modifyTextureToBePresented(GpuTextureView gpuTextureView){
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(config.writeBeforeBlitToMainTarget) return gpuTextureView;
+        return BeforeBlitRenderer.beforeBlitTextureView;
     }
     @Inject(method = "createBuffers", at = @At("HEAD"))
     private void hdr_mod$setShouldUpgradeOnCreateBuffers(CallbackInfo ci) {

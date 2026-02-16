@@ -14,6 +14,8 @@
 
   "text.autoconfig.hdr_mod.option.onlyUpgradeNecessaryTexture": "(Advanced) Only Upgrade Necessary Texture",
   "text.autoconfig.hdr_mod.option.onlyUpgradeNecessaryTexture.@Tooltip": "Only upgrade necessary texture from RGBA8 to RGBA16F. When enabled, only color texture of a render target or the BEFORE_BLIT ping-pong texture will be upgraded. When disabled, all color textures created by vanilla will be upgraded.",
+  "text.autoconfig.hdr_mod.option.writeBeforeBlitToMainTarget": "(Advanced) Write BEFORE_BLIT Ping-Pong Texture To Main Render Target",
+  "text.autoconfig.hdr_mod.option.writeBeforeBlitToMainTarget.@Tooltip": "If on, ingame screenshot and ReplayMod/Flashback will be severely broken.\n If off, some mods that rewrite blitToScreen may break the game. Keep 'off' if unsure.",
   "text.autoconfig.hdr_mod.option.autoSetPrimaries": "Auto Set Primaries",
   "text.autoconfig.hdr_mod.option.customPrimaries": "(Debug) Custom Primaries ",
   "text.autoconfig.hdr_mod.option.autoSetTransferFunction": "Auto Set Transfer Function",

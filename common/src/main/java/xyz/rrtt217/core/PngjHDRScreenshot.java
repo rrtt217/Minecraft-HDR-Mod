@@ -29,15 +29,25 @@ import java.util.function.Consumer;
 public class PngjHDRScreenshot {
     public static final String SCREENSHOT_DIR = "screenshots";
     public static void grab(File baseDirectory, RenderTarget renderTarget, Consumer<Component> consumer) {
-        grab(baseDirectory, (String)null, renderTarget, consumer);
+        grab(baseDirectory, null, renderTarget, consumer);
     }
-    public static void grab(File baseDirectory, @Nullable String string, RenderTarget renderTarget, Consumer<Component> consumer) {
+    public static void grab(File baseDirectory, GpuTexture gpuTexture, Consumer<Component> consumer) {
+        grab(baseDirectory, null, gpuTexture, consumer);
+    }
+    public static void grab(File baseDirectory, @Nullable String string, RenderTarget renderTarget, Consumer<Component> consumer){
+        GpuTexture gpuTexture = renderTarget.getColorTexture();
+        if (gpuTexture == null) {
+            throw new IllegalStateException("color texture is null");
+        }
+        grab(baseDirectory, string, gpuTexture, consumer);
+    }
+    public static void grab(File baseDirectory, @Nullable String string, GpuTexture gpuTexture, Consumer<Component> consumer) {
         // Mod config.
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
 
         // Width and height.
-        int width = renderTarget.width;
-        int height = renderTarget.height;
+        int width = gpuTexture.getWidth(0);
+        int height = gpuTexture.getHeight(0);
 
         // Pngj things.
         ImageInfo imi = new ImageInfo(width, height, 16, false);
@@ -61,62 +71,56 @@ public class PngjHDRScreenshot {
         }
 
         // The actual screenshot part (why it's so slow?)
-        GpuTexture gpuTexture = renderTarget.getColorTexture();
-        if (gpuTexture == null) {
-            throw new IllegalStateException("Tried to capture screenshot of an incomplete framebuffer");
-        }
-        else{
-            // Get the buffer.
-            GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "HDR Mod Screenshot buffer", 9, (long) width * (long) height * 8L);
-            CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
-            // Enable readPixel inject.
-            HDRModInjectHooks.enableInject();
-            RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(gpuTexture, gpuBuffer, 0L, () -> {
-                try (GpuBuffer.MappedView mappedView = commandEncoder.mapBuffer(gpuBuffer, true, false)) {
-                    // Don't get upsided down lol
-                    for (int y = height - 1; y >= 0; y--) {
-                        // Line by line.
-                        ImageLineInt line = new ImageLineInt(imi);
-                        int[] scanline = line.getScanline();
-                        for (int x = 0; x < width; x++) {
-                            // Interpret data.
-                            float[] datas = new float[4];
-                            int basePos = ((y * width + x) * 4) * 2;
-                            for (int c = 0; c < 4; c++) {
-                                short bits = mappedView.data().getShort(basePos + c * 2);
-                                datas[c] = Float.float16ToFloat(bits);
-                            }
-                            // Do transform.
-                            if (HDRMod.WindowPrimaries == Enums.Primaries.SRGB) {
-                                float[] rgb = Arrays.copyOf(datas, 3);
-                                System.arraycopy(ColorTransforms.linearColorspaceTransform(rgb, ColorTransforms.linear709to2020Matrix), 0, datas, 0, 3);
-                            }
-                            if (HDRMod.WindowTransferFunction == Enums.TransferFunction.EXT_LINEAR) {
-                                float[] rgb = Arrays.copyOf(datas, 3);
-                                System.arraycopy(ColorTransforms.scRGBtoPQ(rgb, config.customGamePaperWhiteBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customGamePaperWhiteBrightness), 0, datas, 0, 3);
-                            }
-                            // Write to line.
-                            for (int c = 0; c < png.imgInfo.channels; c++) {
-                                scanline[x * png.imgInfo.channels + c] = (int) (datas[c] * 65535);
-                            }
+        // Get the buffer.
+        GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "HDR Mod Screenshot buffer", 9, (long) width * (long) height * 8L);
+        CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
+        // Enable readPixel inject.
+        HDRModInjectHooks.enableInject();
+        RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(gpuTexture, gpuBuffer, 0L, () -> {
+            try (GpuBuffer.MappedView mappedView = commandEncoder.mapBuffer(gpuBuffer, true, false)) {
+                // Don't get upsided down lol
+                for (int y = height - 1; y >= 0; y--) {
+                    // Line by line.
+                    ImageLineInt line = new ImageLineInt(imi);
+                    int[] scanline = line.getScanline();
+                    for (int x = 0; x < width; x++) {
+                        // Interpret data.
+                        float[] datas = new float[4];
+                        int basePos = ((y * width + x) * 4) * 2;
+                        for (int c = 0; c < 4; c++) {
+                            short bits = mappedView.data().getShort(basePos + c * 2);
+                            datas[c] = Float.float16ToFloat(bits);
                         }
-                        // Write to file.
-                        png.writeRow(line);
+                        // Do transform.
+                        if (HDRMod.WindowPrimaries == Enums.Primaries.SRGB) {
+                            float[] rgb = Arrays.copyOf(datas, 3);
+                            System.arraycopy(ColorTransforms.linearColorspaceTransform(rgb, ColorTransforms.linear709to2020Matrix), 0, datas, 0, 3);
+                        }
+                        if (HDRMod.WindowTransferFunction == Enums.TransferFunction.EXT_LINEAR) {
+                            float[] rgb = Arrays.copyOf(datas, 3);
+                            System.arraycopy(ColorTransforms.scRGBtoPQ(rgb, config.customGamePaperWhiteBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customGamePaperWhiteBrightness), 0, datas, 0, 3);
+                        }
+                        // Write to line.
+                        for (int c = 0; c < png.imgInfo.channels; c++) {
+                            scanline[x * png.imgInfo.channels + c] = (int) (datas[c] * 65535);
+                        }
                     }
-                    // Close the file.
-                    png.end();
-                } catch (Exception e) {
-                    HDRMod.LOGGER.error("Error while trying to capture screenshot for {}", string, e);
+                    // Write to file.
+                    png.writeRow(line);
                 }
-                // Close the buffer.
-                gpuBuffer.close();
-            }, 0);
-            // Disable injection.
-            HDRModInjectHooks.disableInject();
-            Component component = Component.literal(screenshotFile.getName()).withStyle(ChatFormatting.UNDERLINE).withStyle((style) -> style.withClickEvent(new ClickEvent.OpenFile(screenshotFile.getAbsoluteFile())));
-            consumer.accept(Component.translatable("screenshot.success", new Object[]{component}));
-        }
-        }
+                // Close the file.
+                png.end();
+            } catch (Exception e) {
+                HDRMod.LOGGER.error("Error while trying to capture screenshot for {}", string, e);
+            }
+            // Close the buffer.
+            gpuBuffer.close();
+        }, 0);
+        // Disable injection.
+        HDRModInjectHooks.disableInject();
+        Component component = Component.literal(screenshotFile.getName()).withStyle(ChatFormatting.UNDERLINE).withStyle((style) -> style.withClickEvent(new ClickEvent.OpenFile(screenshotFile.getAbsoluteFile())));
+        consumer.accept(Component.translatable("screenshot.success", new Object[]{component}));
+    }
     private static File getScreenshotFile(File baseDirectory) {
         String string = Util.getFilenameFormattedDateTime();
         int i = 1;

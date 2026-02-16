@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.system.Configuration;
 import org.slf4j.LoggerFactory;
+import xyz.rrtt217.core.BeforeBlitRenderer;
 import xyz.rrtt217.core.PngjHDRScreenshot;
 import xyz.rrtt217.core.FloatNumberUBO;
 import xyz.rrtt217.util.Enums.*;
@@ -18,7 +19,6 @@ import org.slf4j.Logger;
 import xyz.rrtt217.config.HDRModConfig;
 import xyz.rrtt217.util.LibraryExtractor;
 
-import java.time.Instant;
 import java.util.HashMap;
 
 public final class HDRMod {
@@ -85,10 +85,20 @@ public final class HDRMod {
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING_2);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
             while (CUSTOM_KEYMAPPING_2.consumeClick()) {
-                PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
-                    minecraft.gui.getChat().addMessage(arg);
-                    minecraft.getNarrator().saySystemChatQueued(arg);
-                }));
+                HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+                if(config.writeBeforeBlitToMainTarget)
+                {
+                    PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
+                        minecraft.gui.getChat().addMessage(arg);
+                        minecraft.getNarrator().saySystemChatQueued(arg);
+                    }));
+                }
+                else {
+                    PngjHDRScreenshot.grab(minecraft.gameDirectory, BeforeBlitRenderer.beforeBlitTexture, (arg) -> minecraft.execute(() -> {
+                        minecraft.gui.getChat().addMessage(arg);
+                        minecraft.getNarrator().saySystemChatQueued(arg);
+                    }));
+                }
             }
         });
         LOGGER.debug("HDRMod Initialized!");
