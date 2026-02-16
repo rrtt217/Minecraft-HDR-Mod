@@ -13,7 +13,7 @@ A minecraft mod that enables native HDR on Windows/Linux with Iris shaders. Curr
 - Take a HDR screenshot ingame. (Default keybind: F10)
 - *Troubleshooting*: ReShade is currently not compatible, failing to load and breaking sky.
 - *Troubleshooting*: If your game is too bright/dark, try adjust the custom brightness values yourself.
-- *Troubleshooting*: If you're on Windows, don't forget to install the latest Visual C++ Redistributable.
+- *Troubleshooting*: If you're on Windows, don't forget to install the latest [Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170).
 - *Troubleshooting*: If your game crashes on NeoForge, disable `earlyWindowControl` in `<game folder>/config/fml.toml`
 - *Troubleshooting*: Clean temp file if your game doesn't start (path can be found in log, %TEMP%/glfw on Windows and /tmp/glfw on Linux).
 ## For Shader Packs
