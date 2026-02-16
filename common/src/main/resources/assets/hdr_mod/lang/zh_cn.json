@@ -14,8 +14,8 @@
 
   "text.autoconfig.hdr_mod.option.onlyUpgradeNecessaryTexture": "(高级) 仅升级必要纹理",
   "text.autoconfig.hdr_mod.option.onlyUpgradeNecessaryTexture.@Tooltip": "仅将必要的纹理从 RGBA8 升级到 RGBA16F。启用时，只有渲染目标的颜色纹理和 BEFORE_BLIT Ping-pong纹理会被升级。禁用时，所有由原版创建的彩色纹理都将被升级。",
-  "text.autoconfig.hdr_mod.option.copyBeforeBlitToMainTarget": "(高级) 将BEFORE_BLIT Ping-pong 纹理复制到主渲染目标纹理",
-  "text.autoconfig.hdr_mod.option.copyBeforeBlitToMainTarget.@Tooltip": "如果开启，原版游戏截图和ReplayMod/Flashback模组录像会严重损坏。\n 如果关闭，某些重新blitToScreen的模组可能会破坏游戏. 如果不确定，请保持关闭。",
+  "text.autoconfig.hdr_mod.option.writeBeforeBlitToMainTarget": "(高级) 将BEFORE_BLIT Ping-pong 纹理复制到主渲染目标纹理",
+  "text.autoconfig.hdr_mod.option.writeBeforeBlitToMainTarget.@Tooltip": "如果开启，原版游戏截图和ReplayMod/Flashback模组录像会严重损坏。\n 如果关闭，某些重新blitToScreen的模组可能会破坏游戏. 如果不确定，请保持关闭。",
   "text.autoconfig.hdr_mod.option.autoSetPrimaries": "自动设置基色",
   "text.autoconfig.hdr_mod.option.customPrimaries": "(调试) 自定义基色",
   "text.autoconfig.hdr_mod.option.autoSetTransferFunction": "自动设置传递函数",
