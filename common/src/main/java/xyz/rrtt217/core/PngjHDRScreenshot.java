@@ -23,7 +23,6 @@ import xyz.rrtt217.util.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 public class PngjHDRScreenshot {
@@ -93,22 +92,32 @@ public class PngjHDRScreenshot {
                     for (int x = 0; x < width; x++) {
                         // Interpret data.
                         int basePos = ((y * width + x) * 4) * 2;
-                        for (int c = 0; c < 4; c++) {
-                            bits = mappedView.data().getShort(basePos + c * 2);
-                            datas[c] = Float.float16ToFloat(bits);
+                        // RGBA16 UNORM.
+                        if(config.useRGBA16UNORM) {
+                            for (int c = 0; c < png.imgInfo.channels; c++) {
+                                bits = mappedView.data().getShort(basePos + c * 2);
+                                scanline[x * png.imgInfo.channels + c] = bits;
+                            }
                         }
-                        // Do transform.
-                        if (doPrimariesTransform) {
-                            System.arraycopy(datas, 0, rgb, 0, 3);
-                            System.arraycopy(ColorTransforms.linearColorspaceTransform(rgb, ColorTransforms.linear709to2020Matrix), 0, datas, 0, 3);
-                        }
-                        if (doTransferTransform) {
-                            System.arraycopy(datas, 0, rgb, 0, 3);
-                            System.arraycopy(ColorTransforms.scRGBtoPQ(rgb, config.customGamePaperWhiteBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customGamePaperWhiteBrightness), 0, datas, 0, 3);
-                        }
-                        // Write to line.
-                        for (int c = 0; c < png.imgInfo.channels; c++) {
-                            scanline[x * png.imgInfo.channels + c] = (int) (datas[c] * 65535);
+                        else{
+                            // RGBA16F.
+                            for (int c = 0; c < 4; c++) {
+                                bits = mappedView.data().getShort(basePos + c * 2);
+                                datas[c] = Float.float16ToFloat(bits);
+                            }
+                            // Do transform.
+                            if (doPrimariesTransform) {
+                                System.arraycopy(datas, 0, rgb, 0, 3);
+                                System.arraycopy(ColorTransforms.linearColorspaceTransform(rgb, ColorTransforms.linear709to2020Matrix), 0, datas, 0, 3);
+                            }
+                            if (doTransferTransform) {
+                                System.arraycopy(datas, 0, rgb, 0, 3);
+                                System.arraycopy(ColorTransforms.scRGBtoPQ(rgb, config.customGamePaperWhiteBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customGamePaperWhiteBrightness), 0, datas, 0, 3);
+                            }
+                            // Write to line.
+                            for (int c = 0; c < png.imgInfo.channels; c++) {
+                                scanline[x * png.imgInfo.channels + c] = (int) (datas[c] * 65535);
+                            }
                         }
                     }
                     // Write to file.

@@ -68,10 +68,10 @@ import java.util.List;
                 GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
                 GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);
                 // For float buffer. Note: Because Intel on Windows do not support float buffer (WGL_TYPE_RGBA_FLOAT_ARB), Intel users can't use this mod natively.
-                if(!applyWorkaround) {
+                if(!applyWorkaround && !config.useRGBA16UNORM) {
                     GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
                 }
-                else {
+                else if(applyWorkaround) {
                     HDRMod.LOGGER.warn("A workaround has been applied for your platform and hardware. HDR Mod may or may not work.");
                 }
             }
