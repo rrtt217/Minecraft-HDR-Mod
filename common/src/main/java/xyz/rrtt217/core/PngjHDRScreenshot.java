@@ -22,7 +22,9 @@ import xyz.rrtt217.util.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.util.function.Consumer;
 
 public class PngjHDRScreenshot {
@@ -50,7 +52,8 @@ public class PngjHDRScreenshot {
 
         // Pngj things.
         ImageInfo imi = new ImageInfo(width, height, 16, false);
-        File screenshotFile = getScreenshotFile(new File(baseDirectory,SCREENSHOT_DIR));
+        File screenshotFile = getScreenshotFile(new File(baseDirectory, SCREENSHOT_DIR));
+        HDRMod.LOGGER.debug("Screenshot file location: {}", screenshotFile.getAbsolutePath());
         PngWriter png = new PngWriter(screenshotFile, imi);
         png.getMetadata().setDpi(100.0);
         png.getMetadata().setTimeNow(0);
@@ -137,6 +140,13 @@ public class PngjHDRScreenshot {
         consumer.accept(Component.translatable("screenshot.success", new Object[]{component}));
     }
     private static File getScreenshotFile(File baseDirectory) {
+        if(!baseDirectory.exists()) {
+            try{
+                Files.createDirectories(baseDirectory.toPath());
+            } catch (IOException e) {
+                HDRMod.LOGGER.error("Error while creating screenshot directory {}", baseDirectory, e);
+            }
+        }
         String string = Util.getFilenameFormattedDateTime();
         int i = 1;
         while(true) {
