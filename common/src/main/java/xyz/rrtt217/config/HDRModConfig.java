@@ -25,6 +25,8 @@ public class HDRModConfig implements ConfigData {
     public boolean onlyUpgradeNecessaryTexture = false;
     @ConfigEntry.Gui.Tooltip
     public boolean writeBeforeBlitToMainTarget = false;
+    @ConfigEntry.Gui.Tooltip
+    public boolean useRGBA16UNORMOnLinux = false;
 
     public boolean autoSetPrimaries = true;
     public Primaries customPrimaries = Primaries.SRGB;

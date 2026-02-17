@@ -69,7 +69,9 @@ public class MixinRenderTarget {
         // If texture / textureView have not been created yet, create them.
         if (BeforeBlitRenderer.beforeBlitTexture == null) {
             HDRModInjectHooks.enableInject();
+            HDRModInjectHooks.enableInject2();
             BeforeBlitRenderer.beforeBlitTexture = RenderSystem.getDevice().createTexture(() -> "Before Blit Ping-pong Texture", 15, TextureFormat.RGBA8, this.width, this.height, 1, 1);
+            HDRModInjectHooks.disableInject2();
             HDRModInjectHooks.disableInject();
         }
 
@@ -82,8 +84,10 @@ public class MixinRenderTarget {
             BeforeBlitRenderer.beforeBlitTextureView.close();
             BeforeBlitRenderer.beforeBlitTexture.close();
             HDRModInjectHooks.enableInject();
+            HDRModInjectHooks.enableInject2();
             BeforeBlitRenderer.beforeBlitTexture = RenderSystem.getDevice().createTexture(() -> "Before Blit Ping-pong Texture", 15, TextureFormat.RGBA8, this.width, this.height, 1, 1);
             BeforeBlitRenderer.beforeBlitTextureView = RenderSystem.getDevice().createTextureView(BeforeBlitRenderer.beforeBlitTexture);
+            HDRModInjectHooks.disableInject2();
             HDRModInjectHooks.disableInject();
         }
 
