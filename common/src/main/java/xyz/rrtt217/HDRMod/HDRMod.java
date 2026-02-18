@@ -4,11 +4,10 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.system.Configuration;
 import org.slf4j.LoggerFactory;
 import xyz.rrtt217.HDRMod.core.BeforeBlitRenderer;
@@ -36,7 +35,7 @@ public final class HDRMod {
     public static FloatNumberUBO UiBrightnessUBO;
 
     // Key Mapping.
-    public static final KeyMapping.Category HDRModCategory = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("hdr_mod","main"));
+    public static final KeyMapping.Category HDRModCategory = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("hdr_mod","main"));
     public static final KeyMapping CUSTOM_KEYMAPPING = new KeyMapping(
             "key.hdr_mod.open_config_menu", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
@@ -82,7 +81,7 @@ public final class HDRMod {
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
             while (CUSTOM_KEYMAPPING.consumeClick()) {
-                Minecraft.getInstance().setScreen(AutoConfigClient.getConfigScreen(HDRModConfig.class, Minecraft.getInstance().screen).get());
+                Minecraft.getInstance().setScreen(AutoConfig.getConfigScreen(HDRModConfig.class, Minecraft.getInstance().screen).get());
             }
         });
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING_2);

@@ -14,8 +14,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Util;
-import org.jspecify.annotations.Nullable;
+import net.minecraft.Util;
+import org.jetbrains.annotations.Nullable;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.*;
@@ -78,11 +78,11 @@ public class PngjHDRScreenshot {
 
         // The actual screenshot part (why it's so slow?)
         // Get the buffer.
-        GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "HDR Mod Screenshot buffer", 9, (long) width * (long) height * 8L);
+        GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "HDR Mod Screenshot buffer", 9, width * height * 8);
         CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
         // Enable readPixel inject.
         HDRModInjectHooks.enableInject();
-        RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(gpuTexture, gpuBuffer, 0L, () -> {
+        RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(gpuTexture, gpuBuffer, 0, () -> {
             try (GpuBuffer.MappedView mappedView = commandEncoder.mapBuffer(gpuBuffer, true, false)) {
                 // Don't get upsided down lol
                 float[] datas = new float[4];

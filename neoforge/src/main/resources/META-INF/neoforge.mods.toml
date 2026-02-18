@@ -23,7 +23,7 @@ side = "BOTH"
 [[dependencies.hdr_mod]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.11,)"
+versionRange = "[1.21.9,1.21.10]"
 ordering = "NONE"
 side = "BOTH"
 

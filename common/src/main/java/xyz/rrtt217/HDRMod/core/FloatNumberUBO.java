@@ -22,7 +22,7 @@ public class FloatNumberUBO implements AutoCloseable {
             calcualtor = calcualtor.putFloat();
         }
         memSize = calcualtor.get();
-        this.buffer = gpudevice.createBuffer(() -> "Float UBO " + string, 136, memSize);
+        this.buffer = gpudevice.createBuffer(() -> "Float UBO " + string, 136, Math.toIntExact(memSize));
     }
     public FloatNumberUBO(String string) {
        this(string, 1);

@@ -11,7 +11,7 @@ import com.mojang.blaze3d.textures.TextureFormat;
 import dev.architectury.platform.Platform;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -106,7 +106,7 @@ public class MixinRenderTarget {
                         renderPass.setPipeline(BeforeBlitRenderer.BEFORE_BLIT);
                         RenderSystem.bindDefaultUniforms(renderPass);
                         if (UiBrightnessUBO != null) renderPass.setUniform("HdrUIBrightness", gpuBuffer);
-                        renderPass.bindTexture("InSampler", BeforeBlitRenderer.beforeBlitTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
+                        renderPass.bindSampler("InSampler", this.colorTextureView);
                         renderPass.draw(0, 3);
                     }
                 } else {
@@ -120,7 +120,7 @@ public class MixinRenderTarget {
                         renderPass.setPipeline(BeforeBlitRenderer.BEFORE_BLIT);
                         RenderSystem.bindDefaultUniforms(renderPass);
                         if (UiBrightnessUBO != null) renderPass.setUniform("HdrUIBrightness", gpuBuffer);
-                        renderPass.bindTexture("InSampler", this.colorTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
+                        renderPass.bindSampler("InSampler", this.colorTextureView);
                         renderPass.draw(0, 3);
                     }
                 } else {
