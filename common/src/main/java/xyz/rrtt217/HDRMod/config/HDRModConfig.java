@@ -13,19 +13,19 @@ public class HDRModConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("general")
-    public float uiBrightness = -1.0f;
+    public float uiBrightness = System.getProperty("os.name").startsWith("Windows") ? 203.f : 1.0f; //TODO: GLFW auto get fix on Windows
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("general")
-    public float customGamePaperWhiteBrightness = -1.0f;
+    public float customGamePaperWhiteBrightness = System.getProperty("os.name").startsWith("Windows") ? 203.f : 1.0f; //TODO: GLFW auto get fix on Windows
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("general")
-    public float customGamePeakBrightness = 1000.0f;
+    public float customGamePeakBrightness = 1000.0f;  //TODO: GLFW auto get
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("general")
     public float customGameMinimumBrightness = 0.0f;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("general")
-    public float customEotfEmulate = System.getProperty("os.name").startsWith("Windows") ? -1.0f : 0.0f;
+    public float customEotfEmulate = System.getProperty("os.name").startsWith("Windows") ? 203.f : 0.0f; //TODO: GLFW auto get fix on Windows
 
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")
