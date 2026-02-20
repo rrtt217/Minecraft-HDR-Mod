@@ -7,12 +7,8 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
 import org.lwjgl.system.Configuration;
 import org.slf4j.LoggerFactory;
-import xyz.rrtt217.HDRMod.core.BeforeBlitRenderer;
-import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
-import xyz.rrtt217.HDRMod.core.FloatNumberUBO;
 import xyz.rrtt217.HDRMod.util.Enums.*;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
@@ -31,22 +27,19 @@ public final class HDRMod {
     // Whether we have the glfw lib for the platform.
     public static boolean hasglfwLib = false;
 
-    // Global UI brightness UBO.
-    public static FloatNumberUBO UiBrightnessUBO;
 
-    // Key Mapping.
-    public static final KeyMapping.Category HDRModCategory = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("hdr_mod","main"));
+    // Key Mapping.;
     public static final KeyMapping CUSTOM_KEYMAPPING = new KeyMapping(
             "key.hdr_mod.open_config_menu", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             InputConstants.KEY_F9, // The default keycode
-            HDRModCategory // The category translation key used to categorize in the Controls screen
+            "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
     public static final KeyMapping CUSTOM_KEYMAPPING_2 = new KeyMapping(
             "key.hdr_mod.take_hdr_screenshot", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             InputConstants.KEY_F10, // The default keycode
-            HDRModCategory // The category translation key used to categorize in the Controls screen
+            "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
 
     public static boolean enableHDR;
@@ -87,20 +80,7 @@ public final class HDRMod {
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING_2);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
             while (CUSTOM_KEYMAPPING_2.consumeClick()) {
-                HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-                if(config.writeBeforeBlitToMainTarget)
-                {
-                    PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
-                        minecraft.gui.getChat().addMessage(arg);
-                        minecraft.getNarrator().saySystemChatQueued(arg);
-                    }));
-                }
-                else {
-                    PngjHDRScreenshot.grab(minecraft.gameDirectory, BeforeBlitRenderer.beforeBlitTexture, (arg) -> minecraft.execute(() -> {
-                        minecraft.gui.getChat().addMessage(arg);
-                        minecraft.getNarrator().saySystemChatQueued(arg);
-                    }));
-                }
+                // Removed screenshot as of now.
             }
         });
 

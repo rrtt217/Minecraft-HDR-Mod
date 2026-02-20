@@ -1,10 +1,12 @@
-#version 330
+#version 150
 
-uniform sampler2D InSampler;
-layout(std140) uniform HdrUIBrightness {
-    float uiBrightness;
-    float eoftEmulate;
-};
+uniform sampler2D DiffuseSampler;
+
+uniform float UiBrightness;
+uniform float EotfEmulate;
+
+uniform int CurrentPrimaries;
+uniform int CurrentTransferFunction;
 
 in vec2 texCoord;
 
@@ -66,36 +68,39 @@ vec3 EOTFEmulate(vec3 color, float threshold) {
   return color;
 }
 
-void main() {
-    vec4 color = texture(InSampler, texCoord);
 
+void main() {
+    vec4 color = texture(DiffuseSampler, texCoord);
     //sRGB decode
     color.rgb = sRGB_DecodeSafe(color.rgb);
 
     //To BT2020
-    #if CURRENT_PRIMARIES == PRIMARIES_BT2020
+    if(CurrentPrimaries == 6){
         color.rgb = BT709_TO_BT2020_MAT * color.rgb;
-    #endif
+    }
 
     //EOTF Emulate / Gamma Correction 2.2
-    if (eoftEmulate > 0) {
-        color.xyz *= uiBrightness / 203.; //scale 203 as 1
-        color.rgb = EOTFEmulate(color.rgb, eoftEmulate / 203.);
-        color.xyz /= uiBrightness / 203.; //scale back
+    if (EotfEmulate > 0) {
+        color.xyz *= UiBrightness / 203.; //scale 203 as 1
+        color.rgb = EOTFEmulate(color.rgb, EotfEmulate / 203.);
+        color.xyz /= UiBrightness / 203.; //scale back
     }
 
     //Transfer
-    #if CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_ST2084_PQ
-        // PQ encode
-        color.rgb = PQ_Encode(color.rgb, uiBrightness);
-    #elif CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_EXT_LINEAR
+    if(CurrentTransferFunction == 11)
+    {
+        color.rgb = PQ_Encode(color.rgb, UiBrightness);
+    }
+    else if(CurrentTransferFunction == 5)
+    {
         // scRGB encode
-        color.rgb *= uiBrightness / 80.0;
-    #elif CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_SRGB
+        color.rgb *= UiBrightness / 80.0;
+    }
+    else if(CurrentTransferFunction == 9)
+    {
         // sRGB encode
-        color.rgb *= uiBrightness / 203.0;
+        color.rgb *= UiBrightness / 203.0;
         color.rgb = sRGB_EncodeSafe(color.rgb);
-    #endif
-
+    }
     fragColor = color;
 }

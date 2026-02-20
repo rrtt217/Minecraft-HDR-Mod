@@ -10,7 +10,7 @@ public final class HDRModNeoForge {
     public HDRModNeoForge() {
         // Run our common setup.
         HDRMod.init();
-        if (FMLEnvironment.getDist().isClient()) {
+        if (FMLEnvironment.dist.isClient()) {
             HDRModForgeConfigHelper.registerConfig();
         }
     }

@@ -29,12 +29,6 @@ public class HDRModConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")
-    public boolean onlyUpgradeNecessaryTexture = false;
-    @ConfigEntry.Gui.Tooltip
-    @ConfigEntry.Category("advanced")
-    public boolean writeBeforeBlitToMainTarget = false;
-    @ConfigEntry.Gui.Tooltip
-    @ConfigEntry.Category("advanced")
     public boolean useRGBA16UNORM = System.getProperty("os.name").toLowerCase().contains("linux");
 
     @ConfigEntry.Category("debug")

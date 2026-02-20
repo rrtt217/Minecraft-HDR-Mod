@@ -16,14 +16,14 @@ Enable native HDR in Minecraft with Iris shaders.
 [[dependencies.hdr_mod]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.10,)"
+versionRange = "[21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.hdr_mod]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.9,1.21.10]"
+versionRange = "[1.21,1.21.1]"
 ordering = "NONE"
 side = "BOTH"
 
@@ -44,3 +44,6 @@ side = "BOTH"
 
 [[mixins]]
 config = "hdr_mod.mixins.json"
+
+[mods."sodium:options"]
+"mixin.features.render.compositing" = false

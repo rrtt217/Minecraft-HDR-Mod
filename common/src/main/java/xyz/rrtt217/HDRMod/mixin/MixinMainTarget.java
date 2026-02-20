@@ -1,21 +1,24 @@
 package xyz.rrtt217.HDRMod.mixin;
 
 import com.mojang.blaze3d.pipeline.MainTarget;
-import com.mojang.blaze3d.textures.GpuTexture;
+import me.shedaniel.autoconfig.AutoConfig;
+import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+import xyz.rrtt217.HDRMod.config.HDRModConfig;
+
+import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
+import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 
 @Mixin(MainTarget.class)
 public class MixinMainTarget {
-    @Inject(method = "allocateAttachments", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/MainTarget;allocateColorAttachment(Lcom/mojang/blaze3d/pipeline/MainTarget$Dimension;)Lcom/mojang/blaze3d/textures/GpuTexture;", shift = At.Shift.BEFORE))
-    private void hdr_mod$setShouldUpgradeOnAllocateColorAttachment(CallbackInfoReturnable<GpuTexture> cir) {
-        HDRModInjectHooks.enableInject();
-    }
-    @Inject(method = "allocateAttachments", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/MainTarget;allocateColorAttachment(Lcom/mojang/blaze3d/pipeline/MainTarget$Dimension;)Lcom/mojang/blaze3d/textures/GpuTexture;", shift = At.Shift.AFTER))
-    private void hdr_mod$setShouldNotUpgradeOnLeavingAllocateColorAttachment(CallbackInfoReturnable<GpuTexture> cir) {
-        HDRModInjectHooks.disableInject();
+    @ModifyArgs(method = "allocateColorAttachment", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V"))
+    private void upgradeMainTarget(Args args) throws Throwable {
+        if(enableHDR && args.get(2).equals(GL30.GL_RGBA8)) {
+            args.set(2, GL30.GL_RGBA16F);
+            args.set(7, GL30.GL_HALF_FLOAT);
+        }
     }
 }

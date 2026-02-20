@@ -18,8 +18,8 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 @Mixin(IrisExclusiveUniforms.class)
 public class MixinIrisExclusiveUniforms {
     @Inject(method = "addIrisExclusiveUniforms", at = @At("RETURN"))
-    private static void addHDRModExclusiveUniforms(UniformHolder uniforms, FrameUpdateNotifier updateNotifier, CallbackInfo ci) {
-        var handle = Minecraft.getInstance().getWindow().handle();
+    private static void addHDRModExclusiveUniforms(UniformHolder uniforms, CallbackInfo ci) {
+        var handle = Minecraft.getInstance().getWindow().getWindow();
         HDRMod.LOGGER.info("GLFW Reported Min: {}", GLFWColorManagement.glfwGetWindowMinLuminance(handle));
         HDRMod.LOGGER.info("GLFW Reported Peak: {}", GLFWColorManagement.glfwGetWindowMaxLuminance(handle));
         HDRMod.LOGGER.info("GLFW Reported Paper: {}", GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle));

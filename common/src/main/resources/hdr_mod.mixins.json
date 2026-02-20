@@ -4,10 +4,6 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
-    "MixinGlCommandEncoder",
-    "MixinGameRenderer",
-    "MixinGlCommandEncoder",
-    "MixinGlDevice",
     "MixinMainTarget",
     "MixinMinecraft",
     "MixinRenderSystem",
@@ -15,6 +11,7 @@
     "MixinWindow"
   ],
   "mixins": [
+    "MixinVanillaPackResources",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros"
   ],
