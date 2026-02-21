@@ -2,6 +2,7 @@ package xyz.rrtt217.HDRMod;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
@@ -26,7 +27,7 @@ public final class HDRMod {
     public static TransferFunction WindowTransferFunction = TransferFunction.SRGB;
 
     // Whether we have the glfw lib for the platform.
-    public static boolean hasglfwLib = false;
+    public static boolean hasglfwLib = !Platform.isFabric();
 
 
     // Key Mapping.;
@@ -43,7 +44,7 @@ public final class HDRMod {
             "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
 
-    public static boolean enableHDR;
+    public static boolean enableHDR = !Platform.isFabric();
 
     static {
         // Register config.

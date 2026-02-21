@@ -25,7 +25,7 @@ public class MixinRenderTarget {
     @Shadow
     protected int colorTextureId;
 
-    @ModifyArgs(method = "createBuffers", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V",ordinal = 1))
+    @ModifyArgs(method = "createBuffers", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V"))
     private void createBuffers(Args args) {
         if(enableHDR && args.get(2).equals(GL30.GL_RGBA8)) {
             args.set(2, GL30.GL_RGBA16F);
