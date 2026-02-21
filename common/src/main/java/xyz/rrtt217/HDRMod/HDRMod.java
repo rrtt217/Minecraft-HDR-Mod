@@ -44,13 +44,12 @@ public final class HDRMod {
 
     public static boolean enableHDR;
 
-    public HDRMod() {
-    }
-
-    public static void init() {
+    static {
         // Register config.
         AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+    }
 
+    static {
         // Load glfw.
         HashMap<String, String> glfwLibNames = new HashMap<>();
         glfwLibNames.put("win", "glfw3");
@@ -69,7 +68,12 @@ public final class HDRMod {
             Configuration.GLFW_LIBRARY_NAME.set(glfwLibPath);
             hasglfwLib = true;
         }
+    }
 
+    public HDRMod() {
+    }
+
+    public static void init() {
         // Register Key Mapping.
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {

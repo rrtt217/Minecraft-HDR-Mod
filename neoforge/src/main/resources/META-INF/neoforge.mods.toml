@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[10,)"
+loaderVersion = "[4,)"
 #issueTrackerURL = ""
 license = "MIT"
 
@@ -17,28 +17,28 @@ Enable native HDR in Minecraft with Iris shaders.
 modId = "neoforge"
 type = "required"
 versionRange = "[21.1,)"
-ordering = "NONE"
+ordering = "BEFORE"
 side = "BOTH"
 
 [[dependencies.hdr_mod]]
 modId = "minecraft"
 type = "required"
 versionRange = "[1.21,1.21.1]"
-ordering = "NONE"
+ordering = "BEFORE"
 side = "BOTH"
 
 [[dependencies.hdr_mod]]
 modId = "cloth_config"
 type = "required"
 versionRange = "*"
-ordering = "NONE"
+ordering = "BEFORE"
 side = "BOTH"
 
 [[dependencies.hdr_mod]]
 modId = "architectury"
 type = "required"
 versionRange = "*"
-ordering = "NONE"
+ordering = "BEFORE"
 side = "BOTH"
 
 
