@@ -12,11 +12,7 @@
   "text.autoconfig.hdr_mod.option.customGamePeakBrightness.@Tooltip": "以尼特为单位，设置显示器可输出的最大亮度。(Linux) 设置为负数以使用显示器报告的值。",
   "text.autoconfig.hdr_mod.option.customEotfEmulate.@Tooltip": "校正提升的黑色区域以匹配 SDR。如果操作系统或显示器尚未执行此操作，请使用此项。设置为负数以使用显示器报告的 SDR 参考白亮度。",
 
-  "text.autoconfig.hdr_mod.option.onlyUpgradeNecessaryTexture": "仅升级必要纹理",
-  "text.autoconfig.hdr_mod.option.onlyUpgradeNecessaryTexture.@Tooltip": "仅将必要的纹理从 RGBA8 升级到 RGBA16F。启用时，只有渲染目标的颜色纹理和 BEFORE_BLIT Ping-pong纹理会被升级。禁用时，所有由原版创建的彩色纹理都将被升级。",
-  "text.autoconfig.hdr_mod.option.writeBeforeBlitToMainTarget": "将BEFORE_BLIT 渲染目标纹理复制到主渲染目标纹理",
-  "text.autoconfig.hdr_mod.option.writeBeforeBlitToMainTarget.@Tooltip": "如果开启，原版游戏截图和ReplayMod/Flashback模组录像会严重损坏。\n 如果关闭，某些重写blitToScreen的模组可能会破坏游戏. 如果不确定，请保持关闭。",
-  "text.autoconfig.hdr_mod.option.useRGBA16UNORM": "为BEFORE_BLIT 渲染目标纹理使用归一化定点RGBA16格式",
+  "text.autoconfig.hdr_mod.option.useRGBA16UNORM": "为屏幕缓冲区使用归一化定点格式",
   "text.autoconfig.hdr_mod.option.useRGBA16UNORM.@Tooltip": "提高使用BT.2100 PQ转换函数时的精度，但会完全破坏scRGB。 如果不确定，请保持默认值。",
 
   "text.autoconfig.hdr_mod.option.autoSetPrimaries": "自动设置基色",

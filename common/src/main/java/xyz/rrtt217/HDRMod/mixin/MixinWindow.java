@@ -57,7 +57,7 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
                 GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
                 GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);
                 // For float buffer. Note: Because Intel on Windows do not support float buffer (WGL_TYPE_RGBA_FLOAT_ARB), Intel users can't use this mod natively.
-                if(!applyWorkaround && !config.useRGBA16UNORM) {
+                if(!applyWorkaround && !config.UseUNORMBufferOnLinux) {
                     GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
                 }
                 else if(applyWorkaround) {

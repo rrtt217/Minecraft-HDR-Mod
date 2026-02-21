@@ -29,7 +29,7 @@ public class HDRModConfig implements ConfigData {
 
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")
-    public boolean useRGBA16UNORM = System.getProperty("os.name").toLowerCase().contains("linux");
+    public boolean UseUNORMBufferOnLinux = System.getProperty("os.name").toLowerCase().contains("linux");
 
     @ConfigEntry.Category("debug")
     public boolean autoSetPrimaries = true;

@@ -12,17 +12,13 @@
   "text.autoconfig.hdr_mod.option.customGamePeakBrightness.@Tooltip": "In nits, the maximum the display can output.\n(Linux) Set it negative to use display reported value.",
   "text.autoconfig.hdr_mod.option.customEotfEmulate.@Tooltip": "Correct raised shadows to match SDR.\nUse if OS or display doesn't do so already.\n Set it negative to use display reported SDR paper white.",
 
-  "text.autoconfig.hdr_mod.option.onlyUpgradeNecessaryTexture": "Only Upgrade Necessary Texture",
-  "text.autoconfig.hdr_mod.option.onlyUpgradeNecessaryTexture.@Tooltip": "Only upgrade necessary texture from RGBA8 to RGBA16F.\nWhen enabled, only color texture of a render target or the BEFORE_BLIT ping-pong texture will be upgraded.\nWhen disabled, all color textures created by vanilla will be upgraded.",
-  "text.autoconfig.hdr_mod.option.writeBeforeBlitToMainTarget": "Write BEFORE_BLIT Render Target To Main Render Target",
-  "text.autoconfig.hdr_mod.option.writeBeforeBlitToMainTarget.@Tooltip": "If on, ingame screenshot and ReplayMod/Flashback will be severely broken.\n If off, some mods that rewrite blitToScreen may break the game. Keep 'off' if unsure.",
-  "text.autoconfig.hdr_mod.option.useRGBA16UNORM": "Use RGBA16 UNORM For BEFORE_BLIT Render Target",
+  "text.autoconfig.hdr_mod.option.useRGBA16UNORM": "Use UNORM Format For Backbuffer",
   "text.autoconfig.hdr_mod.option.useRGBA16UNORM.@Tooltip": "Improve precision when using BT.2100 PQ transfer function, but completely breaks scRGB linear.\nKeep default if unsure.",
 
   "text.autoconfig.hdr_mod.option.autoSetPrimaries": "Auto Set Primaries",
-  "text.autoconfig.hdr_mod.option.customPrimaries": "Custom Primaries ",
+  "text.autoconfig.hdr_mod.option.customPrimaries": "Custom Primaries",
   "text.autoconfig.hdr_mod.option.autoSetTransferFunction": "Auto Set Transfer Function",
-  "text.autoconfig.hdr_mod.option.customTransferFunction": "Custom Transfer Function ",
+  "text.autoconfig.hdr_mod.option.customTransferFunction": "Custom Transfer Function",
   "text.autoconfig.hdr_mod.option.forceDisableGlfwWorkound": "Force Disable GLFW Workaround",
   "text.autoconfig.hdr_mod.option.forceDisableBeforeBlitPipeline": "Force Disable the BEFORE_BLIT Pipeline",
 
