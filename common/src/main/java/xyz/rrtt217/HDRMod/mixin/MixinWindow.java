@@ -50,7 +50,7 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
                     hasOnlyIntelCard = false;
                 }
             }
-            boolean applyWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND) || (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32)) && !config.forceDisableGlfwWorkound;
+            boolean applyWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND) || (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32)) && !config.forceDisableGlfwWorkaround;
             if(platform != GLFW.GLFW_PLATFORM_X11 && enableHDR && HDRMod.hasglfwLib) {
                 // For 16 bits per channal.
                 GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 16);

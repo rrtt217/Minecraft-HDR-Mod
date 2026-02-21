@@ -35,13 +35,13 @@ public class MixinRenderTarget {
     @ModifyArg(method = "_blitToScreen", at = @At(value = "INVOKE", target = "Ljava/util/Objects;requireNonNull(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;"), index = 0)
     private Object replaceBlitShader(Object obj){
         if(colorTextureId == Minecraft.getInstance().getMainRenderTarget().getColorTextureId()) {
-            if(MainTargetBlitShader.blitShader != null){
+            HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+            if(MainTargetBlitShader.blitShader != null && !config.forceDisableBlitShaderReplacement){
                 // Setup necessary uniforms.
                 var handle = Minecraft.getInstance().getWindow().getWindow();
-                HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-                MainTargetBlitShader.blitShader.safeGetUniform("CurrentPrimaries").set(HDRMod.WindowPrimaries.getId());
-                MainTargetBlitShader.blitShader.safeGetUniform("CurrentTransferFunction").set(HDRMod.WindowTransferFunction.getId());
-                MainTargetBlitShader.blitShader.safeGetUniform("UiBrightness").set(config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle) : config.uiBrightness);
+                MainTargetBlitShader.blitShader.safeGetUniform("CurrentPrimaries").set(config.autoSetPrimaries ? HDRMod.WindowPrimaries.getId() : config.customPrimaries.getId());
+                MainTargetBlitShader.blitShader.safeGetUniform("CurrentTransferFunction").set(config.autoSetTransferFunction? HDRMod.WindowTransferFunction.getId(): config.customTransferFunction.getId());
+                MainTargetBlitShader.blitShader.safeGetUniform("UiBrightness").set(config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle): config.uiBrightness);
                 MainTargetBlitShader.blitShader.safeGetUniform("EotfEmulate").set(config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle) : config.customEotfEmulate);
                 return MainTargetBlitShader.blitShader;
             }

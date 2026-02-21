@@ -40,7 +40,7 @@ public class HDRModConfig implements ConfigData {
     @ConfigEntry.Category("debug")
     public TransferFunction customTransferFunction = TransferFunction.SRGB;
     @ConfigEntry.Category("debug")
-    public boolean forceDisableGlfwWorkound = false;
+    public boolean forceDisableGlfwWorkaround = false;
     @ConfigEntry.Category("debug")
-    public boolean forceDisableBeforeBlitPipeline = false;
+    public boolean forceDisableBlitShaderReplacement = false;
 }

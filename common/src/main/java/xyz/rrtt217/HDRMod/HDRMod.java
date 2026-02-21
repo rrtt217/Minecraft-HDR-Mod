@@ -96,8 +96,6 @@ public final class HDRMod {
             }
         });
 
-
-
         LOGGER.debug("HDRMod Initialized!");
     }
 }
