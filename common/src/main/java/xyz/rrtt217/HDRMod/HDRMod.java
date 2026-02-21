@@ -9,6 +9,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.system.Configuration;
 import org.slf4j.LoggerFactory;
+import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 import xyz.rrtt217.HDRMod.util.Enums.*;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
@@ -84,7 +85,10 @@ public final class HDRMod {
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING_2);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
             while (CUSTOM_KEYMAPPING_2.consumeClick()) {
-                // Removed screenshot as of now.
+                PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
+                    minecraft.gui.getChat().addMessage(arg);
+                    minecraft.getNarrator().say(arg);
+                }));
             }
         });
 

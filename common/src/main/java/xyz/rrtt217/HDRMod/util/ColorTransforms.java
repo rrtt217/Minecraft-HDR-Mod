@@ -7,7 +7,28 @@ public class ColorTransforms {
         {0.0163914393633604f, 0.08801330626010895f, 0.8955952525138855f}
     };
 
-    public static float[] scRGBtoPQ(float[] scRGB, float referenceWhiteNits) {
+    public static float[] sRGBDecodeSafe(float[] c) {
+        if (c.length < 3) {
+            throw new IllegalArgumentException("There must be at least three elements in a color array");
+        }
+        float[] result = new float[3];
+        for (int i = 0; i < 3; i++) {
+            float val = c[i];
+            float sign = (val > 0) ? 1.0f : (val < 0) ? -1.0f : 0.0f;
+            float absVal = Math.abs(val);
+
+            float decoded;
+            if (absVal < 0.04045f) {
+                decoded = absVal / 12.92f;
+            } else {
+                decoded = (float) Math.pow((absVal + 0.055f) / 1.055f, 2.4f);
+            }
+            result[i] = decoded * sign;
+        }
+        return result;
+    }
+
+    public static float[] PQEncode(float[] scRGB, float referenceWhiteNits) {
         // PQ constants (SMPTE ST 2084)
         final float m1 = 2610.0f / 16384.0f;
         final float m2 = 2523.0f / 4096.0f * 128.0f;
@@ -49,4 +70,42 @@ public class ColorTransforms {
 
         return new float[]{rnew, gnew, bnew};
     }
+
+    // Const gamma=2.2
+    private static final float GAMMA = 2.2f;
+
+    public static float sRGBEncodeSafe(float c) {
+        if (c <= 0.0031308f) {
+            return c * 12.92f;
+        } else {
+            return 1.055f * (float) Math.pow(c, 1.0 / 2.4) - 0.055f;
+        }
+    }
+
+    private static float sign(float x) {
+        if (x > 0) return 1.0f;
+        if (x < 0) return -1.0f;
+        return 0.0f;
+    }
+
+    public static float[] eotfEmulate(float[] color, float threshold) {
+        if (color.length < 3) {
+            throw new IllegalArgumentException("There must be at least three elements in a color array");
+        }
+        float[] result = new float[3];
+        for (int i = 0; i < 3; i++) {
+            float val = color[i] / threshold;
+            float s = sign(val);
+            float a = Math.abs(val);
+
+            float encoded = sRGBEncodeSafe(a);
+            float corrected = (float) Math.pow(encoded, GAMMA);
+
+            float temp = (a < 1.0f) ? (s * corrected) : val;
+
+            result[i] = temp * threshold;
+        }
+        return result;
+    }
+
 }
