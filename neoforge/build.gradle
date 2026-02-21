@@ -45,8 +45,13 @@ dependencies {
     modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
 
     modImplementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_api_version}"
-    //modImplementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-neoforge"
-    modImplementation "maven.modrinth:iris:${iris_version}+${minecraft_version}-neoforge"
+    compileOnly "maven.modrinth:iris:${iris_version}+${minecraft_version}-neoforge"
+    localRuntime "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-neoforge"
+    localRuntime "maven.modrinth:iris:${iris_version}+${minecraft_version}-neoforge"
+
+    implementation "org.anarres:jcpp:1.4.14"
+    implementation "org.antlr:antlr4-runtime:4.13.1"
+    implementation "io.github.douira:glsl-transformer:2.0.1"
 
     implementation 'ar.com.hjg:pngj:2.1.0'
     include 'ar.com.hjg:pngj:2.1.0'

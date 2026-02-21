@@ -27,8 +27,7 @@ public final class HDRMod {
     public static TransferFunction WindowTransferFunction = TransferFunction.SRGB;
 
     // Whether we have the glfw lib for the platform.
-    public static boolean hasglfwLib = !Platform.isFabric();
-
+    public static boolean hasglfwLib;
 
     // Key Mapping.;
     public static final KeyMapping CUSTOM_KEYMAPPING = new KeyMapping(
@@ -44,38 +43,42 @@ public final class HDRMod {
             "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
 
-    public static boolean enableHDR = !Platform.isFabric();
+    public static boolean enableHDR;
 
     static {
         // Register config.
         AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
     }
 
-    static {
-        // Load glfw.
-        HashMap<String, String> glfwLibNames = new HashMap<>();
-        glfwLibNames.put("win", "glfw3");
-        glfwLibNames.put("mac", "LibGLFW");
-        glfwLibNames.put("linux", "libglfw");
-        String glfwLibPath = "";
-        boolean loaded = false;
-        try {
-            glfwLibPath = LibraryExtractor.extractLibraries(glfwLibNames,"glfw").toString();
-            loaded = true;
-        }
-        catch (Exception e) {
-            LOGGER.warn("Unable to load libraries from glfw:{}",e.getMessage());
-        }
-        if(loaded) {
-            Configuration.GLFW_LIBRARY_NAME.set(glfwLibPath);
-            hasglfwLib = true;
-        }
-    }
-
     public HDRMod() {
     }
 
     public static void init() {
+        // The mod init method runs even after window init in 1.21.1 NeoForge, which shouldn't be the case. So for NeoForge we move the glfw replacement to MixinVanillaPackResources static code block.
+        if(Platform.isFabric())
+        {
+            // For Fabric, load natives here.
+            HashMap<String, String> glfwLibNames = new HashMap<>();
+            glfwLibNames.put("win", "glfw3");
+            glfwLibNames.put("mac", "LibGLFW");
+            glfwLibNames.put("linux", "libglfw");
+            String glfwLibPath = "";
+            boolean loaded = false;
+            try {
+                glfwLibPath = LibraryExtractor.extractLibraries(glfwLibNames,"glfw").toString();
+                loaded = true;
+            }
+            catch (Exception e) {
+                LOGGER.warn("Unable to load libraries from glfw:{}",e.getMessage());
+            }
+            if(loaded) {
+                Configuration.GLFW_LIBRARY_NAME.set(glfwLibPath);
+                hasglfwLib = true;
+            }
+            // Set enableHDR once and for all.
+            HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+            enableHDR = config.enableHDR;
+        }
         // Register Key Mapping.
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
@@ -93,9 +96,7 @@ public final class HDRMod {
             }
         });
 
-        // Set enableHDR once and for all.
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        enableHDR = config.enableHDR;
+
 
         LOGGER.debug("HDRMod Initialized!");
     }
