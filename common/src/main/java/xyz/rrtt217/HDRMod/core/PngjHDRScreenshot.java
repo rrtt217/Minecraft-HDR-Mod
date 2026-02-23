@@ -138,30 +138,31 @@ public class PngjHDRScreenshot {
         }
     }
     public static float float16ToFloat(int bits) {
+        bits &= 0xFFFF;
         int sign = (bits >> 15) & 0x1;
         int exponent = (bits >> 10) & 0x1F;
-        int mantissa = bits & 0x3FF; // 10 bits
+        int mantissa = bits & 0x3FF;
 
         int floatBits;
         if (exponent == 0) {
             if (mantissa == 0) {
                 floatBits = sign << 31;
             } else {
-                int shift = Integer.numberOfLeadingZeros(mantissa) - (32 - 11);
+                int shift = Integer.numberOfLeadingZeros(mantissa) - 22;
                 int normalizedMantissa = (mantissa << shift) & 0x3FF;
-                int normalizedExponent = 1 - shift;
-                int floatExponent = normalizedExponent + 127;
-                floatBits = (sign << 31) | (floatExponent << 23) | (normalizedMantissa << (23 - 10));
+                int fraction = normalizedMantissa & 0x1FF;  // 丢弃隐含的leading 1
+                int floatExponent = 112 - shift;            // -15 - shift + 127
+                floatBits = (sign << 31) | (floatExponent << 23) | (fraction << 14);
             }
         } else if (exponent == 31) {
             if (mantissa == 0) {
                 floatBits = (sign << 31) | 0x7F800000;
             } else {
-                floatBits = 0x7FC00000;
+                floatBits = (sign << 31) | 0x7F800000 | (mantissa << 13);
             }
         } else {
             int floatExponent = exponent - 15 + 127;
-            floatBits = (sign << 31) | (floatExponent << 23) | (mantissa << (23 - 10));
+            floatBits = (sign << 31) | (floatExponent << 23) | (mantissa << 13);
         }
         return Float.intBitsToFloat(floatBits);
     }
