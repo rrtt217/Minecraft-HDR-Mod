@@ -3,21 +3,20 @@ package xyz.rrtt217.HDRMod.mixin;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ShaderInstance;
 import org.lwjgl.opengl.GL30;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.MainTargetBlitShader;
 import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
 
-import java.util.Objects;
-
-import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 
 @Mixin(RenderTarget.class)
@@ -32,8 +31,8 @@ public class MixinRenderTarget {
             args.set(7, GL30.GL_HALF_FLOAT);
         }
     }
-    @ModifyArg(method = "_blitToScreen", at = @At(value = "INVOKE", target = "Ljava/util/Objects;requireNonNull(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;"), index = 0)
-    private Object replaceBlitShader(Object obj){
+    @ModifyVariable(method = "_blitToScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/renderer/GameRenderer;blitShader:Lnet/minecraft/client/renderer/ShaderInstance;", opcode = Opcodes.GETFIELD), index = 0)
+    private ShaderInstance replaceBlitShader(ShaderInstance value){
         if(colorTextureId == Minecraft.getInstance().getMainRenderTarget().getColorTextureId()) {
             HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
             if(MainTargetBlitShader.blitShader != null && !config.forceDisableBlitShaderReplacement){
@@ -46,6 +45,6 @@ public class MixinRenderTarget {
                 return MainTargetBlitShader.blitShader;
             }
         }
-        return obj;
+        return value;
     }
 }

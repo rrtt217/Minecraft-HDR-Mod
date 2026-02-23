@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.neoforge;
+package xyz.rrtt217.HDRMod.forge;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import net.neoforged.fml.ModLoadingContext;

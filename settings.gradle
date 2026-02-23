@@ -18,4 +18,4 @@ rootProject.name = 'hdr_mod'
 
 include 'common'
 include 'fabric'
-include 'neoforge'
+include 'forge'

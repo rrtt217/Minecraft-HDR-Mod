@@ -88,7 +88,7 @@ public class PngjHDRScreenshot {
                 // RGBA16F.
                 for (int c = 0; c < 4; c++) {
                     bits = buffer.getShort(basePos + c * 2);
-                    datas[c] = Float.float16ToFloat(bits);
+                    datas[c] = float16ToFloat(bits);
                 }
                 // Do transform.
                 System.arraycopy(datas, 0, rgb, 0, 3);
@@ -135,5 +135,33 @@ public class PngjHDRScreenshot {
             }
             ++i;
         }
+    }
+    public static float float16ToFloat(int bits) {
+        int sign = (bits >> 15) & 0x1;
+        int exponent = (bits >> 10) & 0x1F;
+        int mantissa = bits & 0x3FF; // 10 bits
+
+        int floatBits;
+        if (exponent == 0) {
+            if (mantissa == 0) {
+                floatBits = sign << 31;
+            } else {
+                int shift = Integer.numberOfLeadingZeros(mantissa) - (32 - 11);
+                int normalizedMantissa = (mantissa << shift) & 0x3FF;
+                int normalizedExponent = 1 - shift;
+                int floatExponent = normalizedExponent + 127;
+                floatBits = (sign << 31) | (floatExponent << 23) | (normalizedMantissa << (23 - 10));
+            }
+        } else if (exponent == 31) {
+            if (mantissa == 0) {
+                floatBits = (sign << 31) | 0x7F800000;
+            } else {
+                floatBits = 0x7FC00000;
+            }
+        } else {
+            int floatExponent = exponent - 15 + 127;
+            floatBits = (sign << 31) | (floatExponent << 23) | (mantissa << (23 - 10));
+        }
+        return Float.intBitsToFloat(floatBits);
     }
 }

@@ -1,7 +1,11 @@
 plugins {
     id 'com.gradleup.shadow'
 }
-
+loom {
+    forge {
+        mixinConfig "hdr_mod.mixins.json"
+    }
+}
 architectury {
     platformSetupLoomIde()
     neoForge()
@@ -26,8 +30,8 @@ configurations {
 
 repositories {
     maven {
-        name = 'NeoForged'
-        url = 'https://maven.neoforged.net/releases'
+        name = "forge"
+        url = "https://files.minecraftforge.net/maven"
     }
     maven {
         name = "Modrinth"
@@ -39,15 +43,15 @@ repositories {
 }
 
 dependencies {
-    neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
+    forge "net.minecraftforge:forge:$rootProject.forge_version"
 
     // Architectury API. This is optional, and you can comment it out if you don't need it.
-    modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
+    modImplementation "dev.architectury:architectury-forge:$rootProject.architectury_api_version"
 
-    modImplementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_api_version}"
-    compileOnly "maven.modrinth:iris:${iris_version}+${minecraft_version}-neoforge"
-    localRuntime "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-neoforge"
-    localRuntime "maven.modrinth:iris:${iris_version}+${minecraft_version}-neoforge"
+    modImplementation "me.shedaniel.cloth:cloth-config-forge:${cloth_config_api_version}"
+    compileOnly "maven.modrinth:oculus:${minecraft_version}-${oculus_version}"
+    localRuntime "maven.modrinth:embeddium:${embeddium_version}+mc${minecraft_version}"
+    localRuntime "maven.modrinth:oculus:${minecraft_version}-${oculus_version}"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"
@@ -58,13 +62,13 @@ dependencies {
 
     //modLocalRuntime "maven.modrinth:renderscale:1.3.6"
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
-    shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
+    shadowBundle project(path: ':common', configuration: 'transformProductionForge')
 }
 
 processResources {
     inputs.property 'version', project.version
 
-    filesMatching('META-INF/neoforge.mods.toml') {
+    filesMatching('META-INF/mods.toml') {
         expand version: inputs.properties.version
     }
 }
