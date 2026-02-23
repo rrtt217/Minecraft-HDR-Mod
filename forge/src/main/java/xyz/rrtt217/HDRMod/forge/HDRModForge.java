@@ -1,8 +1,8 @@
 package xyz.rrtt217.HDRMod.forge;
 
-import net.neoforged.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod;
 
-import net.neoforged.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import xyz.rrtt217.HDRMod.HDRMod;
 
 @Mod(HDRMod.MOD_ID)

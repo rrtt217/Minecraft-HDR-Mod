@@ -13,6 +13,14 @@ allprojects {
     version = rootProject.mod_version
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'org.lwjgl' && details.requested.name.startsWith('lwjgl')) {
+            details.useVersion '3.3.1'
+        }
+    }
+}
+
 subprojects {
     apply plugin: 'dev.architectury.loom'
     apply plugin: 'architectury-plugin'

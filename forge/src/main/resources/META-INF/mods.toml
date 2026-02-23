@@ -15,30 +15,30 @@ Enable native HDR in Minecraft with Iris shaders.
 
 [[dependencies.hdr_mod]]
 modId = "forge"
-type = "required"
+mandatory = true
 versionRange = "[47,)"
 ordering = "BEFORE"
 side = "BOTH"
 
 [[dependencies.hdr_mod]]
 modId = "minecraft"
-type = "required"
-versionRange = "[1.20,1.20.1]"
-ordering = "BEFORE"
+mandatory = true
+versionRange = "[1.20.1,)"
+ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.hdr_mod]]
 modId = "cloth_config"
-type = "required"
+mandatory = true
 versionRange = "*"
-ordering = "BEFORE"
+ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.hdr_mod]]
 modId = "architectury"
-type = "required"
+mandatory = true
 versionRange = "*"
-ordering = "BEFORE"
+ordering = "AFTER"
 side = "BOTH"
 
 [mods."sodium:options"]

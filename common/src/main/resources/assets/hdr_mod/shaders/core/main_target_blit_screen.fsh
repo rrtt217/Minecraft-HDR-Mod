@@ -9,6 +9,7 @@ uniform int CurrentPrimaries;
 uniform int CurrentTransferFunction;
 
 in vec2 texCoord;
+in vec4 vertexColor;
 
 out vec4 fragColor;
 
@@ -70,7 +71,7 @@ vec3 EOTFEmulate(vec3 color, float threshold) {
 
 
 void main() {
-    vec4 color = texture(DiffuseSampler, texCoord);
+    vec4 color = texture(DiffuseSampler, texCoord) * vertexColor;
     //sRGB decode
     color.rgb = sRGB_DecodeSafe(color.rgb);
 

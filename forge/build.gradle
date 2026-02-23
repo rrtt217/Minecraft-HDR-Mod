@@ -42,6 +42,14 @@ repositories {
     }
 }
 
+configurations.all {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == 'org.lwjgl' && details.requested.name.startsWith('lwjgl')) {
+            details.useVersion '3.3.1'
+        }
+    }
+}
+
 dependencies {
     forge "net.minecraftforge:forge:$rootProject.forge_version"
 
@@ -49,13 +57,11 @@ dependencies {
     modImplementation "dev.architectury:architectury-forge:$rootProject.architectury_api_version"
 
     modImplementation "me.shedaniel.cloth:cloth-config-forge:${cloth_config_api_version}"
-    compileOnly "maven.modrinth:oculus:${minecraft_version}-${oculus_version}"
-    localRuntime "maven.modrinth:embeddium:${embeddium_version}+mc${minecraft_version}"
+    modCompileOnly "maven.modrinth:oculus:${minecraft_version}-${oculus_version}"
+    //modLocalRuntime "maven.modrinth:embeddium:${embeddium_version}+mc${minecraft_version}"
     localRuntime "maven.modrinth:oculus:${minecraft_version}-${oculus_version}"
 
-    implementation "org.anarres:jcpp:1.4.14"
-    implementation "org.antlr:antlr4-runtime:4.13.1"
-    implementation "io.github.douira:glsl-transformer:2.0.1"
+    //forgeRuntimeLibrary "org.anarres:jcpp:1.4.14"
 
     implementation 'ar.com.hjg:pngj:2.1.0'
     include 'ar.com.hjg:pngj:2.1.0'

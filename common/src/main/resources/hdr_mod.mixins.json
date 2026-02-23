@@ -4,13 +4,14 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
+    "MixinGameRenderer",
     "MixinMainTarget",
-    "MixinMinecraft",
     "MixinRenderSystem",
     "MixinRenderTarget",
     "MixinWindow"
   ],
   "mixins": [
+    "MixinGLFW",
     "MixinVanillaPackResources",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros"
