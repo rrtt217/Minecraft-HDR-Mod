@@ -9,9 +9,11 @@ A minecraft mod that enables native HDR on Windows/Linux with Iris shaders. Curr
 - Ingame HDR screenshot.
 ## For Users
 - See XgarhontX's temporary patches for HDR output and tonemapping on select shaderpacks with support for this mod: [Google Sheets](https://docs.google.com/spreadsheets/d/1WgOqKED2FxC11-2oyW4aBIyl8tAHo-8WJ7JPxhYAO2Q/edit?gid=0#gid=0)
+  - See some pics here: [Wiki](https://github.com/rrtt217/Minecraft-HDR-Mod/wiki#gallery)
 - Adjust HDR Brightness values (Paper White, UI, Peak) with config menu. (Default keybind: F9)
 - Take a HDR screenshot ingame. (Default keybind: F10)
 - *Troubleshooting*: ReShade is currently not compatible, failing to load and breaking sky.
+- *Troubleshooting*: Mods also messing with GLFW are probably incompatible. (e.g. [Ixeris](https://modrinth.com/mod/ixeris))
 - *Troubleshooting*: If your game is too bright/dark, try to adjust the custom brightness values yourself.
 - *Troubleshooting*: If you're on Windows, don't forget to install the latest [Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170).
 - *Troubleshooting*: If your game crashes on NeoForge, disable `earlyWindowControl` in `<game folder>/config/fml.toml`
