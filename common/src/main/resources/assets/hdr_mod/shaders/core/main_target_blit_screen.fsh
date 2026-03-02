@@ -97,9 +97,9 @@ void main() {
         // scRGB encode
         color.rgb *= UiBrightness / 80.0;
     }
-    else if(CurrentTransferFunction == 9)
+    else if(CurrentTransferFunction == 9 || CurrentTransferFunction == 10)
     {
-        // sRGB encode
+        // (EXT) sRGB encode
         color.rgb *= UiBrightness / 203.0;
         color.rgb = sRGB_EncodeSafe(color.rgb);
     }
