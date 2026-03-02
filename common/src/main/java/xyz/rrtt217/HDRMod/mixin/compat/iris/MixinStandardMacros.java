@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.irisshaders.iris.gl.shader.StandardMacros;
 import net.irisshaders.iris.helpers.StringPair;
+import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -11,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.Enums;
+import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
 
 import java.util.ArrayList;
 
@@ -25,8 +27,8 @@ public class MixinStandardMacros {
         defines.add(new StringPair("HDR_MOD_INSTALLED",""));
         if(enableHDR) {
             defines.add(new StringPair("HDR_ENABLED", ""));
-            defines.add(new StringPair("CURRENT_PRIMARIES", config.autoSetPrimaries ? HDRMod.WindowPrimaries.toString() : config.customPrimaries.toString()));
-            defines.add(new StringPair("CURRENT_TRANSFER_FUNCTION", config.autoSetTransferFunction ? HDRMod.WindowTransferFunction.toString() : config.customTransferFunction.toString() ));
+            defines.add(new StringPair("CURRENT_PRIMARIES", config.autoSetPrimaries ? Enums.Primaries.fromId(GLFWColorManagement.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle())).toString() : config.customPrimaries.toString()));
+            defines.add(new StringPair("CURRENT_TRANSFER_FUNCTION", config.autoSetTransferFunction ? Enums.TransferFunction.fromId(GLFWColorManagement.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle())).toString() : config.customTransferFunction.toString()));
         }
         else{
             // Always set SRGB on non-HDR.

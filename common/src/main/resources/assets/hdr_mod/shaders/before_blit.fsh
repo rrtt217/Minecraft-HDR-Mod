@@ -91,7 +91,7 @@ void main() {
     #elif CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_EXT_LINEAR
         // scRGB encode
         color.rgb *= uiBrightness / 80.0;
-    #elif CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_SRGB
+    #elif (CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_SRGB) || (CURRENT_TRANSFER_FUNCTION == TRANSFER_FUNCTION_EXT_SRGB)
         // sRGB encode
         color.rgb *= uiBrightness / 203.0;
         color.rgb = sRGB_EncodeSafe(color.rgb);

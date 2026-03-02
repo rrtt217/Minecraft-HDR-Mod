@@ -8,6 +8,7 @@ import com.mojang.blaze3d.platform.WindowEventHandler;
 import com.mojang.blaze3d.shaders.UniformType;
 import me.shedaniel.autoconfig.AutoConfig;
 import org.lwjgl.glfw.GLFW;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -30,6 +31,10 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
     public abstract class MixinWindow {
     @Shadow
     public abstract long handle();
+
+    @Shadow
+    @Final
+    private long handle;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwDefaultWindowHints()V", shift = At.Shift.AFTER))
         private void hdr_mod$16BitWindowHint(WindowEventHandler arg, ScreenManager arg2, DisplayData arg3, String string, String string2, CallbackInfo ci) {
@@ -71,15 +76,14 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
         @Inject(method = "<init>", at = @At("RETURN"))
         private void hdr_mod$setupWindowData(WindowEventHandler windowEventHandler, ScreenManager screenManager, DisplayData displayData, String string, String string2, CallbackInfo ci)
         {
-            HDRMod.WindowPrimaries = Enums.Primaries.fromId(GLFWColorManagement.glfwGetWindowPrimaries(this.handle()));
-            HDRMod.WindowTransferFunction = Enums.TransferFunction.fromId(GLFWColorManagement.glfwGetWindowTransfer(this.handle()));
+            HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
             HDRMod.LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ",
-                GLFW.glfwGetWindowAttrib(this.handle(),GLFW.GLFW_RED_BITS), GLFWColorManagement.glfwGetWindowSdrWhiteLevel(this.handle()), GLFWColorManagement.glfwGetWindowMaxLuminance(this.handle()) ,GLFWColorManagement.glfwGetWindowMinLuminance(this.handle()),HDRMod.WindowPrimaries,HDRMod.WindowTransferFunction
+                GLFW.glfwGetWindowAttrib(this.handle(),GLFW.GLFW_RED_BITS), GLFWColorManagement.glfwGetWindowSdrWhiteLevel(this.handle()), GLFWColorManagement.glfwGetWindowMaxLuminance(this.handle()) ,GLFWColorManagement.glfwGetWindowMinLuminance(this.handle()),GLFWColorManagement.glfwGetWindowPrimaries(this.handle),GLFWColorManagement.glfwGetWindowTransfer(this.handle())
             );
             HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
 
             // Update BeforeBlit. Also add UIBrightness UBO here.
-            RenderPipeline.Builder builder = BeforeBlitRenderer.renderPipelineBuilder.withShaderDefine("CURRENT_PRIMARIES",HDRMod.WindowPrimaries.getId()).withShaderDefine("CURRENT_TRANSFER_FUNCTION",HDRMod.WindowTransferFunction.getId());
+            RenderPipeline.Builder builder = BeforeBlitRenderer.renderPipelineBuilder.withShaderDefine("CURRENT_PRIMARIES", config.autoSetPrimaries ? GLFWColorManagement.glfwGetWindowPrimaries(this.handle()) : config.customPrimaries.getId()).withShaderDefine("CURRENT_TRANSFER_FUNCTION", config.autoSetTransferFunction ? GLFWColorManagement.glfwGetWindowTransfer(this.handle()) : config.customTransferFunction.getId());
             for(Enums.Primaries p : Enums.Primaries.values()) {
                 builder = builder.withShaderDefine("PRIMARIES_"+p.toString(), p.getId());
             }

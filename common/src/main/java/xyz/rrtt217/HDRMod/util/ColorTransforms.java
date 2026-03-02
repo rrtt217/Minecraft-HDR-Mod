@@ -7,7 +7,25 @@ public class ColorTransforms {
         {0.0163914393633604f, 0.08801330626010895f, 0.8955952525138855f}
     };
 
-    public static float[] scRGBtoPQ(float[] scRGB, float referenceWhiteNits) {
+    public static float[] sRGBDecodeSafe(float[] c) {
+        float[] result = new float[3];
+        for (int i = 0; i < 3; i++) {
+            float val = c[i];
+            float sign = (val > 0) ? 1.0f : (val < 0) ? -1.0f : 0.0f;
+            float absVal = Math.abs(val);
+
+            float decoded;
+            if (absVal < 0.04045f) {
+                decoded = absVal / 12.92f;
+            } else {
+                decoded = (float) Math.pow((absVal + 0.055f) / 1.055f, 2.4f);
+            }
+            result[i] = decoded * sign;
+        }
+        return result;
+    }
+
+    public static float[] PQEncode(float[] scRGB, float referenceWhiteNits) {
         // PQ constants (SMPTE ST 2084)
         final float m1 = 2610.0f / 16384.0f;
         final float m2 = 2523.0f / 4096.0f * 128.0f;

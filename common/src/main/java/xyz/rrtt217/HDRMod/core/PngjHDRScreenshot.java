@@ -87,8 +87,11 @@ public class PngjHDRScreenshot {
                 // Don't get upsided down lol
                 float[] datas = new float[4];
                 float[] rgb = new float[3];
-                boolean doPrimariesTransform = (HDRMod.WindowPrimaries == Enums.Primaries.SRGB);
-                boolean doTransferTransform = (HDRMod.WindowTransferFunction == Enums.TransferFunction.EXT_LINEAR);
+                Enums.Primaries WindowPrimaries = config.autoSetPrimaries ? Enums.Primaries.fromId(GLFWColorManagement.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle())) : config.customPrimaries;
+                Enums.TransferFunction WindowTransferFunction = config.autoSetTransferFunction ? Enums.TransferFunction.fromId(GLFWColorManagement.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle())) : config.customTransferFunction;
+                boolean doPrimariesTransformFromSRGBToBT2020 = (WindowPrimaries == Enums.Primaries.SRGB);
+                boolean doTransferTransformFromEXTLinearToPQ = (WindowTransferFunction == Enums.TransferFunction.EXT_LINEAR);
+                boolean doTransferTransformFromEXTSRGBToPQ = (WindowTransferFunction == Enums.TransferFunction.EXT_SRGB) || (WindowTransferFunction == Enums.TransferFunction.SRGB);
                 short bits;
                 for (int y = height - 1; y >= 0; y--) {
                     // Line by line.
@@ -111,13 +114,17 @@ public class PngjHDRScreenshot {
                                 datas[c] = Float.float16ToFloat(bits);
                             }
                             // Do transform.
-                            if (doPrimariesTransform) {
+                            if (doPrimariesTransformFromSRGBToBT2020) {
                                 System.arraycopy(datas, 0, rgb, 0, 3);
                                 System.arraycopy(ColorTransforms.linearColorspaceTransform(rgb, ColorTransforms.linear709to2020Matrix), 0, datas, 0, 3);
                             }
-                            if (doTransferTransform) {
+                            if (doTransferTransformFromEXTLinearToPQ) {
                                 System.arraycopy(datas, 0, rgb, 0, 3);
-                                System.arraycopy(ColorTransforms.scRGBtoPQ(rgb, 80.0f), 0, datas, 0, 3);
+                                System.arraycopy(ColorTransforms.PQEncode(rgb, 80.0f), 0, datas, 0, 3);
+                            }
+                            if (doTransferTransformFromEXTSRGBToPQ) {
+                                System.arraycopy(datas, 0, rgb, 0, 3);
+                                System.arraycopy(ColorTransforms.PQEncode(ColorTransforms.sRGBDecodeSafe(rgb), config.customGamePaperWhiteBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customGamePaperWhiteBrightness), 0, datas, 0, 3);
                             }
                             // Write to line.
                             for (int c = 0; c < png.imgInfo.channels; c++) {

@@ -25,10 +25,6 @@ public final class HDRMod {
     public static final String MOD_ID = "hdr_mod";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    // Default Internal values for HDR. We should register a hook to change them before shaderpack preload, and after window init.
-    public static Primaries WindowPrimaries = Primaries.SRGB;
-    public static TransferFunction WindowTransferFunction = TransferFunction.SRGB;
-
     // Whether we have the glfw lib for the platform.
     public static boolean hasglfwLib = false;
 
