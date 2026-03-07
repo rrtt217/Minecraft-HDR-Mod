@@ -12,20 +12,35 @@ A minecraft mod that enables native HDR on Windows/Linux with Iris shaders. Curr
   - See some pics here: [Wiki](https://github.com/rrtt217/Minecraft-HDR-Mod/wiki#gallery)
 - Adjust HDR Brightness values (Paper White, UI, Peak) with config menu. (Default keybind: F9)
 - Take a HDR screenshot ingame. (Default keybind: F10)
-- *Troubleshooting*: ReShade is currently not compatible, failing to load and breaking sky.
-- *Troubleshooting*: Mods also messing with GLFW are probably incompatible. (e.g. [Ixeris](https://modrinth.com/mod/ixeris))
-- *Troubleshooting*: If your game is too bright/dark, try to adjust the custom brightness values yourself.
-- *Troubleshooting*: If you're on Windows, don't forget to install the latest [Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170).
-- *Troubleshooting*: If your game crashes on NeoForge, disable `earlyWindowControl` in `<game folder>/config/fml.toml`
-- *Troubleshooting*: Clean temp file if your game doesn't start (path can be found in log, %TEMP%/glfw on Windows and /tmp/glfw on Linux).
+- Supported platforms:
+  - Windows: Nvidia/AMD GPU. **Intel GPU is not supported** and HDR is automatically turned off.
+  - Linux Wayland: AMD/Intel GPU generally run flawlessly. People using Nvidia GPU may encounter some problems/crashes, see the troubleshooting for a potential workaround.
+  - macOS: **Currently not supported**, but mac testers are welcome if you have enough time and energy.
+  - Android/iOS: **Not supported**. If Mobile launcher developers are interested in the project, my glfw fork can be a starting point for HDR support in the future.
+- **Troubleshooting**:
+    - ReShade is currently not compatible, failing to load and breaking sky.
+    - Mods also messing with GLFW may be incompatible. (e.g. [Ixeris](https://modrinth.com/mod/ixeris))
+    - If your game is too bright/dark, try to adjust the custom brightness values yourself.
+    - If you're on Windows, don't forget to install the latest [Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170).
+    - If your game crashes on NeoForge, disable `earlyWindowControl` in `<game folder>/config/fml.toml`
+    - Clean temp file if your game doesn't start or some features are broken (path can be found in log, %TEMP%/glfw on Windows and /tmp/glfw on Linux).
+    - For Linux Nvidia users, if your game can't start, or you feel too much banding ingame, here's a potential workaround (using Zink, so performance degradation is expected):
+      - Use these environment variables:
+        ```
+        export __GLX_VENDOR_LIBRARY_NAME=mesa
+        export __EGL_VENDOR_LIBRARY_FILENAMES=/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json
+        export MESA_LOADER_DRIVER_OVERRIDE=zink
+        export GALLIUM_DRIVER=zink
+        ```
+      - **ONLY WORKS ON Mesa >= 26.0.0**. Lower versions crash your game due to the lack of [This PR](https://gitlab.freedesktop.org/mesa/mesa/-/merge_requests/37693), So you should probably compile by yourself.
 ## For Shader Packs
 ### Wiki Tutorial
 - [For Shaderpack Devs](https://github.com/rrtt217/Minecraft-HDR-Mod/wiki/For-Shaderpack-Devs)
 ### Macros
 - `HDR_MOD_INSTALLED`
 - `HDR_ENABLED`
-- `CURRENT_PRIMARIES`: One of `PRIMARIES_SRGB`, `PRIMARIES_PAL_M`, `PRIMARIES_PAL`, `PRIMARIES_NTSC`, `PRIMARIES_GENERIC_FILM`, `PRIMARIES_BT2020`, `PRIMARIES_CIE1931_XYZ`, `PRIMARIES_DCI_P3`, `PRIMARIES_DISPLAY_P3`, `PRIMARIES_ADOBE_RGB`;
-- `CURRENT_TRANSFER_FUNCTION`: One of `TRANSFER_FUNCTION_BT1886`, `TRANSFER_FUNCTION_GAMMA22`, `TRANSFER_FUNCTION_GAMMA28`, `TRANSFER_FUNCTION_ST240`, `TRANSFER_FUNCTION_EXT_LINEAR`, `TRANSFER_FUNCTION_LOG_100`, `TRANSFER_FUNCTION_LOG_316`, `TRANSFER_FUNCTION_XVYCC`, `TRANSFER_FUNCTION_SRGB`, `TRANSFER_FUNCTION_EXT_SRGB`, `TRANSFER_FUNCTION_ST2084_PQ`, `TRANSFER_FUNCTION_ST428`, `TRANSFER_FUNCTION_HLG`.
+- **Deprecated**: `CURRENT_PRIMARIES`: One of `PRIMARIES_SRGB`, `PRIMARIES_PAL_M`, `PRIMARIES_PAL`, `PRIMARIES_NTSC`, `PRIMARIES_GENERIC_FILM`, `PRIMARIES_BT2020`, `PRIMARIES_CIE1931_XYZ`, `PRIMARIES_DCI_P3`, `PRIMARIES_DISPLAY_P3`, `PRIMARIES_ADOBE_RGB`;
+- **Deprecated**: `CURRENT_TRANSFER_FUNCTION`: One of `TRANSFER_FUNCTION_BT1886`, `TRANSFER_FUNCTION_GAMMA22`, `TRANSFER_FUNCTION_GAMMA28`, `TRANSFER_FUNCTION_ST240`, `TRANSFER_FUNCTION_EXT_LINEAR`, `TRANSFER_FUNCTION_LOG_100`, `TRANSFER_FUNCTION_LOG_316`, `TRANSFER_FUNCTION_XVYCC`, `TRANSFER_FUNCTION_SRGB`, `TRANSFER_FUNCTION_EXT_SRGB`, `TRANSFER_FUNCTION_ST2084_PQ`, `TRANSFER_FUNCTION_ST428`, `TRANSFER_FUNCTION_HLG`.
 ### Uniforms
 - `float HdrGameMinimumBrightness`;
 - `float HdrGamePeakBrightness`;
