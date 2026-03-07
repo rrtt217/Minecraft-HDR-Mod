@@ -55,7 +55,7 @@ import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
             }
         }
         boolean applyWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND) || (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32)) && !config.forceDisableGlfwWorkaround;
-        if(platform != GLFW.GLFW_PLATFORM_X11 && enableHDR && HDRMod.hasglfwLib) {
+        if(platform != GLFW.GLFW_PLATFORM_X11 && enableHDR && HDRModMixinPlugin.hasGlfwLib) {
             // For 16 bits per channal.
             GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 16);
             GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
