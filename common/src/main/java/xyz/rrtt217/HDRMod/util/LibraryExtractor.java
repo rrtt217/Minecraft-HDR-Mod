@@ -1,6 +1,7 @@
 package xyz.rrtt217.HDRMod.util;
 
-import xyz.rrtt217.HDRMod.HDRMod;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.nio.file.Path;
 import java.util.Map;
 
 public class LibraryExtractor {
+    public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_library_extractor");
     public static Path extractLibraries(Map<String, String> platformLibNameMap, String targetDir) throws IOException {
         Path tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         Path libExtractDir = tempDir.resolve(targetDir);
@@ -18,9 +20,9 @@ public class LibraryExtractor {
         String osName = System.getProperty("os.name").toLowerCase();
         String osArch = System.getProperty("os.arch").toLowerCase();
 
-        HDRMod.LOGGER.info("Extracting libraries...");
-        HDRMod.LOGGER.info("OS: {}", osName);
-        HDRMod.LOGGER.info("OS arch: {}", osArch);
+        LOGGER.info("Extracting libraries...");
+        LOGGER.info("OS: {}", osName);
+        LOGGER.info("OS arch: {}", osArch);
 
         String platformKey;
         String libExtension;
@@ -54,7 +56,7 @@ public class LibraryExtractor {
                     throw new FileNotFoundException("No library name mapping found for OS: " + osName +
                             " (key: " + platformKey + ") and no fallback 'linux' mapping.");
                 }
-                HDRMod.LOGGER.warn("No mapping for OS '{}', using fallback 'linux' mapping.", osName);
+                LOGGER.warn("No mapping for OS '{}', using fallback 'linux' mapping.", osName);
             } else {
                 throw new FileNotFoundException("Missing library name mapping for key: " + platformKey);
             }
@@ -64,19 +66,19 @@ public class LibraryExtractor {
         String archDir = mapArchitecture(osArch);
         String resourcePath = "libraries/" + subDirBase + "/" + archDir + "/" + fullLibName;
 
-        HDRMod.LOGGER.info("Looking for library in classpath: {}", resourcePath);
+        LOGGER.info("Looking for library in classpath: {}", resourcePath);
 
         Path outputLibPath = libExtractDir.resolve(fullLibName);
 
         if (Files.exists(outputLibPath)) {
-            HDRMod.LOGGER.info("Library already exists at {}, skipping extraction.", outputLibPath);
+            LOGGER.info("Library already exists at {}, skipping extraction.", outputLibPath);
         } else {
             try (InputStream is = LibraryExtractor.class.getClassLoader().getResourceAsStream(resourcePath)) {
                 if (is == null) {
                     throw new FileNotFoundException("Could not find library resource: " + resourcePath);
                 }
                 Files.copy(is, outputLibPath);
-                HDRMod.LOGGER.info("Extracted library to {}", outputLibPath);
+                LOGGER.info("Extracted library to {}", outputLibPath);
             }
         }
 

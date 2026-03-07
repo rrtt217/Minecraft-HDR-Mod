@@ -2,21 +2,15 @@ package xyz.rrtt217.HDRMod;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.system.Configuration;
 import org.slf4j.LoggerFactory;
 import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 import xyz.rrtt217.HDRMod.util.Enums.*;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.LibraryExtractor;
-
-import java.util.HashMap;
 
 public final class HDRMod {
     public static final String MOD_ID = "hdr_mod";
@@ -25,9 +19,6 @@ public final class HDRMod {
     // Default Internal values for HDR. We should register a hook to change them before shaderpack preload, and after window init.
     public static Primaries WindowPrimaries = Primaries.SRGB;
     public static TransferFunction WindowTransferFunction = TransferFunction.SRGB;
-
-    // Whether we have the glfw lib for the platform.
-    public static boolean hasglfwLib;
 
     // Key Mapping.;
     public static final KeyMapping CUSTOM_KEYMAPPING = new KeyMapping(
@@ -43,42 +34,10 @@ public final class HDRMod {
             "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
 
-    public static boolean enableHDR;
-
-    static {
-        // Register config.
-        AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-    }
-
     public HDRMod() {
     }
 
     public static void init() {
-        // The mod init method runs even after window init in 1.21.1 NeoForge, which shouldn't be the case. So for NeoForge we move the glfw replacement to MixinVanillaPackResources static code block.
-        if(Platform.isFabric())
-        {
-            // For Fabric, load natives here.
-            HashMap<String, String> glfwLibNames = new HashMap<>();
-            glfwLibNames.put("win", "glfw3");
-            glfwLibNames.put("mac", "LibGLFW");
-            glfwLibNames.put("linux", "libglfw");
-            String glfwLibPath = "";
-            boolean loaded = false;
-            try {
-                glfwLibPath = LibraryExtractor.extractLibraries(glfwLibNames,"glfw").toString();
-                loaded = true;
-            }
-            catch (Exception e) {
-                LOGGER.warn("Unable to load libraries from glfw:{}",e.getMessage());
-            }
-            if(loaded) {
-                Configuration.GLFW_LIBRARY_NAME.set(glfwLibPath);
-                hasglfwLib = true;
-            }
-            // Set enableHDR once and for all.
-            HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-            enableHDR = config.enableHDR;
-        }
         // Register Key Mapping.
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
@@ -95,6 +54,7 @@ public final class HDRMod {
                 }));
             }
         });
+
 
         LOGGER.debug("HDRMod Initialized!");
     }

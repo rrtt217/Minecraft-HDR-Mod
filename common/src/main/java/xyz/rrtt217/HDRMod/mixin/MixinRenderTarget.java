@@ -22,7 +22,7 @@ import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
 
 import java.nio.IntBuffer;
 
-import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
 
 @Mixin(RenderTarget.class)
 public class MixinRenderTarget {
