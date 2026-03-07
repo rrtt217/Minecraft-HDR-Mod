@@ -14,9 +14,6 @@ import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 import xyz.rrtt217.HDRMod.util.Enums.*;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.LibraryExtractor;
-
-import java.util.HashMap;
 
 public final class HDRMod {
     public static final String MOD_ID = "hdr_mod";
@@ -44,41 +41,16 @@ public final class HDRMod {
     );
 
     public static boolean enableHDR;
-
     static {
         // Register config.
         AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
     }
-
     public HDRMod() {
     }
 
     public static void init() {
-        // The mod init method runs even after window init in 1.21.1 NeoForge, which shouldn't be the case. So for NeoForge we move the glfw replacement to MixinVanillaPackResources static code block.
-        if(Platform.isFabric())
-        {
-            // For Fabric, load natives here.
-            HashMap<String, String> glfwLibNames = new HashMap<>();
-            glfwLibNames.put("win", "glfw3");
-            glfwLibNames.put("mac", "LibGLFW");
-            glfwLibNames.put("linux", "libglfw");
-            String glfwLibPath = "";
-            boolean loaded = false;
-            try {
-                glfwLibPath = LibraryExtractor.extractLibraries(glfwLibNames,"glfw").toString();
-                loaded = true;
-            }
-            catch (Exception e) {
-                LOGGER.warn("Unable to load libraries from glfw:{}",e.getMessage());
-            }
-            if(loaded) {
-                Configuration.GLFW_LIBRARY_NAME.set(glfwLibPath);
-                hasglfwLib = true;
-            }
-            // Set enableHDR once and for all.
-            HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-            enableHDR = config.enableHDR;
-        }
+        // Register config.
+
         // Register Key Mapping.
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
@@ -95,6 +67,10 @@ public final class HDRMod {
                 }));
             }
         });
+
+        // Set enableHDR once and for all.
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        enableHDR = config.enableHDR;
 
         LOGGER.debug("HDRMod Initialized!");
     }

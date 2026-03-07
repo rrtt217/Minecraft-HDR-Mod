@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import xyz.rrtt217.HDRMod.HDRMod;
 
 import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 
@@ -16,6 +15,6 @@ public class MixinRenderSystem {
     // Enables Wayland color management. No effect on non-wayland platform.
     @Inject(method = "initBackendSystem", at = @At("HEAD"))
     private static void hdr_mod$colorManagementHint(CallbackInfoReturnable<TimeSource.NanoTimeSource> cir) {
-        if(enableHDR && HDRMod.hasglfwLib) GLFW.glfwInitHint(0x00026002,GLFW.GLFW_TRUE);
+        if(enableHDR && HDRModMixinPlugin.hasGlfwLib) GLFW.glfwInitHint(0x00026002,GLFW.GLFW_TRUE);
     }
 }
