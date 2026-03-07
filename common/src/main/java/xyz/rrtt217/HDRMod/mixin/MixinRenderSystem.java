@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
 
 @Mixin(value = RenderSystem.class, priority = 1010)
 public class MixinRenderSystem {

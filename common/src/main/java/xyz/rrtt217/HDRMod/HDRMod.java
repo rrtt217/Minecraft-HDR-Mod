@@ -2,13 +2,10 @@ package xyz.rrtt217.HDRMod;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.system.Configuration;
 import org.slf4j.LoggerFactory;
 import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 import xyz.rrtt217.HDRMod.util.Enums.*;
@@ -22,9 +19,6 @@ public final class HDRMod {
     // Default Internal values for HDR. We should register a hook to change them before shaderpack preload, and after window init.
     public static Primaries WindowPrimaries = Primaries.SRGB;
     public static TransferFunction WindowTransferFunction = TransferFunction.SRGB;
-
-    // Whether we have the glfw lib for the platform.
-    public static boolean hasglfwLib;
 
     // Key Mapping.;
     public static final KeyMapping CUSTOM_KEYMAPPING = new KeyMapping(
@@ -40,17 +34,10 @@ public final class HDRMod {
             "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
 
-    public static boolean enableHDR;
-    static {
-        // Register config.
-        AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-    }
     public HDRMod() {
     }
 
     public static void init() {
-        // Register config.
-
         // Register Key Mapping.
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
@@ -68,9 +55,6 @@ public final class HDRMod {
             }
         });
 
-        // Set enableHDR once and for all.
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        enableHDR = config.enableHDR;
 
         LOGGER.debug("HDRMod Initialized!");
     }

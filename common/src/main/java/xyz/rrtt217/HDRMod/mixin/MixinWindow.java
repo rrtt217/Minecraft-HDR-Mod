@@ -21,7 +21,7 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
 import java.util.List;
 
-import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
 
 @Mixin(value = Window.class, priority = 1010)
     public abstract class MixinWindow {
@@ -51,8 +51,8 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
                 }
             }
             boolean applyWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND) || (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32)) && !config.forceDisableGlfwWorkaround;
-            if(platform != GLFW.GLFW_PLATFORM_X11 && enableHDR && HDRMod.hasglfwLib) {
-                // For 16 bits per channal.
+            if(platform != GLFW.GLFW_PLATFORM_X11 && enableHDR && HDRModMixinPlugin.hasGlfwLib) {
+                // For 16 bits per channel.
                 GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 16);
                 GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
                 GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);

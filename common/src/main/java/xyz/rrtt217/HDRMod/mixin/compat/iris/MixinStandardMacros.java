@@ -9,14 +9,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.Enums;
 import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
 
 import java.util.ArrayList;
 
-import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
 
 @Mixin(StandardMacros.class)
 public class MixinStandardMacros {
@@ -27,8 +26,8 @@ public class MixinStandardMacros {
         defines.add(new StringPair("HDR_MOD_INSTALLED",""));
         if(enableHDR) {
             defines.add(new StringPair("HDR_ENABLED", ""));
-            defines.add(new StringPair("CURRENT_PRIMARIES", config.autoSetPrimaries ? Enums.Primaries.fromId(GLFWColorManagement.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle())).toString() : config.customPrimaries.toString()));
-            defines.add(new StringPair("CURRENT_TRANSFER_FUNCTION", config.autoSetTransferFunction ? Enums.TransferFunction.fromId(GLFWColorManagement.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle())).toString() : config.customTransferFunction.toString()));
+            defines.add(new StringPair("CURRENT_PRIMARIES", config.autoSetPrimaries ? Enums.Primaries.fromId(GLFWColorManagement.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().getWindow())).toString() : config.customPrimaries.toString()));
+            defines.add(new StringPair("CURRENT_TRANSFER_FUNCTION", config.autoSetTransferFunction ? Enums.TransferFunction.fromId(GLFWColorManagement.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().getWindow())).toString() : config.customTransferFunction.toString()));
         }
         else{
             // Always set SRGB on non-HDR.

@@ -1,16 +1,13 @@
 package xyz.rrtt217.HDRMod.mixin;
 
 import com.mojang.blaze3d.pipeline.MainTarget;
-import me.shedaniel.autoconfig.AutoConfig;
 import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
-import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
-import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
-import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
 
 @Mixin(MainTarget.class)
 public class MixinMainTarget {

@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.function.Consumer;
 
-import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
 
 public class PngjHDRScreenshot {
     public static final String SCREENSHOT_DIR = "screenshots";

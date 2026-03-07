@@ -1,9 +1,12 @@
 package xyz.rrtt217.HDRMod.mixin;
 
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import org.lwjgl.system.Configuration;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
+import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.LibraryExtractor;
 
 import java.util.HashMap;
@@ -15,9 +18,17 @@ import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 public class HDRModMixinPlugin implements IMixinConfigPlugin {
     private final String MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.";
     public static boolean hasGlfwLib = false;
+    public static boolean enableHDR = true;
 
     @Override
     public void onLoad(String s) {
+        // Register config.
+        AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+
+        // Set enableHDR once and for all.
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        enableHDR = config.enableHDR;
+
         // Switch glfw lib on MixinPlugin Load.
         HashMap<String, String> glfwLibNames = new HashMap<>();
         glfwLibNames.put("win", "glfw3");
