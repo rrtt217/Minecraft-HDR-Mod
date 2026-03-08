@@ -12,7 +12,10 @@ import java.util.Map;
 
 public class LibraryExtractor {
     public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_library_extractor");
-    public static Path extractLibraries(Map<String, String> platformLibNameMap, String targetDir) throws IOException {
+    public static Path extractLibraries(Map<String, String> platformLibNameMap, String targetDir) throws IOException{
+        return extractLibraries(platformLibNameMap, targetDir, "");
+    }
+    public static Path extractLibraries(Map<String, String> platformLibNameMap, String targetDir, String version) throws IOException {
         Path tempDir = Path.of(System.getProperty("java.io.tmpdir"));
         Path libExtractDir = tempDir.resolve(targetDir);
         Files.createDirectories(libExtractDir);
@@ -68,7 +71,7 @@ public class LibraryExtractor {
 
         LOGGER.info("Looking for library in classpath: {}", resourcePath);
 
-        Path outputLibPath = libExtractDir.resolve(fullLibName);
+        Path outputLibPath = libExtractDir.resolve(libBaseName + "." + version + libExtension);
 
         if (Files.exists(outputLibPath)) {
             LOGGER.info("Library already exists at {}, skipping extraction.", outputLibPath);
