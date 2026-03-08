@@ -2,6 +2,8 @@ package xyz.rrtt217.HDRMod.mixin;
 
 import org.lwjgl.system.Configuration;
 import org.objectweb.asm.tree.ClassNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import xyz.rrtt217.HDRMod.util.LibraryExtractor;
@@ -10,10 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 
 public class HDRModMixinPlugin implements IMixinConfigPlugin {
     private final String MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.";
+    private final String LIBRARY_VERSION = "3.5.0";
+    public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_mixin_plugin");
     public static boolean hasGlfwLib = false;
 
     @Override
@@ -21,12 +24,12 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
         // Switch glfw lib on MixinPlugin Load.
         HashMap<String, String> glfwLibNames = new HashMap<>();
         glfwLibNames.put("win", "glfw3");
-        glfwLibNames.put("mac", "LibGLFW");
+        glfwLibNames.put("mac", "libglfw");
         glfwLibNames.put("linux", "libglfw");
         String glfwLibPath = "";
         boolean loaded = false;
         try {
-            glfwLibPath = LibraryExtractor.extractLibraries(glfwLibNames,"glfw").toString();
+            glfwLibPath = LibraryExtractor.extractLibraries(glfwLibNames,"glfw", LIBRARY_VERSION).toString();
             loaded = true;
         }
         catch (Exception e) {
