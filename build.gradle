@@ -148,7 +148,6 @@ subprojects {
 
     dependencies {
         minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
-        implementation 'javax.inject:javax.inject:1'
         mappings loom.officialMojangMappings()
     }
 
