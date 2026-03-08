@@ -128,7 +128,8 @@ public class PngjHDRScreenshot {
                             }
                             // Write to line.
                             for (int c = 0; c < png.imgInfo.channels; c++) {
-                                scanline[x * png.imgInfo.channels + c] = (int) (datas[c] * 65535);
+                                // Properly limited to [0,65535].
+                                scanline[x * png.imgInfo.channels + c] = Math.max(Math.min(Math.round(datas[c] * 65535), 65535), 0);
                             }
                         }
                     }
