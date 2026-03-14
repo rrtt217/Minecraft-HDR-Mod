@@ -23,7 +23,7 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
 import java.util.List;
 
-import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
+import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 
 @Mixin(value = Window.class, priority = 1010)
     public abstract class MixinWindow {

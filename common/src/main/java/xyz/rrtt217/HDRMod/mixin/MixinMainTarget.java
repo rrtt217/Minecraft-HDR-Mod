@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
+import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 
 import java.nio.IntBuffer;
 

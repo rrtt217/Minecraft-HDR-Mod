@@ -15,7 +15,7 @@ import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
 
 import java.util.ArrayList;
 
-import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
+import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 
 @Mixin(StandardMacros.class)
 public class MixinStandardMacros {
