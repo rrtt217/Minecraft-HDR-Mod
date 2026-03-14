@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.slf4j.LoggerFactory;
@@ -33,6 +34,7 @@ public final class HDRMod {
             InputConstants.KEY_F10, // The default keycode
             "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
+    public static boolean enableHDR = true;
 
     public HDRMod() {
     }
@@ -55,6 +57,10 @@ public final class HDRMod {
             }
         });
 
+        // Register config and set enableHDR once and for all.
+        AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        enableHDR = config.enableHDR;
 
         LOGGER.debug("HDRMod Initialized!");
     }

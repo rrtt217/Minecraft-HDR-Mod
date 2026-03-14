@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
+import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 
 @Mixin(MainTarget.class)
 public class MixinMainTarget {

@@ -3,7 +3,6 @@ package xyz.rrtt217.HDRMod.mixin.compat.iris;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.irisshaders.iris.gl.uniform.UniformHolder;
 import net.irisshaders.iris.gl.uniform.UniformUpdateFrequency;
-import net.irisshaders.iris.uniforms.FrameUpdateNotifier;
 import net.irisshaders.iris.uniforms.IrisExclusiveUniforms;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;

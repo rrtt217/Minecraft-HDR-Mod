@@ -15,7 +15,7 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.MainTargetBlitShader;
 import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
 
-import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
+import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 
 @Mixin(RenderTarget.class)
 public class MixinRenderTarget {
