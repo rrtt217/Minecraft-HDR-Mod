@@ -19,7 +19,7 @@ import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.enableHDR;
 
 @Mixin(StandardMacros.class)
 public class MixinStandardMacros {
-    @Inject(method = "createStandardEnvironmentDefines", at = @At("TAIL"), cancellable = true)
+    @Inject(method = "createStandardEnvironmentDefines", at = @At("TAIL"), cancellable = true, remap = false)
     private static void addHDRModDefines(CallbackInfoReturnable<ImmutableList<StringPair>> cir){
         var defines = new ArrayList<>(cir.getReturnValue());
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();

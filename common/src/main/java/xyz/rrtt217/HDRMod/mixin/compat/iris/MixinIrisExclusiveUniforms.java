@@ -3,7 +3,6 @@ package xyz.rrtt217.HDRMod.mixin.compat.iris;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.irisshaders.iris.gl.uniform.UniformHolder;
 import net.irisshaders.iris.gl.uniform.UniformUpdateFrequency;
-import net.irisshaders.iris.uniforms.FrameUpdateNotifier;
 import net.irisshaders.iris.uniforms.IrisExclusiveUniforms;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,7 +16,7 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
 @Mixin(IrisExclusiveUniforms.class)
 public class MixinIrisExclusiveUniforms {
-    @Inject(method = "addIrisExclusiveUniforms", at = @At("RETURN"))
+    @Inject(method = "addIrisExclusiveUniforms", at = @At("RETURN"), remap = false)
     private static void addHDRModExclusiveUniforms(UniformHolder uniforms, CallbackInfo ci) {
         var handle = Minecraft.getInstance().getWindow().getWindow();
         HDRMod.LOGGER.info("GLFW Reported Min: {}", GLFWColorManagement.glfwGetWindowMinLuminance(handle));

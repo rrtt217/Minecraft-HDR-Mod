@@ -13,6 +13,9 @@ Enable native HDR in Minecraft with Iris shaders.
 '''
 #logoFile = ""
 
+[[mods.mixin]]
+config = "hdr_mod.mixins.json"
+
 [[dependencies.hdr_mod]]
 modId = "forge"
 mandatory = true
