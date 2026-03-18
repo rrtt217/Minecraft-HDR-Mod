@@ -82,11 +82,11 @@ public class ColorTransformRenderer {
         this.resize();
         // The actual renderer.
         if (srcTarget.getColorTextureView() != null) {
-            try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Color Transform", srcTarget.getColorTextureView(), OptionalInt.empty())) {
+            try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Color Transform", this.dstTextureView, OptionalInt.empty())) {
                 renderPass.setPipeline(COLOR_TRANSFORM);
                 RenderSystem.bindDefaultUniforms(renderPass);
                 if (this.colorTransformUbo != null) renderPass.setUniform("ColorTransform", this.colorTransformBuffer);
-                renderPass.bindTexture("InSampler", this.dstTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
+                renderPass.bindTexture("InSampler", srcTarget.getColorTextureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
                 renderPass.draw(0, 3);
             }
         } else {
