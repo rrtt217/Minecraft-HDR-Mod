@@ -34,19 +34,15 @@ public class PngjHDRScreenshot {
     public static void grab(File baseDirectory, RenderTarget renderTarget, Consumer<Component> consumer) {
         grab(baseDirectory, null, renderTarget, consumer);
     }
-    public static void grab(File baseDirectory, GpuTexture gpuTexture, Consumer<Component> consumer) {
-        grab(baseDirectory, null, gpuTexture, consumer);
-    }
     public static void grab(File baseDirectory, @Nullable String string, RenderTarget renderTarget, Consumer<Component> consumer){
-        GpuTexture gpuTexture = renderTarget.getColorTexture();
+        GpuTexture gpuTexture;
+        // Get config.
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(renderTarget == Minecraft.getInstance().getMainRenderTarget() && !config.writeBeforeBlitToMainTarget) gpuTexture = BeforeBlitRenderer.beforeBlitTexture;
+        else gpuTexture = renderTarget.getColorTexture();
         if (gpuTexture == null) {
             throw new IllegalStateException("color texture is null");
         }
-        grab(baseDirectory, string, gpuTexture, consumer);
-    }
-    public static void grab(File baseDirectory, @Nullable String string, GpuTexture gpuTexture, Consumer<Component> consumer) {
-        // Mod config.
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(!enableHDR) return;
         // Width and height.
         int width = gpuTexture.getWidth(0);
@@ -148,6 +144,7 @@ public class PngjHDRScreenshot {
         HDRModInjectHooks.disableInject();
         Component component = Component.literal(screenshotFile.getName()).withStyle(ChatFormatting.UNDERLINE).withStyle((style) -> style.withClickEvent(new ClickEvent.OpenFile(screenshotFile.getAbsoluteFile())));
         consumer.accept(Component.translatable("screenshot.success", new Object[]{component}));
+
     }
     private static File getScreenshotFile(File baseDirectory) {
         if(!baseDirectory.exists()) {

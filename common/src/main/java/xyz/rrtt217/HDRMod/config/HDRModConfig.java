@@ -28,6 +28,14 @@ public class HDRModConfig implements ConfigData {
     public float customEotfEmulate = System.getProperty("os.name").startsWith("Windows") ? -1.0f : 0.0f;
 
     @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("mod_compat")
+    public BehaviorOnVanillaScreenshotCalled behaviorOnVanillaScreenshotCalled = BehaviorOnVanillaScreenshotCalled.NONE;
+
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("mod_compat")
+    public BehaviorOnVanillaScreenshotCalled behaviorOnVanillaF2 = BehaviorOnVanillaScreenshotCalled.NONE;
+
+    @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")
     public boolean onlyUpgradeNecessaryTexture = false;
     @ConfigEntry.Gui.Tooltip

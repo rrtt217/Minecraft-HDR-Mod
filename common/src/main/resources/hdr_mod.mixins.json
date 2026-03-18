@@ -5,14 +5,15 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
-    "MixinGlCommandEncoder",
     "MixinGameRenderer",
     "MixinGlCommandEncoder",
     "MixinGlDevice",
+    "MixinKeyboardHandler",
     "MixinMainTarget",
     "MixinMinecraft",
     "MixinRenderSystem",
     "MixinRenderTarget",
+    "MixinScreenshot",
     "MixinWindow"
   ],
   "mixins": [

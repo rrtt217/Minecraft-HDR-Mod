@@ -57,20 +57,10 @@ public final class HDRMod {
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING_2);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
             while (CUSTOM_KEYMAPPING_2.consumeClick()) {
-                HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-                if(config.writeBeforeBlitToMainTarget)
-                {
-                    PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
-                        minecraft.gui.getChat().addMessage(arg);
-                        minecraft.getNarrator().saySystemChatQueued(arg);
-                    }));
-                }
-                else {
-                    PngjHDRScreenshot.grab(minecraft.gameDirectory, BeforeBlitRenderer.beforeBlitTexture, (arg) -> minecraft.execute(() -> {
-                        minecraft.gui.getChat().addMessage(arg);
-                        minecraft.getNarrator().saySystemChatQueued(arg);
-                    }));
-                }
+                PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
+                    minecraft.gui.getChat().addMessage(arg);
+                    minecraft.getNarrator().saySystemChatQueued(arg);
+                }));
             }
         });
 

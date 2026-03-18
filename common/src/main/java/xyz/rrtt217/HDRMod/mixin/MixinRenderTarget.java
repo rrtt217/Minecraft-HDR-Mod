@@ -48,8 +48,6 @@ public class MixinRenderTarget {
     @Inject(method = "blitToScreen", at = @At("HEAD"))
     private void hdr_mod$beforeBlitRenderer(CallbackInfo ci) {
         RenderSystem.assertOnRenderThread();
-
-
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if (!BeforeBlitRenderer.isBeforeBlitReady || config.forceDisableBeforeBlitPipeline) return;
         if (BeforeBlitRenderer.isGameRenderingCanceled){
