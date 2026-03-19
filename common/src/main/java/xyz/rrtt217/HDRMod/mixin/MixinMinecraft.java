@@ -62,6 +62,6 @@ public class MixinMinecraft {
                 return null;
             }
         };
-        gpuDevice.precompilePipeline(ColorTransformRenderer.COLOR_TRANSFORM, shaderSource);
+        gpuDevice.precompilePipeline(ColorTransformRenderer.COLOR_TRANSFORM, biFunction);
     }
 }

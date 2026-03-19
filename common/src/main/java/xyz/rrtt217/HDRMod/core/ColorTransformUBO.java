@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 
 public class ColorTransformUBO implements AutoCloseable {
     private final GpuBuffer buffer;
-    private final long memSize = new Std140SizeCalculator().putFloat().putFloat().putInt().putInt().get();
+    private final int memSize = new Std140SizeCalculator().putFloat().putFloat().putInt().putInt().get();
     public float lastUIBrightness = -1.0f;
     public float lastEotfEmulate =  -1.0f;
     public int lastPrimaries = -1;

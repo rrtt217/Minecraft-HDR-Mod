@@ -48,10 +48,10 @@ dependencies {
     modImplementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
     modImplementation "maven.modrinth:advancement-screenshot:1.21.11-5.2-fabric+forge+neo"
     modImplementation "maven.modrinth:collective:1.21.11-8.13-fabric+forge+neo"
-    modImplementation "maven.modrinth:replaymod:1.21.11-2.6.25"
+    modImplementation "maven.modrinth:replaymod:1.21.10-2.6.25"
     // Axiom refuse to start with modImplementation. Just use modCompileOnly, download one from modrinth and put it in run/mods.
-    modCompileOnly "maven.modrinth:axiom:uoTNUpOT"
-    modCompileOnly "maven.modrinth:flashback:DDcDAzpe"
+    modCompileOnly "maven.modrinth:axiom:ev1J5Igy"
+    modCompileOnly "maven.modrinth:flashback:QpNVXwcn"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"
