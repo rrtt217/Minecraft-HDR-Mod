@@ -8,16 +8,15 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
+import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
 @Mixin(GlCommandEncoder.class)
 public class MixinGlCommandEncoder {
     @ModifyArg(method = "copyTextureToBuffer(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/buffers/GpuBuffer;ILjava/lang/Runnable;IIIII)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlStateManager;_readPixels(IIIIIIJ)V"), index = 5)
     private int modifyReadPixelFormat(int i){
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(HDRModInjectHooks.isInjectEnabled()){
-            if(config.useRGBA16UNORM) return GL30.GL_UNSIGNED_SHORT;
-            return GL30.GL_HALF_FLOAT;
-        }
-        return i;
+        if(TextureUpgradeUtils.getTargetReadPixelFormat() < 0) return i;
+        int format = TextureUpgradeUtils.getTargetReadPixelFormat();
+        TextureUpgradeUtils.resetTargetReadPixelFormat();
+        return format;
     }
 }

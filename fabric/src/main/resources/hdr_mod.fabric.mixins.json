@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "xyz.rrtt217.HDRMod.fabric.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+  ],
+  "mixins": [
+    "compat.axiom.MixinCustomImGuiImplGl3",
+    "compat.flashback.MixinCustomImGuiImplGl3",
+    "compat.replaymod.MixinOpenGlFrameCapturer",
+    "compat.replaymod.MixinPboOpenGlFrameCapturer",
+    "compat.replaymod.MixinRenderSettingsEncodingPreset"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

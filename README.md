@@ -15,7 +15,7 @@ A minecraft mod that enables native HDR on Windows/Linux with Iris shaders. Curr
 - Supported platforms:
   - Windows: Nvidia/AMD GPU. **Intel GPU is not supported** and HDR is automatically turned off.
   - Linux Wayland: AMD/Intel GPU generally run flawlessly. People using Nvidia GPU may encounter some problems/crashes, see the troubleshooting for a potential workaround.
-  - macOS: **Currently not supported**, but mac testers are welcome if you have enough time and energy.
+  - macOS: Supported but need more testing, bugs are expected. Also, shaderpack support on macOS is limited.
   - Android/iOS: **Not supported**. If Mobile launcher developers are interested in the project, my glfw fork can be a starting point for HDR support in the future.
 - **Troubleshooting**:
     - ReShade is currently not compatible, failing to load and breaking sky.

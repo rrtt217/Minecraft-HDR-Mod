@@ -46,10 +46,18 @@ dependencies {
     modImplementation "maven.modrinth:modmenu:${mod_menu_version}"
     modImplementation "maven.modrinth:iris:${iris_version}+${minecraft_version}-fabric"
     modImplementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
+    modImplementation "maven.modrinth:advancement-screenshot:1.21.11-5.2-fabric+forge+neo"
+    modImplementation "maven.modrinth:collective:1.21.11-8.13-fabric+forge+neo"
+    modImplementation "maven.modrinth:replaymod:1.21.11-2.6.25"
+    // Axiom refuse to start with modImplementation. Just use modCompileOnly, download one from modrinth and put it in run/mods.
+    modCompileOnly "maven.modrinth:axiom:uoTNUpOT"
+    modCompileOnly "maven.modrinth:flashback:DDcDAzpe"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"
     implementation "io.github.douira:glsl-transformer:3.0.0-pre3"
+    implementation "com.moulberry:mixinconstraints:1.0.8"
+    modImplementation "com.moulberry:lattice:1.3.1"
 
     implementation 'ar.com.hjg:pngj:2.1.0'
     include 'ar.com.hjg:pngj:2.1.0'

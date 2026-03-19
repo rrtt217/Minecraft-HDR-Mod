@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import xyz.rrtt217.HDRMod.core.BeforeBlitRenderer;
+import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.util.LibraryExtractor;
 
 import java.io.IOException;
@@ -48,9 +48,9 @@ public class MixinMinecraft {
                 return IOUtils.toString(reader);
             } catch (IOException iOException) {
                 // small hack
-                if(identifier.equals(ResourceLocation.fromNamespaceAndPath("hdr_mod","before_blit"))) {
+                if(identifier.equals(ResourceLocation.fromNamespaceAndPath("hdr_mod","color_transform"))) {
                     ClassLoader loader = LibraryExtractor.class.getClassLoader();
-                    try(InputStream is = loader.getResourceAsStream("assets/hdr_mod/shaders/before_blit.fsh")){
+                    try(InputStream is = loader.getResourceAsStream("assets/hdr_mod/shaders/color_transform.fsh")){
                         if (is != null) {
                             return new String(IOUtils.toByteArray(is), StandardCharsets.UTF_8);
                         }
@@ -62,7 +62,6 @@ public class MixinMinecraft {
                 return null;
             }
         };
-        gpuDevice.precompilePipeline(BeforeBlitRenderer.BEFORE_BLIT, biFunction);
-        BeforeBlitRenderer.isBeforeBlitReady = true;
+        gpuDevice.precompilePipeline(ColorTransformRenderer.COLOR_TRANSFORM, shaderSource);
     }
 }

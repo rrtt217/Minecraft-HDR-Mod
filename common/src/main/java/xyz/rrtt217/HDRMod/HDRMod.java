@@ -9,9 +9,8 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.LoggerFactory;
-import xyz.rrtt217.HDRMod.core.BeforeBlitRenderer;
+import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
-import xyz.rrtt217.HDRMod.core.FloatNumberUBO;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
@@ -19,8 +18,10 @@ public final class HDRMod {
     public static final String MOD_ID = "hdr_mod";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    // Global UI brightness UBO.
-    public static FloatNumberUBO UiBrightnessUBO;
+    // Global Renderers.
+    public static ColorTransformRenderer PresentationColorTransformRenderer;
+    public static ColorTransformRenderer ScreenshotColorTransformRenderer;
+    public static ColorTransformRenderer ReplayColorTransformRenderer;
 
     // Key Mapping.
     public static final KeyMapping.Category HDRModCategory = KeyMapping.Category.register(ResourceLocation.fromNamespaceAndPath("hdr_mod","main"));
@@ -39,6 +40,8 @@ public final class HDRMod {
 
     public static boolean enableHDR;
 
+    public static boolean isReplayRendering = false;
+
     public HDRMod() {
     }
 
@@ -56,20 +59,10 @@ public final class HDRMod {
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING_2);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
             while (CUSTOM_KEYMAPPING_2.consumeClick()) {
-                HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-                if(config.writeBeforeBlitToMainTarget)
-                {
-                    PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
-                        minecraft.gui.getChat().addMessage(arg);
-                        minecraft.getNarrator().saySystemChatQueued(arg);
-                    }));
-                }
-                else {
-                    PngjHDRScreenshot.grab(minecraft.gameDirectory, BeforeBlitRenderer.beforeBlitTexture, (arg) -> minecraft.execute(() -> {
-                        minecraft.gui.getChat().addMessage(arg);
-                        minecraft.getNarrator().saySystemChatQueued(arg);
-                    }));
-                }
+                PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
+                    minecraft.gui.getChat().addMessage(arg);
+                    minecraft.getNarrator().saySystemChatQueued(arg);
+                }));
             }
         });
 
