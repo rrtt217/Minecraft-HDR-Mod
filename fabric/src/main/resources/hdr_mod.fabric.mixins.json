@@ -6,6 +6,7 @@
   "client": [
   ],
   "mixins": [
+    "compat.axiom.MixinCustomImGuiImplGl3",
     "compat.flashback.MixinCustomImGuiImplGl3"
   ],
   "injectors": {
