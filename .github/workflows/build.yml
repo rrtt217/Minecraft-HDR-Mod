@@ -52,7 +52,7 @@ jobs:
 
       # Compile natives
       - name: Compile native library
-        run: ./gradlew compileNative
+        run: ./gradlew native:compile
         shell: bash
 
       # Upload natives

@@ -1,0 +1,129 @@
+plugins{
+    id 'java'
+}
+
+import org.gradle.process.ExecOperations
+import javax.inject.Inject
+
+abstract class CompileNativeTask extends DefaultTask {
+    @Inject //@javax.inject.Inject
+    abstract ExecOperations getExecOperations()
+
+    private static String getNormalizedArch(){
+        def arch = System.getProperty("os.arch").toLowerCase()
+        switch (arch) {
+            case ~/amd64|x86_64/:
+                return "x64"
+            case ~/aarch64|arm64/:
+                return "arm64"
+            case ~/x86|i[3-6]86/:
+                return "x86"
+            default:
+                return arch
+        }
+    }
+
+    @TaskAction
+    void compile() {
+        def os = org.gradle.internal.os.OperatingSystem.current()
+        def normalizedArch = getNormalizedArch()
+        def nativesDir = project.file("../common/src/main/resources/libraries")
+        def sourceDir = project.file("glfw")
+
+        if (os.isLinux()) {
+            execOperations.exec {
+                environment 'CFLAGS', '-Werror'
+                commandLine 'cmake', '-B', "$sourceDir/build-wayland-x11-shared",
+                        '-S', sourceDir,
+                        '-DGLFW_BUILD_WAYLAND=ON',
+                        '-DGLFW_BUILD_X11=ON',
+                        '-DBUILD_SHARED_LIBS=ON',
+                        '-DGLFW_BUILD_EXAMPLES=OFF',
+                        '-DGLFW_BUILD_TESTS=OFF',
+                        '-DGLFW_BUILD_DOCS=OFF'
+            }
+            execOperations.exec {
+                commandLine 'cmake', '--build', "$sourceDir/build-wayland-x11-shared", '--parallel', '--config', 'Release'
+            }
+            project.delete '$nativesDir/linux/'
+            project.copy {
+                from("$sourceDir/build-wayland-x11-shared/src")
+                include("libglfw.so")
+                into("$nativesDir/linux/$normalizedArch")
+            }
+        } else if (os.isMacOsX()) {
+            execOperations.exec {
+                environment 'CFLAGS', '-Werror'
+                environment 'MACOSX_DEPLOYMENT_TARGET', '10.11'
+                environment 'CMAKE_OSX_ARCHITECTURES', 'x86_64;arm64'
+                commandLine 'cmake', '-B', "$sourceDir/build-cocoa-shared",
+                        '-S', sourceDir,
+                        '-DBUILD_SHARED_LIBS=ON',
+                        '-DGLFW_BUILD_EXAMPLES=OFF',
+                        '-DGLFW_BUILD_TESTS=OFF',
+                        '-DGLFW_BUILD_DOCS=OFF'
+            }
+            execOperations.exec {
+                commandLine 'cmake', '--build', "$sourceDir/build-cocoa-shared", '--parallel', '--config', 'Release'
+            }
+            project.delete '$nativesDir/mac/'
+            project.copy {
+                from("$sourceDir/build-cocoa-shared/src")
+                include("libglfw.dylib")
+                into("$nativesDir/mac/x64")
+            }
+            project.copy {
+                from("$sourceDir/build-cocoa-shared/src")
+                include("libglfw.dylib")
+                into("$nativesDir/mac/arm64")
+            }
+        } else if (os.isWindows()) {
+            // x64
+            execOperations.exec {
+                environment 'CFLAGS', '/WX'
+                commandLine 'cmake', '-B', "$sourceDir/build-win32-shared-x64",
+                        '-S', sourceDir,
+            //          '-G', 'Visual Studio 17 2022',
+                        '-A', 'x64',
+                        '-DBUILD_SHARED_LIBS=ON',
+                        '-DGLFW_BUILD_EXAMPLES=OFF',
+                        '-DGLFW_BUILD_TESTS=OFF',
+                        '-DGLFW_BUILD_DOCS=OFF'
+            }
+            execOperations.exec {
+                commandLine 'cmake', '--build', "$sourceDir/build-win32-shared-x64", '--parallel', '--config', 'Release'
+            }
+            project.delete '$nativesDir/windows/'
+            project.copy {
+                from("$sourceDir/build-win32-shared-x64/src/Release")
+                include("glfw3.dll")
+                into("$nativesDir/windows/x64")
+            }
+
+            // x86
+            execOperations.exec {
+                environment 'CFLAGS', '/WX'
+                commandLine 'cmake', '-B', "$sourceDir/build-win32-shared-x86",
+                        '-S', sourceDir,
+            //          '-G', 'Visual Studio 17 2022',
+                        '-A', 'Win32',
+                        '-DBUILD_SHARED_LIBS=ON',
+                        '-DGLFW_BUILD_EXAMPLES=OFF',
+                        '-DGLFW_BUILD_TESTS=OFF',
+                        '-DGLFW_BUILD_DOCS=OFF'
+            }
+            execOperations.exec {
+                commandLine 'cmake', '--build', "$sourceDir/build-win32-shared-x86", '--parallel'
+            }
+            project.copy {
+                from("$sourceDir/build-win32-shared-x86/src/Release")
+                include("glfw3.dll")
+                into("$nativesDir/windows/x86")
+            }
+        } else {
+            throw new GradleException("Unsupported operating system: ${os.name}")
+        }
+    }
+}
+
+tasks.register('compile', CompileNativeTask)

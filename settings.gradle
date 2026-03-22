@@ -16,6 +16,9 @@ pluginManagement {
 
 rootProject.name = 'hdr_mod'
 
-include 'common'
-include 'fabric'
-include 'neoforge'
+def tasks = gradle.startParameter.taskNames
+if (tasks.any { it.contains('native') }) {
+    include 'native'
+} else {
+    include 'common', 'fabric', 'neoforge'
+}
