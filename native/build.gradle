@@ -113,7 +113,7 @@ abstract class CompileNativeTask extends DefaultTask {
                         '-DGLFW_BUILD_DOCS=OFF'
             }
             execOperations.exec {
-                commandLine 'cmake', '--build', "$sourceDir/build-win32-shared-x86", '--parallel'
+                commandLine 'cmake', '--build', "$sourceDir/build-win32-shared-x86", '--parallel', '--config', 'Release'
             }
             project.copy {
                 from("$sourceDir/build-win32-shared-x86/src/Release")
