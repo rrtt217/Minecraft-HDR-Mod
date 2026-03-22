@@ -56,7 +56,10 @@ abstract class CompileNativeTask extends DefaultTask {
                         '-S', sourceDir,
                         '-DGLFW_BUILD_WAYLAND=ON',
                         '-DGLFW_BUILD_X11=ON',
-                        '-DBUILD_SHARED_LIBS=ON'
+                        '-DBUILD_SHARED_LIBS=ON',
+                        '-DGLFW_BUILD_EXAMPLES=OFF',
+                        '-DGLFW_BUILD_TESTS=OFF',
+                        '-DGLFW_BUILD_DOCS=OFF'
             }
             execOperations.exec {
                 commandLine 'cmake', '--build', "$sourceDir/build-wayland-x11-shared", '--parallel'
@@ -73,7 +76,10 @@ abstract class CompileNativeTask extends DefaultTask {
                 environment 'CMAKE_OSX_ARCHITECTURES', 'x86_64;arm64'
                 commandLine 'cmake', '-B', "$sourceDir/build-cocoa-shared",
                         '-S', sourceDir,
-                        '-DBUILD_SHARED_LIBS=ON'
+                        '-DBUILD_SHARED_LIBS=ON',
+                        '-DGLFW_BUILD_EXAMPLES=OFF',
+                        '-DGLFW_BUILD_TESTS=OFF',
+                        '-DGLFW_BUILD_DOCS=OFF'
             }
             execOperations.exec {
                 commandLine 'cmake', '--build', "$sourceDir/build-cocoa-shared", '--parallel'
@@ -96,13 +102,16 @@ abstract class CompileNativeTask extends DefaultTask {
                         '-S', sourceDir,
                         '-G', 'Visual Studio 17 2022',
                         '-A', 'x64',
-                        '-DBUILD_SHARED_LIBS=ON'
+                        '-DBUILD_SHARED_LIBS=ON',
+                        '-DGLFW_BUILD_EXAMPLES=OFF',
+                        '-DGLFW_BUILD_TESTS=OFF',
+                        '-DGLFW_BUILD_DOCS=OFF'
             }
             execOperations.exec {
-                commandLine 'cmake', '--build', "$sourceDir/build-win32-shared-x64", '--parallel'
+                commandLine 'cmake', '--build', "$sourceDir/build-win32-shared-x64", '--parallel', '--config', 'Release'
             }
             project.copy {
-                from("$sourceDir/build-win32-shared-x64/Release")
+                from("$sourceDir/build-win32-shared-x64/src/Release")
                 include("glfw3.dll")
                 into("$nativesDir/windows/x64")
             }
@@ -117,10 +126,10 @@ abstract class CompileNativeTask extends DefaultTask {
                         '-DBUILD_SHARED_LIBS=ON'
             }
             execOperations.exec {
-                commandLine 'cmake', '--build', "$sourceDir/build-win32-shared-x86", '--parallel'
+                commandLine 'cmake', '--build', "$sourceDir/build-win32-shared-x86", '--parallel', '--config', 'Release'
             }
             project.copy {
-                from("$sourceDir/build-win32-shared-x86/Release")
+                from("$sourceDir/build-win32-shared-x86/src/Release")
                 include("glfw3.dll")
                 into("$nativesDir/windows/x86")
             }
