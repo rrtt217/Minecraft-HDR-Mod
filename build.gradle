@@ -94,7 +94,7 @@ abstract class CompileNativeTask extends DefaultTask {
                 commandLine 'cmake', '--build', "$sourceDir/build-win32-shared-x64", '--parallel'
             }
             project.copy {
-                from("$sourceDir/build-win32-shared-x64/Release")
+                from("$sourceDir/build-win32-shared-x64/src/Release")
                 include("glfw3.dll")
                 into("$nativesDir/windows/x64")
             }
@@ -112,7 +112,7 @@ abstract class CompileNativeTask extends DefaultTask {
                 commandLine 'cmake', '--build', "$sourceDir/build-win32-shared-x86", '--parallel'
             }
             project.copy {
-                from("$sourceDir/build-win32-shared-x86/Release")
+                from("$sourceDir/build-win32-shared-x86/src/Release")
                 include("glfw3.dll")
                 into("$nativesDir/windows/x86")
             }
