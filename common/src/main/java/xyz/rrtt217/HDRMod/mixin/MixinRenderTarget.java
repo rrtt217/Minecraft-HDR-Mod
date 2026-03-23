@@ -1,14 +1,9 @@
 package xyz.rrtt217.HDRMod.mixin;
 
-import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import com.mojang.blaze3d.textures.TextureFormat;
-import dev.architectury.platform.Platform;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
@@ -41,7 +36,7 @@ public class MixinRenderTarget {
 
         if(HDRMod.PresentationColorTransformRenderer == null)
             HDRMod.PresentationColorTransformRenderer = new ColorTransformRenderer((RenderTarget) (Object) this, "Presentation");
-        HDRMod.PresentationColorTransformRenderer.updateColorTransformUBO(
+        HDRMod.PresentationColorTransformRenderer.updateColorTransformUniforms(
                 config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
                 config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate,
                 config.autoSetPrimaries ? GLFWColorManagement.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle()) : config.customPrimaries.getId(),

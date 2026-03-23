@@ -39,7 +39,7 @@ public class MixinOpenGlFrameCapturer {
             if(ReplayColorTransformRenderer == null){
                 ReplayColorTransformRenderer = new ColorTransformRenderer(Minecraft.getInstance().getMainRenderTarget(), "Replay");
             }
-            ReplayColorTransformRenderer.updateColorTransformUBO(
+            ReplayColorTransformRenderer.updateColorTransformUniforms(
                 config.replayUIBrightness,
                 0,
                 Enums.Primaries.BT2020,

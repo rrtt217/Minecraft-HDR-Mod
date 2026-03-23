@@ -47,7 +47,7 @@ public class PngjHDRScreenshot {
             if(ScreenshotColorTransformRenderer.getSrcTarget() != renderTarget){
                 ScreenshotColorTransformRenderer.setSrcTarget(renderTarget);
             }
-            ScreenshotColorTransformRenderer.updateColorTransformUBO(
+            ScreenshotColorTransformRenderer.updateColorTransformUniforms(
                     config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
                     config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate,
                     Enums.Primaries.BT2020.getId(),

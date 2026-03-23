@@ -42,7 +42,7 @@ public class ColorTransformRenderer implements AutoCloseable {
         this.srcTarget = srcTarget;
         this.colorTransformUbo = new ColorTransformUBO(string);
         // Set a group of default UBO values. You may call updateColorTransformUBO manually to update later.
-        updateColorTransformUBO(203.0F, 0.0F, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
+        updateColorTransformUniforms(203.0F, 0.0F, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
         TextureUpgradeUtils.setTargetTextureFormat(GL30.GL_RGBA16F);
         TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_HALF_FLOAT);
         this.dstReadPixelFormat = GL30.GL_HALF_FLOAT;
@@ -50,10 +50,10 @@ public class ColorTransformRenderer implements AutoCloseable {
         this.dstTexture = RenderSystem.getDevice().createTexture(()->"Color Transform Destination Texture",15, TextureFormat.RGBA8, srcTarget.width, srcTarget.height, 1, 1);
         this.dstTextureView = RenderSystem.getDevice().createTextureView(this.dstTexture);
     }
-    public void updateColorTransformUBO(float UIBrightness, float EotfEmulate, Enums.Primaries Primaries, Enums.TransferFunction TransferFunction){
-        updateColorTransformUBO(UIBrightness, EotfEmulate, Primaries.getId(), TransferFunction.getId());
+    public void updateColorTransformUniforms(float UIBrightness, float EotfEmulate, Enums.Primaries Primaries, Enums.TransferFunction TransferFunction){
+        updateColorTransformUniforms(UIBrightness, EotfEmulate, Primaries.getId(), TransferFunction.getId());
     }
-    public void updateColorTransformUBO(float UIBrightness, float EotfEmulate, int Primaries, int TransferFunction) {
+    public void updateColorTransformUniforms(float UIBrightness, float EotfEmulate, int Primaries, int TransferFunction) {
         if(this.colorTransformUbo == null) {
             throw new IllegalStateException("Cannot update color transform UBO when UBO is null");
         }
