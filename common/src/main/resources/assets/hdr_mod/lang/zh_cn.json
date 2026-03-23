@@ -12,23 +12,39 @@
   "text.autoconfig.hdr_mod.option.customGamePeakBrightness.@Tooltip": "以尼特为单位，设置显示器可输出的最大亮度。(Linux) 设置为负数以使用显示器报告的值。",
   "text.autoconfig.hdr_mod.option.customEotfEmulate.@Tooltip": "校正提升的黑色区域以匹配 SDR。如果操作系统或显示器尚未执行此操作，请使用此项。设置为负数以使用显示器报告的 SDR 参考白亮度。",
 
-  "text.autoconfig.hdr_mod.option.UseUNORMBufferOnLinux": "为屏幕缓冲区使用归一化定点格式",
-  "text.autoconfig.hdr_mod.option.UseUNORMBufferOnLinux.@Tooltip": "提高使用BT.2100 PQ转换函数时的精度，但会完全破坏scRGB。 如果不确定，请保持默认值。",
+  "text.autoconfig.hdr_mod.option.behaviorOnVanillaScreenshotCalled": "模组调用原版截图时的行为",
+  "text.autoconfig.hdr_mod.option.behaviorOnVanillaScreenshotCalled.@Tooltip": "ONLY_VANILLA 表示只进行原版截图,\nBOTH 表示同时进行原版和HDR截图, \nONLY_HDR 表示只进行HDR截图。",
+  "text.autoconfig.hdr_mod.option.behaviorOnVanillaF2": "原版F2截图行为",
+  "text.autoconfig.hdr_mod.option.behaviorOnVanillaF2.@Tooltip": "ONLY_VANILLA 表示只进行原版截图,\nBOTH 表示同时进行原版和HDR截图, \nONLY_HDR 表示只进行HDR截图。",
+
+  "text.autoconfig.hdr_mod.option.enableReplayHDRVideoExport": "启用Replay Mod HDR 视频导出",
+  "text.autoconfig.hdr_mod.option.replayRecommendedCommandline": "Replay Mod HDR 视频导出推荐命令行",
+  "text.autoconfig.hdr_mod.option.replayRecommendedCommandline.@Tooltip": "更改这里的命令行没有任何实际作用，这个配置项只是方便用户进行复制而已。",
+  "text.autoconfig.hdr_mod.option.replayUIBrightness": "Replay Mod 渲染时的游戏界面亮度",
+  "text.autoconfig.hdr_mod.option.replayGamePaperWhiteBrightness": "Replay Mod 渲染时的游戏参考白亮度",
+  "text.autoconfig.hdr_mod.option.replayGameMinimumBrightness": "Replay Mod 渲染时的游戏最小亮度",
+  "text.autoconfig.hdr_mod.option.replayGamePeakBrightness": "Replay Mod 渲染时的游戏最大亮度",
+
+  "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat": "为窗口使用归一化定点RGBA16格式",
+  "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat.@Tooltip": "提高使用BT.2100 PQ转换函数时的精度，但会完全破坏scRGB。 如果不确定，请保持默认值。",
 
   "text.autoconfig.hdr_mod.option.autoSetPrimaries": "自动设置基色",
   "text.autoconfig.hdr_mod.option.customPrimaries": "自定义基色",
   "text.autoconfig.hdr_mod.option.autoSetTransferFunction": "自动设置传递函数",
   "text.autoconfig.hdr_mod.option.customTransferFunction": "自定义传递函数",
   "text.autoconfig.hdr_mod.option.forceDisableGlfwWorkaround": "强制禁用 GLFW 兼容性调整",
-  "text.autoconfig.hdr_mod.option.forceDisableBlitShaderReplacement": "强制禁用对主渲染目标的blit_screen着色器替换",
+  "text.autoconfig.hdr_mod.option.forceDisableBeforeBlitPipeline": "强制禁用 BEFORE_BLIT 管线",
 
   "text.autoconfig.hdr_mod.title": "HDR 模组配置",
 
   "text.autoconfig.hdr_mod.category.general": "通用",
   "text.autoconfig.hdr_mod.category.advanced": "高级",
+  "text.autoconfig.hdr_mod.category.screenshot": "截图",
+  "text.autoconfig.hdr_mod.category.replay": "Replay Mod",
   "text.autoconfig.hdr_mod.category.debug": "调试",
 
+
   "key.hdr_mod.open_config_menu": "打开配置菜单",
-  "key.hdr_mod.take_hdr_screenshot": "拍摄HDR截图",
+  "key.hdr_mod.take_hdr_screenshot": "拍摄 HDR 截图",
   "key.category.hdr_mod.main": "HDR 模组"
 }

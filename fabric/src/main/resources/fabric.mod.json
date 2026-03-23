@@ -25,7 +25,8 @@
     ]
   },
   "mixins": [
-    "hdr_mod.mixins.json"
+    "hdr_mod.mixins.json",
+    "hdr_mod.fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.18.2",

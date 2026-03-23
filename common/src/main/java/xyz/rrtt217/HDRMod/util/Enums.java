@@ -67,4 +67,10 @@ public class Enums {
             throw new IllegalArgumentException("No enum constant " + TransferFunction.class.getName() + "#" + id);
         }
     }
+
+    public enum BehaviorOnVanillaScreenshotCalled{
+        ONLY_VANILLA,
+        BOTH,
+        ONLY_HDR
+    }
 }
