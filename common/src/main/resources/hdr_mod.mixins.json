@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
+    "MixinKeyboardHandler",
     "MixinMainTarget",
     "MixinMinecraft",
     "MixinRenderSystem",
@@ -15,7 +16,10 @@
   "mixins": [
     "MixinVanillaPackResources",
     "compat.iris.MixinIrisExclusiveUniforms",
-    "compat.iris.MixinStandardMacros"
+    "compat.iris.MixinStandardMacros",
+    "compat.replaymod.MixinOpenGlFrameCapturer",
+    "compat.replaymod.MixinPboOpenGlFrameCapturer",
+    "compat.replaymod.MixinRenderSettingsEncodingPreset"
   ],
   "injectors": {
     "defaultRequire": 1

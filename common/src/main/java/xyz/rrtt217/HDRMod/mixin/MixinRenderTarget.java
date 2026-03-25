@@ -36,8 +36,8 @@ public class MixinRenderTarget {
             if(MainTargetBlitShader.blitShader != null && !config.forceDisableBlitShaderReplacement){
                 // Setup necessary uniforms.
                 var handle = Minecraft.getInstance().getWindow().getWindow();
-                MainTargetBlitShader.blitShader.safeGetUniform("CurrentPrimaries").set(config.autoSetPrimaries ? HDRMod.WindowPrimaries.getId() : config.customPrimaries.getId());
-                MainTargetBlitShader.blitShader.safeGetUniform("CurrentTransferFunction").set(config.autoSetTransferFunction? HDRMod.WindowTransferFunction.getId(): config.customTransferFunction.getId());
+                MainTargetBlitShader.blitShader.safeGetUniform("CurrentPrimaries").set(config.autoSetPrimaries ? GLFWColorManagement.glfwGetWindowPrimaries(handle): config.customPrimaries.getId());
+                MainTargetBlitShader.blitShader.safeGetUniform("CurrentTransferFunction").set(config.autoSetTransferFunction? GLFWColorManagement.glfwGetWindowTransfer(handle): config.customTransferFunction.getId());
                 MainTargetBlitShader.blitShader.safeGetUniform("UiBrightness").set(config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle): config.uiBrightness);
                 MainTargetBlitShader.blitShader.safeGetUniform("EotfEmulate").set(config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle) : config.customEotfEmulate);
                 return MainTargetBlitShader.blitShader;

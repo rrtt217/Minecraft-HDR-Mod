@@ -66,4 +66,6 @@ public class HDRModConfig implements ConfigData {
     public boolean forceDisableGlfwWorkaround = false;
     @ConfigEntry.Category("debug")
     public boolean forceDisableBeforeBlitPipeline = false;
+    @ConfigEntry.Category("debug")
+    public boolean forceDisableBlitShaderReplacement = false;
 }

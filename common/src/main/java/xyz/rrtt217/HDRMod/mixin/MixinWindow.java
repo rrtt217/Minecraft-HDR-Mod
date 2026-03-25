@@ -57,7 +57,7 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
                 GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
                 GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);
                 // For float buffer. Note: Because Intel on Windows do not support float buffer (WGL_TYPE_RGBA_FLOAT_ARB), Intel users can't use this mod natively.
-                if(!applyWorkaround && !config.UseUNORMBufferOnLinux) {
+                if(!applyWorkaround && !config.useUNORMWindowPixelFormat) {
                     GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
                 }
                 else if(applyWorkaround) {
@@ -68,10 +68,8 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
         @Inject(method = "<init>", at = @At("RETURN"))
         private void hdr_mod$setupWindowData(WindowEventHandler windowEventHandler, ScreenManager screenManager, DisplayData displayData, String string, String string2, CallbackInfo ci)
         {
-            HDRMod.WindowPrimaries = Enums.Primaries.fromId(GLFWColorManagement.glfwGetWindowPrimaries(this.getWindow()));
-            HDRMod.WindowTransferFunction = Enums.TransferFunction.fromId(GLFWColorManagement.glfwGetWindowTransfer(this.getWindow()));
             HDRMod.LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ",
-               GLFW.glfwGetWindowAttrib(this.getWindow(),GLFW.GLFW_RED_BITS), GLFWColorManagement.glfwGetWindowSdrWhiteLevel(this.getWindow()), GLFWColorManagement.glfwGetWindowMaxLuminance(this.getWindow()) ,GLFWColorManagement.glfwGetWindowMinLuminance(this.getWindow()),HDRMod.WindowPrimaries,HDRMod.WindowTransferFunction
+               GLFW.glfwGetWindowAttrib(this.getWindow(),GLFW.GLFW_RED_BITS), GLFWColorManagement.glfwGetWindowSdrWhiteLevel(this.getWindow()), GLFWColorManagement.glfwGetWindowMaxLuminance(this.getWindow()) ,GLFWColorManagement.glfwGetWindowMinLuminance(this.getWindow()),Enums.Primaries.fromId(GLFWColorManagement.glfwGetWindowPrimaries(this.getWindow())),Enums.TransferFunction.fromId(GLFWColorManagement.glfwGetWindowTransfer(this.getWindow()))
             );
             HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
         }

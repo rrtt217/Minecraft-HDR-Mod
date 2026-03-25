@@ -19,8 +19,8 @@ import java.util.function.Consumer;
 
 @Mixin(Screenshot.class)
 public class MixinScreenshot {
-    @Inject(method = "grab(Ljava/io/File;Ljava/lang/String;Lcom/mojang/blaze3d/pipeline/RenderTarget;ILjava/util/function/Consumer;)V", at = @At("HEAD"), cancellable = true)
-    private static void onVanillaScreenshotCalled(File file, @Nullable String string, RenderTarget renderTarget, int i, Consumer<Component> consumer, CallbackInfo ci){
+    @Inject(method = "_grab", at = @At("HEAD"), cancellable = true)
+    private static void onVanillaScreenshotCalled(File file, String string, RenderTarget renderTarget, Consumer<Component> consumer, CallbackInfo ci){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(HDRModInjectHooks.getVanillaF2Screenshot()){
             if (config.behaviorOnVanillaF2 != Enums.BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA) {

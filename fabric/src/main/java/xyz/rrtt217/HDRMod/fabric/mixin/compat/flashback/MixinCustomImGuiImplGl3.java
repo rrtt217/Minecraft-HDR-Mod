@@ -47,10 +47,10 @@ public class MixinCustomImGuiImplGl3 {
     @Inject(method = "setupRenderState", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glUniform1i(II)V"))
     private void hdr_mod$setHDRModUniforms(CallbackInfo ci){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        GL32.glUniform1f(attribLocationUIBrightness, config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness);
-        GL32.glUniform1f(attribLocationEotfEmulate, config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate);
-        GL32.glUniform1i(attribLocationPrimaries, config.autoSetPrimaries ? GLFWColorManagement.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle()) : config.customPrimaries.getId());
-        GL32.glUniform1i(attribLocationTransferFunction, config.autoSetTransferFunction ? GLFWColorManagement.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle()) : config.customTransferFunction.getId());
+        GL32.glUniform1f(attribLocationUIBrightness, config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.uiBrightness);
+        GL32.glUniform1f(attribLocationEotfEmulate, config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.customEotfEmulate);
+        GL32.glUniform1i(attribLocationPrimaries, config.autoSetPrimaries ? GLFWColorManagement.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().getWindow()) : config.customPrimaries.getId());
+        GL32.glUniform1i(attribLocationTransferFunction, config.autoSetTransferFunction ? GLFWColorManagement.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().getWindow()) : config.customTransferFunction.getId());
     }
     @Redirect(method = "createDeviceObjects", at = @At(value = "INVOKE", target = "Lcom/moulberry/flashback/editor/ui/CustomImGuiImplGl3;fragmentShaderGlsl120()Ljava/lang/String;"))
     private String hdr_mod$redirectToColorTransformProgramGlsl120(CustomImGuiImplGl3 instance) throws NoSuchFieldException, IllegalAccessException {

@@ -1,8 +1,5 @@
-package xyz.rrtt217.HDRMod.fabric.mixin.compat.replaymod;
+package xyz.rrtt217.HDRMod.mixin.compat.replaymod;
 
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.systems.CommandEncoder;
-import com.mojang.blaze3d.textures.GpuTexture;
 import com.replaymod.render.capturer.PboOpenGlFrameCapturer;
 import me.shedaniel.autoconfig.AutoConfig;
 import org.lwjgl.opengl.GL30;
@@ -16,23 +13,27 @@ import static xyz.rrtt217.HDRMod.HDRMod.ReplayColorTransformRenderer;
 @Mixin(PboOpenGlFrameCapturer.class)
 public class MixinPboOpenGlFrameCapturer {
     @ModifyConstant(method = "<init>", constant = @Constant(intValue = 4, ordinal = 0))
-    public int hdr_mod$modifyBppConstant(int bpp){
+    public int hdr_mod$modifyBppConstant(int bpp) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(config.enableReplayHDRVideoExport) return bpp * 2;
+        if (config.enableReplayHDRVideoExport) return bpp * 2;
         return bpp;
     }
+
     @ModifyArg(method = "process", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/capturer/PboOpenGlFrameCapturer;readFromPbo(Ljava/nio/ByteBuffer;IZ)Lcom/replaymod/render/rendering/Frame;", ordinal = 0), index = 1)
-    public int hdr_mod$modifyProcessBppArgument(int bpp){
+    public int hdr_mod$modifyProcessBppArgument(int bpp) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(config.enableReplayHDRVideoExport) return bpp * 2;
+        if (config.enableReplayHDRVideoExport) return bpp * 2;
         return bpp;
     }
+
     @ModifyConstant(method = "captureFrame(ILjava/lang/Enum;)Lcom/replaymod/render/frame/OpenGlFrame;", constant = @Constant(intValue = 4, ordinal = 0))
-    public int hdr_mod$modifyCaptureFrameBppConstant(int bpp){
+    public int hdr_mod$modifyCaptureFrameBppConstant(int bpp) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(config.enableReplayHDRVideoExport) return bpp * 2;
+        if (config.enableReplayHDRVideoExport) return bpp * 2;
         return bpp;
     }
+}
+    /*
     @Redirect(method = "captureFrame(ILjava/lang/Enum;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;copyTextureToBuffer(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/buffers/GpuBuffer;ILjava/lang/Runnable;I)V"))
     private void hdr_mod$copyTextureToBufferPbo(CommandEncoder instance, GpuTexture gpuTexture, GpuBuffer gpuBuffer, int i, Runnable runnable, int j){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
@@ -44,4 +45,4 @@ public class MixinPboOpenGlFrameCapturer {
             instance.copyTextureToBuffer(gpuTexture, gpuBuffer, i, runnable, j);
         }
     }
-}
+*/

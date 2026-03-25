@@ -1,6 +1,5 @@
 #version 150
 
-<<<<<<<< HEAD:common/src/main/resources/assets/hdr_mod/shaders/core/main_target_blit_screen.fsh
 uniform sampler2D DiffuseSampler;
 
 uniform float UiBrightness;
@@ -8,15 +7,6 @@ uniform float EotfEmulate;
 
 uniform int CurrentPrimaries;
 uniform int CurrentTransferFunction;
-========
-uniform sampler2D InSampler;
-layout(std140) uniform ColorTransform {
-    float uiBrightness;
-    float eoftEmulate;
-    int primaries;
-    int transferFunction;
-};
->>>>>>>> 1.21.10:common/src/main/resources/assets/hdr_mod/shaders/color_transform.fsh
 
 in vec2 texCoord;
 
@@ -85,14 +75,9 @@ void main() {
     color.rgb = sRGB_DecodeSafe(color.rgb);
 
     //To BT2020
-<<<<<<<< HEAD:common/src/main/resources/assets/hdr_mod/shaders/core/main_target_blit_screen.fsh
     if(CurrentPrimaries == 6){
         color.rgb = BT709_TO_BT2020_MAT * color.rgb;
     }
-========
-    if(primaries == PRIMARIES_BT2020)
-        color.rgb = BT709_TO_BT2020_MAT * color.rgb;
->>>>>>>> 1.21.10:common/src/main/resources/assets/hdr_mod/shaders/color_transform.fsh
 
     //EOTF Emulate / Gamma Correction 2.2
     if (EotfEmulate > 0) {
@@ -102,7 +87,6 @@ void main() {
     }
 
     //Transfer
-<<<<<<<< HEAD:common/src/main/resources/assets/hdr_mod/shaders/core/main_target_blit_screen.fsh
     if(CurrentTransferFunction == 11)
     {
         color.rgb = PQ_Encode(color.rgb, UiBrightness);
@@ -114,24 +98,9 @@ void main() {
     }
     else if(CurrentTransferFunction == 9 || CurrentTransferFunction == 10)
     {
-========
-    if(transferFunction == TRANSFER_FUNCTION_ST2084_PQ){
-        // PQ encode
-        color.rgb = PQ_Encode(color.rgb, uiBrightness);
-    }
-    else if(transferFunction == TRANSFER_FUNCTION_EXT_LINEAR){
-        // scRGB encode
-        color.rgb *= uiBrightness / 80.0;
-    }
-    else if((transferFunction == TRANSFER_FUNCTION_SRGB) || (transferFunction == TRANSFER_FUNCTION_EXT_SRGB)){
->>>>>>>> 1.21.10:common/src/main/resources/assets/hdr_mod/shaders/color_transform.fsh
         // sRGB encode
         color.rgb *= UiBrightness / 203.0;
         color.rgb = sRGB_EncodeSafe(color.rgb);
     }
-<<<<<<<< HEAD:common/src/main/resources/assets/hdr_mod/shaders/core/main_target_blit_screen.fsh
-========
-
->>>>>>>> 1.21.10:common/src/main/resources/assets/hdr_mod/shaders/color_transform.fsh
     fragColor = color;
 }

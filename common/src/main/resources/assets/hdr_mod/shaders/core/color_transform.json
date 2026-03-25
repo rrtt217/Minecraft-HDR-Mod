@@ -1,0 +1,13 @@
+{
+  "vertex": "color_transform",
+  "fragment": "color_transform",
+  "samplers": [
+    { "name": "DiffuseSampler" }
+  ],
+  "uniforms": [
+    { "name": "CurrentPrimaries", "type": "int", "count": 1, "values": [ 0 ] },
+    { "name": "CurrentTransferFunction", "type": "int", "count": 1, "values": [ 0 ] },
+    { "name": "UiBrightness", "type": "float", "count": 1, "values": [ 203.0 ] },
+    { "name": "EotfEmulate", "type": "float", "count": 1, "values": [ 203.0 ] }
+  ]
+}

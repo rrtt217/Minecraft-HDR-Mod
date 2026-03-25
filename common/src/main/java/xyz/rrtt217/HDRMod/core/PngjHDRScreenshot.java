@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 import java.nio.file.Files;
 import java.util.function.Consumer;
 
+import static xyz.rrtt217.HDRMod.HDRMod.ScreenshotColorTransformRenderer;
 import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 
 public class PngjHDRScreenshot {
@@ -40,6 +41,26 @@ public class PngjHDRScreenshot {
         // Mod config.
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(!enableHDR) return;
+
+        // Create ScreenshotColorTransformRenderer if there's not one.
+        if(ScreenshotColorTransformRenderer == null){
+            try {
+                ScreenshotColorTransformRenderer = new ColorTransformRenderer(renderTarget, "Screenshot");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        // Update ScreenshotColorTransformRenderer.srcTarget.
+        if(ScreenshotColorTransformRenderer.getSrcTarget() != renderTarget){
+            ScreenshotColorTransformRenderer.setSrcTarget(renderTarget);
+        }
+        ScreenshotColorTransformRenderer.updateColorTransformUniforms(
+                config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.uiBrightness, // For UI Brightness
+                config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.customEotfEmulate,
+                Enums.Primaries.BT2020.getId(),
+                Enums.TransferFunction.ST2084_PQ.getId()
+        );
+        ScreenshotColorTransformRenderer.render();
         // Width and height.
         int width = renderTarget.width;
         int height = renderTarget.height;
@@ -69,14 +90,11 @@ public class PngjHDRScreenshot {
         }
         // Get the buffer.
         long pixels = MemoryUtil.nmemAlloc((long) width * height * 4 * 2);
-        RenderSystem.bindTexture(renderTarget.getColorTextureId());
+        RenderSystem.bindTexture(ScreenshotColorTransformRenderer.getDstTextureId());
         GlStateManager._pixelStore(GL30.GL_UNPACK_ALIGNMENT, 4);
-        GlStateManager._getTexImage(3553, 0, GL30.GL_RGBA, GL30.GL_HALF_FLOAT, pixels);
+        GlStateManager._getTexImage(3553, 0, GL30.GL_RGBA, GL30.GL_UNSIGNED_SHORT, pixels);
         ByteBuffer buffer = MemoryUtil.memByteBuffer(pixels, width * height * 4 * 2);
         // The actual screenshot part
-        float[] datas = new float[4];
-        float[] rgb = new float[3];
-        short bits;
         // Do remember to flip Y.
         for (int y = height - 1; y >= 0; y--) {
             // Line by line.
@@ -85,28 +103,9 @@ public class PngjHDRScreenshot {
             for (int x = 0; x < width; x++) {
                 // Interpret data.
                 int basePos = ((y * width + x) * 4) * 2;
-                // RGBA16F.
-                for (int c = 0; c < 4; c++) {
-                    bits = buffer.getShort(basePos + c * 2);
-                    datas[c] = Float.float16ToFloat(bits);
-                }
-                // Do transform.
-                System.arraycopy(datas, 0, rgb, 0, 3);
-                System.arraycopy(ColorTransforms.sRGBDecodeSafe(rgb), 0, datas, 0, 3);
-                System.arraycopy(datas, 0, rgb, 0, 3);
-                System.arraycopy(ColorTransforms.linearColorspaceTransform(rgb, ColorTransforms.linear709to2020Matrix), 0, datas, 0, 3);
-                float EotfEmulate = config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.customEotfEmulate;
-                if(EotfEmulate > 0) {
-                    System.arraycopy(datas, 0, rgb, 0, 3);
-                    System.arraycopy(ColorTransforms.eotfEmulate(rgb, EotfEmulate), 0, datas, 0, 3);
-                }
-                System.arraycopy(datas, 0, rgb, 0, 3);
-                System.arraycopy(ColorTransforms.PQEncode(rgb, config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.uiBrightness), 0, datas, 0, 3);
-                // Write to line.
+                // RGBA16.
                 for (int c = 0; c < png.imgInfo.channels; c++) {
-                    // Properly limited to [0,65535].
-                    scanline[x * png.imgInfo.channels + c] = Math.max(Math.min(Math.round(datas[c] * 65535), 65535), 0);
-
+                    scanline[x * png.imgInfo.channels + c] = buffer.getShort(basePos + c * 2);
                 }
             }
             // Write to file.

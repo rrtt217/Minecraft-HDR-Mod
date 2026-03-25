@@ -1,7 +1,6 @@
 package xyz.rrtt217.HDRMod.mixin;
 
 import net.minecraft.client.KeyboardHandler;
-import net.minecraft.client.input.KeyEvent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -11,7 +10,7 @@ import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
 @Mixin(KeyboardHandler.class)
 public class MixinKeyboardHandler {
     @Inject(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Screenshot;grab(Ljava/io/File;Lcom/mojang/blaze3d/pipeline/RenderTarget;Ljava/util/function/Consumer;)V", shift = At.Shift.BEFORE))
-    private void onVanillaF2Screenshot(long l, int i, KeyEvent keyEvent, CallbackInfo ci){
+    private void onVanillaF2Screenshot(long l, int i, int j, int k, int m, CallbackInfo ci){
         HDRModInjectHooks.setVanillaF2Screenshot();
     }
 }
