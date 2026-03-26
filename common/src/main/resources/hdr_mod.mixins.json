@@ -19,7 +19,8 @@
     "compat.iris.MixinStandardMacros",
     "compat.replaymod.MixinOpenGlFrameCapturer",
     "compat.replaymod.MixinPboOpenGlFrameCapturer",
-    "compat.replaymod.MixinRenderSettingsEncodingPreset"
+    "compat.replaymod.MixinRenderSettingsEncodingPreset",
+    "compat.replaymod.OpenGlFrameCapturerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

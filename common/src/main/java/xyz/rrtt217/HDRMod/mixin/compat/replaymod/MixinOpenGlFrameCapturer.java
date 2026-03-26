@@ -18,7 +18,6 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.util.Enums;
 
-
 import java.io.IOException;
 
 import static xyz.rrtt217.HDRMod.HDRMod.ReplayColorTransformRenderer;
@@ -38,7 +37,7 @@ public class MixinOpenGlFrameCapturer {
         if(config.enableReplayHDRVideoExport){
             if(ReplayColorTransformRenderer == null){
                 try {
-                    ReplayColorTransformRenderer = new ColorTransformRenderer(Minecraft.getInstance().getMainRenderTarget(), "Replay");
+                    ReplayColorTransformRenderer = new ColorTransformRenderer(((OpenGlFrameCapturerAccessor) this).callFrameBuffer(), "Replay");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -64,14 +63,22 @@ public class MixinOpenGlFrameCapturer {
     }
     @Redirect(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;bindWrite(Z)V"))
     private void hdr_mod$bindDstTexure(RenderTarget instance, boolean bl){
-        GlStateManager._glBindFramebuffer(36160, ReplayColorTransformRenderer.getDstTextureFramebufferId());
-        if (bl) {
-            GlStateManager._viewport(0, 0, ReplayColorTransformRenderer.getSrcTarget().viewWidth, ReplayColorTransformRenderer.getSrcTarget().viewHeight);
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(config.enableReplayHDRVideoExport) {
+            GlStateManager._glBindFramebuffer(36160, ReplayColorTransformRenderer.getDstTextureFramebufferId());
+            if (bl) {
+                GlStateManager._viewport(0, 0, ReplayColorTransformRenderer.getSrcTarget().viewWidth, ReplayColorTransformRenderer.getSrcTarget().viewHeight);
+            }
+        }
+        else{
+            ((OpenGlFrameCapturerAccessor) this).callFrameBuffer().bindWrite(bl);
         }
     }
     @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL11;glReadPixels(IIIIIILjava/nio/ByteBuffer;)V"), index = 5)
     private int hdr_mod$modifyReadPixelsType(int x){
-        return ReplayColorTransformRenderer.getDstReadPixelFormat();
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(config.enableReplayHDRVideoExport) return ReplayColorTransformRenderer.getDstReadPixelFormat();
+        return x;
     }
 
     @PlatformOnly(PlatformOnly.FABRIC)
