@@ -1,12 +1,13 @@
 package xyz.rrtt217.HDRMod.mixin.compat.replaymod;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.replaymod.render.capturer.PboOpenGlFrameCapturer;
+import dev.architectury.injectables.annotations.PlatformOnly;
 import me.shedaniel.autoconfig.AutoConfig;
-import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
 import static xyz.rrtt217.HDRMod.HDRMod.ReplayColorTransformRenderer;
 
@@ -19,8 +20,16 @@ public class MixinPboOpenGlFrameCapturer {
         return bpp;
     }
 
+    @PlatformOnly(PlatformOnly.FABRIC)
     @ModifyArg(method = "process", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/capturer/PboOpenGlFrameCapturer;readFromPbo(Ljava/nio/ByteBuffer;IZ)Lcom/replaymod/render/rendering/Frame;", ordinal = 0), index = 1)
     public int hdr_mod$modifyProcessBppArgument(int bpp) {
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if (config.enableReplayHDRVideoExport) return bpp * 2;
+        return bpp;
+    }
+    @PlatformOnly(PlatformOnly.FORGE)
+    @ModifyArg(method = "process", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/capturer/PboOpenGlFrameCapturer;readFromPbo(Ljava/nio/ByteBuffer;I)Lcom/replaymod/render/rendering/Frame;", ordinal = 0), index = 1)
+    public int hdr_mod$modifyProcessBppArgumentNeoForge(int bpp) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if (config.enableReplayHDRVideoExport) return bpp * 2;
         return bpp;
@@ -32,17 +41,15 @@ public class MixinPboOpenGlFrameCapturer {
         if (config.enableReplayHDRVideoExport) return bpp * 2;
         return bpp;
     }
-}
-    /*
-    @Redirect(method = "captureFrame(ILjava/lang/Enum;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;copyTextureToBuffer(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/buffers/GpuBuffer;ILjava/lang/Runnable;I)V"))
-    private void hdr_mod$copyTextureToBufferPbo(CommandEncoder instance, GpuTexture gpuTexture, GpuBuffer gpuBuffer, int i, Runnable runnable, int j){
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(config.enableReplayHDRVideoExport){
-            TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_UNSIGNED_SHORT);
-            instance.copyTextureToBuffer(ReplayColorTransformRenderer.getDstTexture(), gpuBuffer, i, runnable, j);
-        }
-        else{
-            instance.copyTextureToBuffer(gpuTexture, gpuBuffer, i, runnable, j);
+    @Redirect(method = "captureFrame(ILjava/lang/Enum;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;bindWrite(Z)V"))
+    private void hdr_mod$bindDstTexure(RenderTarget instance, boolean bl){
+        GlStateManager._glBindFramebuffer(36160, ReplayColorTransformRenderer.getDstTextureFramebufferId());
+        if (bl) {
+            GlStateManager._viewport(0, 0, ReplayColorTransformRenderer.getSrcTarget().viewWidth, ReplayColorTransformRenderer.getSrcTarget().viewHeight);
         }
     }
-*/
+    @ModifyArg(method = "captureFrame(ILjava/lang/Enum;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL11;glReadPixels(IIIIIIJ)V", ordinal = 0), index = 5)
+    private int hdr_mod$modifyReadPixelsType(int x){
+        return ReplayColorTransformRenderer.getDstReadPixelFormat();
+    }
+}

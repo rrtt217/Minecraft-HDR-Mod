@@ -37,8 +37,6 @@ public class ColorTransformRenderer implements AutoCloseable {
         this.ColorTransformShader = new ShaderInstance(Minecraft.getInstance().getVanillaPackResources().asProvider(), "color_transform", DefaultVertexFormat.BLIT_SCREEN);
         // Set a group of default UBO values. You may call updateColorTransformUBO manually to update later.
         updateColorTransformUniforms(203.0F, 0.0F, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
-        TextureUpgradeUtils.setTargetTextureFormat(GL30.GL_RGBA16F);
-        TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_HALF_FLOAT);
         this.dstReadPixelFormat = GL30.GL_HALF_FLOAT;
         this.dstTextureFormat = GL30.GL_RGBA16F;
         this.createTextures(srcTarget.width, srcTarget.height);
@@ -149,6 +147,8 @@ public class ColorTransformRenderer implements AutoCloseable {
     public int getDstTextureFramebufferId(){
         return this.dstTextureFramebufferId;
     }
+    public int getDstTextureFormat() { return this.dstTextureFormat; }
+    public int getDstReadPixelFormat() { return this.dstReadPixelFormat; }
     public void close(){
         srcTarget = null;
         this.destroyTextures();

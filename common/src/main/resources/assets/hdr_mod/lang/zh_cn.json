@@ -33,7 +33,7 @@
   "text.autoconfig.hdr_mod.option.autoSetTransferFunction": "自动设置传递函数",
   "text.autoconfig.hdr_mod.option.customTransferFunction": "自定义传递函数",
   "text.autoconfig.hdr_mod.option.forceDisableGlfwWorkaround": "强制禁用 GLFW 兼容性调整",
-  "text.autoconfig.hdr_mod.option.forceDisableBeforeBlitPipeline": "强制禁用 BEFORE_BLIT 管线",
+  "text.autoconfig.hdr_mod.option.forceDisableBlitShaderReplacement": "强制禁用 blit 着色器替换",
 
   "text.autoconfig.hdr_mod.title": "HDR 模组配置",
 

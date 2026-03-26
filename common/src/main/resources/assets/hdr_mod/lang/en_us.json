@@ -34,7 +34,7 @@
   "text.autoconfig.hdr_mod.option.autoSetTransferFunction": "Auto Set Transfer Function",
   "text.autoconfig.hdr_mod.option.customTransferFunction": "Custom Transfer Function",
   "text.autoconfig.hdr_mod.option.forceDisableGlfwWorkaround": "Force Disable GLFW Workaround",
-  "text.autoconfig.hdr_mod.option.forceDisableBeforeBlitPipeline": "Force Disable the BEFORE_BLIT Pipeline",
+  "text.autoconfig.hdr_mod.option.forceDisableBlitShaderReplacement": "Force Disable Blit Shader Replacement",
 
   "text.autoconfig.hdr_mod.title": "HDR Mod Config",
 

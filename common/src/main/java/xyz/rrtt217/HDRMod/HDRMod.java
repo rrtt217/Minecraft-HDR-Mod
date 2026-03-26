@@ -2,6 +2,7 @@ package xyz.rrtt217.HDRMod;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.events.client.ClientTickEvent;
+import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
@@ -20,7 +21,7 @@ public final class HDRMod {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     // Global Renderers.
-    public static ColorTransformRenderer PresentationColorTransformRenderer;
+    public static ColorTransformRenderer PresentationColorTransformRenderer; // Unused now.
     public static ColorTransformRenderer ScreenshotColorTransformRenderer;
     public static ColorTransformRenderer ReplayColorTransformRenderer;
 
@@ -40,6 +41,10 @@ public final class HDRMod {
     public static boolean enableHDR = true;
 
     public static boolean isReplayRendering = false;
+
+    static {
+        if(Platform.isForgeLike()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+    }
 
     public HDRMod() {
     }
@@ -63,7 +68,7 @@ public final class HDRMod {
         });
 
         // Register config and set enableHDR once and for all.
-        AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        if(!Platform.isForgeLike()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         enableHDR = config.enableHDR;
 

@@ -1,10 +1,12 @@
 package xyz.rrtt217.HDRMod.mixin.compat.replaymod;
 
+import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.replaymod.render.capturer.OpenGlFrameCapturer;
 import com.replaymod.render.frame.OpenGlFrame;
+import dev.architectury.injectables.annotations.PlatformOnly;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,7 +17,6 @@ import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
 
 import java.io.IOException;
@@ -61,32 +62,28 @@ public class MixinOpenGlFrameCapturer {
         }
         return size;
     }
-    /*
-    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;copyTextureToBuffer(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/buffers/GpuBuffer;ILjava/lang/Runnable;I)V"), index = 2)
-    private int hdr_mod$enlargeGpuBuffer(int i){
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(config.enableReplayHDRVideoExport){
-            // Byte -> Short for HDR.
-            return i * 2;
-        }
-        return i;
-    }
-    */
-    /*
-    @Redirect(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;copyTextureToBuffer(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/buffers/GpuBuffer;ILjava/lang/Runnable;I)V"))
-    private void hdr_mod$copyTextureToBuffer(CommandEncoder instance, GpuTexture gpuTexture, GpuBuffer gpuBuffer, int i, Runnable runnable, int j){
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(config.enableReplayHDRVideoExport){
-            TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_UNSIGNED_SHORT);
-            instance.copyTextureToBuffer(ReplayColorTransformRenderer.getDstTexture(), gpuBuffer, i, runnable, j);
-        }
-        else{
-            instance.copyTextureToBuffer(gpuTexture, gpuBuffer, i, runnable, j);
+    @Redirect(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;bindWrite(Z)V"))
+    private void hdr_mod$bindDstTexure(RenderTarget instance, boolean bl){
+        GlStateManager._glBindFramebuffer(36160, ReplayColorTransformRenderer.getDstTextureFramebufferId());
+        if (bl) {
+            GlStateManager._viewport(0, 0, ReplayColorTransformRenderer.getSrcTarget().viewWidth, ReplayColorTransformRenderer.getSrcTarget().viewHeight);
         }
     }
-    */
+    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL11;glReadPixels(IIIIIILjava/nio/ByteBuffer;)V"), index = 5)
+    private int hdr_mod$modifyReadPixelsType(int x){
+        return ReplayColorTransformRenderer.getDstReadPixelFormat();
+    }
+
+    @PlatformOnly(PlatformOnly.FABRIC)
     @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/frame/OpenGlFrame;<init>(ILcom/replaymod/lib/de/johni0702/minecraft/gui/utils/lwjgl/ReadableDimension;ILjava/nio/ByteBuffer;)V"), index = 2)
     private int hdr_mod$modifyOpenGlFrameReturn(int bpp){
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(config.enableReplayHDRVideoExport) return bpp * 2;
+        return bpp;
+    }
+    @PlatformOnly(PlatformOnly.FORGE)
+    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/frame/OpenGlFrame;<init>(ILcom/replaymod/lib/de/johni0702/minecraft/gui/utils/lwjgl/ReadableDimension;ILjava/nio/ByteBuffer;)V"), index = 2)
+    private int hdr_mod$modifyOpenGlFrameReturnNeoForge(int bpp){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport) return bpp * 2;
         return bpp;
