@@ -16,6 +16,8 @@ import xyz.rrtt217.HDRMod.util.Enums.*;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
+import java.io.IOException;
+
 public final class HDRMod {
     public static final String MOD_ID = "hdr_mod";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -47,6 +49,7 @@ public final class HDRMod {
     }
 
     public HDRMod() {
+
     }
 
     public static void init() {
@@ -68,7 +71,7 @@ public final class HDRMod {
         });
 
         // Register config and set enableHDR once and for all.
-        if(!Platform.isForgeLike()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        if (!Platform.isForgeLike()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         enableHDR = config.enableHDR;
 
