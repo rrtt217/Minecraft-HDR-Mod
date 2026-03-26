@@ -4,18 +4,22 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL30;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.*;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
-import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.core.MainTargetBlitShader;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
+import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
 
-import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
+import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
+import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
+
+import java.io.IOException;
+
+import static xyz.rrtt217.HDRMod.HDRMod.*;
+import static xyz.rrtt217.HDRMod.HDRMod.PresentationColorTransformRenderer;
 
 @Mixin(RenderTarget.class)
 public class MixinRenderTarget {
@@ -24,25 +28,46 @@ public class MixinRenderTarget {
 
     @ModifyArgs(method = "createBuffers", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V"))
     private void createBuffers(Args args) {
-        if(enableHDR && args.get(2).equals(GL30.GL_RGBA8)) {
+        if (enableHDR && args.get(2).equals(GL30.GL_RGBA8)) {
             args.set(2, GL30.GL_RGBA16F);
             args.set(7, GL30.GL_HALF_FLOAT);
         }
     }
-    @ModifyArg(method = "_blitToScreen", at = @At(value = "INVOKE", target = "Ljava/util/Objects;requireNonNull(Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;"), index = 0)
-    private Object replaceBlitShader(Object obj){
-        if(colorTextureId == Minecraft.getInstance().getMainRenderTarget().getColorTextureId()) {
-            HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-            if(MainTargetBlitShader.blitShader != null && !config.forceDisableBlitShaderReplacement){
-                // Setup necessary uniforms.
-                var handle = Minecraft.getInstance().getWindow().getWindow();
-                MainTargetBlitShader.blitShader.safeGetUniform("CurrentPrimaries").set(config.autoSetPrimaries ? GLFWColorManagement.glfwGetWindowPrimaries(handle): config.customPrimaries.getId());
-                MainTargetBlitShader.blitShader.safeGetUniform("CurrentTransferFunction").set(config.autoSetTransferFunction? GLFWColorManagement.glfwGetWindowTransfer(handle): config.customTransferFunction.getId());
-                MainTargetBlitShader.blitShader.safeGetUniform("UiBrightness").set(config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle): config.uiBrightness);
-                MainTargetBlitShader.blitShader.safeGetUniform("EotfEmulate").set(config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle) : config.customEotfEmulate);
-                return MainTargetBlitShader.blitShader;
+
+    @Inject(method = "_blitToScreen", at = @At("HEAD"))
+    private void hdr_mod$doPresentationTransform(int i, int j, boolean bl, CallbackInfo ci) {
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if (bl) {
+            HDRModInjectHooks.setTargetDisableBlend();
+            if (!enableHDR) return;
+            // Create PresentationColorTransformRenderer if there's not one.
+            if (PresentationColorTransformRenderer == null) {
+                try {
+                    PresentationColorTransformRenderer = new ColorTransformRenderer(Minecraft.getInstance().getMainRenderTarget(), "Screenshot");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
+            // Update PresentationColorTransformRenderer.srcTarget.
+            if (colorTextureId != PresentationColorTransformRenderer.getSrcTarget().getColorTextureId()) {
+                PresentationColorTransformRenderer.setSrcTarget((RenderTarget) (Object) this);
+            }
+            PresentationColorTransformRenderer.updateColorTransformUniforms(
+                    config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.uiBrightness, // For UI Brightness
+                    config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.customEotfEmulate,
+                    config.autoSetPrimaries ? GLFWColorManagement.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().getWindow()) : config.customPrimaries.getId(),
+                    config.autoSetTransferFunction ? GLFWColorManagement.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().getWindow()) : config.customTransferFunction.getId()
+            );
+            PresentationColorTransformRenderer.render();
         }
-        return obj;
+    }
+
+    @Redirect(method = "_blitToScreen", at = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;colorTextureId:I", opcode = Opcodes.GETFIELD))
+    private int hdr_mod$replaceBlitTarget(RenderTarget instance) {
+        if (HDRModInjectHooks.getTargetDisableBlend()) {
+            HDRModInjectHooks.unsetTargetDisableBlend();
+            return PresentationColorTransformRenderer.getDstTextureId();
+        }
+        return colorTextureId;
     }
 }

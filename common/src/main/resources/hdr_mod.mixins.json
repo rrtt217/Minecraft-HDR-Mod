@@ -7,7 +7,6 @@
   "client": [
     "MixinKeyboardHandler",
     "MixinMainTarget",
-    "MixinMinecraft",
     "MixinRenderSystem",
     "MixinRenderTarget",
     "MixinScreenshot",

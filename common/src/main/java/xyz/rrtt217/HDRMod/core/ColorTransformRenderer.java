@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
 import org.lwjgl.opengl.GL30;
 import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
 import java.io.IOException;
 import java.nio.IntBuffer;
@@ -113,7 +112,8 @@ public class ColorTransformRenderer implements AutoCloseable {
             RenderSystem.disableDepthTest();
             RenderSystem.depthMask(false);
             RenderSystem.viewport(0, 0, this.dstTextureWidth, this.dstTextureHeight);
-            //RenderSystem.enableBlend();
+            // You need to disable blend to make presentation looks correct.
+            RenderSystem.disableBlend();
 
             RenderSystem.setShader(() -> ColorTransformShader);
 

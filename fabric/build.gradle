@@ -47,7 +47,7 @@ dependencies {
     modImplementation "maven.modrinth:iris:${iris_version}+${minecraft_version}-fabric"
     modImplementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
     modImplementation "maven.modrinth:replaymod:1.21-2.6.23"
-    modCompileOnly "maven.modrinth:flashback:vQyhWboq"
+    modImplementation "maven.modrinth:flashback:vQyhWboq"
     modCompileOnly "maven.modrinth:axiom:jTdCyf2H"
 
     implementation "org.anarres:jcpp:1.4.14"

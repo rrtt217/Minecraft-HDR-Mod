@@ -6,7 +6,6 @@ import com.replaymod.render.capturer.OpenGlFrameCapturer;
 import com.replaymod.render.frame.OpenGlFrame;
 import dev.architectury.injectables.annotations.PlatformOnly;
 import me.shedaniel.autoconfig.AutoConfig;
-import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
