@@ -4,12 +4,10 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.TextureUtil;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
+import org.joml.Matrix4f;
 import org.lwjgl.opengl.GL30;
 import xyz.rrtt217.HDRMod.util.Enums;
 
@@ -45,8 +43,8 @@ public class ColorTransformRenderer implements AutoCloseable {
         this.dstTextureFramebufferId = GlStateManager.glGenFramebuffers();
         this.dstTextureId = TextureUtil.generateTextureId();
         GlStateManager._bindTexture(this.dstTextureId);
-        GlStateManager._texParameter(3553, 10241, srcTarget.filterMode);
-        GlStateManager._texParameter(3553, 10240, srcTarget.filterMode);
+        GlStateManager._texParameter(3553, 10241, 9728);
+        GlStateManager._texParameter(3553, 10240, 9728);
         GlStateManager._texParameter(3553, 10242, 33071);
         GlStateManager._texParameter(3553, 10243, 33071);
         GlStateManager._texImage2D(3553, 0, this.dstTextureFormat, width, height, 0, 6408, this.dstReadPixelFormat, (IntBuffer)null);
@@ -115,18 +113,54 @@ public class ColorTransformRenderer implements AutoCloseable {
             // You need to disable blend to make presentation looks correct.
             RenderSystem.disableBlend();
 
+            //
+
+            ColorTransformShader.setSampler("DiffuseSampler", srcTarget.getColorTextureId());
+            setColorTransformUniforms();
             RenderSystem.setShader(() -> ColorTransformShader);
 
-            setColorTransformUniforms();
-            ColorTransformShader.setSampler("DiffuseSampler", srcTarget.getColorTextureId());
-            BufferBuilder bufferbuilder = RenderSystem.renderThreadTesselator().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLIT_SCREEN);
-            bufferbuilder.addVertex(0.0F, 0.0F, 0.0F);
-            bufferbuilder.addVertex(1.0F, 0.0F, 0.0F);
-            bufferbuilder.addVertex(1.0F, 1.0F, 0.0F);
-            bufferbuilder.addVertex(0.0F, 1.0F, 0.0F);
-            BufferUploader.drawWithShader(bufferbuilder.buildOrThrow());
+            Matrix4f matrix4f = (new Matrix4f()).setOrtho(0.0F, (float)this.dstTextureWidth, (float)this.dstTextureHeight, 0.0F, 1000.0F, 3000.0F);
+            RenderSystem.setProjectionMatrix(matrix4f, VertexSorting.ORTHOGRAPHIC_Z);
+            RenderSystem.backupProjectionMatrix();
+            PoseStack poseStack = RenderSystem.getModelViewStack();
+            poseStack.pushPose();
+            poseStack.setIdentity();
+            poseStack.translate(0.0F, 0.0F, -2000.0F);
+            RenderSystem.applyModelViewMatrix();
+
+            /*
+            if (ColorTransformShader.MODEL_VIEW_MATRIX != null) {
+                ColorTransformShader.MODEL_VIEW_MATRIX.set((new Matrix4f()).translation(0.0F, 0.0F, -2000.0F));
+            }
+
+            if (ColorTransformShader.PROJECTION_MATRIX != null) {
+                ColorTransformShader.PROJECTION_MATRIX.set(matrix4f);
+            }
+            */
+
+            //ColorTransformShader.apply();
+
+            float f = (float)dstTextureWidth;
+            float g = (float)dstTextureHeight;
+            float h = (float)srcTarget.viewWidth / (float)srcTarget.width;
+            float k = (float)srcTarget.viewHeight / (float)srcTarget.height;
+
+            Tesselator tesselator = RenderSystem.renderThreadTesselator();
+            BufferBuilder bufferBuilder = tesselator.getBuilder();
+            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+            bufferBuilder.vertex((double)0.0F, (double)g, (double)0.0F).uv(0.0F, 0.0F).color(255, 255, 255, 255).endVertex();
+            bufferBuilder.vertex((double)f, (double)g, (double)0.0F).uv(h, 0.0F).color(255, 255, 255, 255).endVertex();
+            bufferBuilder.vertex((double)f, (double)0.0F, (double)0.0F).uv(h, k).color(255, 255, 255, 255).endVertex();
+            bufferBuilder.vertex((double)0.0F, (double)0.0F, (double)0.0F).uv(0.0F, k).color(255, 255, 255, 255).endVertex();
+            BufferUploader.drawWithShader(bufferBuilder.end());
+
+            //ColorTransformShader.clear();
             RenderSystem.depthMask(true);
             RenderSystem.colorMask(true, true, true, true);
+
+            RenderSystem.restoreProjectionMatrix();
+            poseStack.popPose();
+            RenderSystem.applyModelViewMatrix();
 
             srcTarget.unbindRead();
             GlStateManager._glBindFramebuffer(36160, 0);

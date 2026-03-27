@@ -33,7 +33,7 @@ public class MixinCustomImGuiImplGl3 {
     @Shadow
     private String glslVersion;
 
-    @Inject(method = "createDeviceObjects", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glGetUniformLocation(ILjava/lang/CharSequence;)I"))
+    @Inject(method = "createDeviceObjects", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glGetUniformLocation(ILjava/lang/CharSequence;)I"), remap = false)
     private void hdr_mod$getHDRModUniformsLocation(CallbackInfo ci) {
         this.attribLocationUIBrightness = GL32.glGetUniformLocation(this.gShaderHandle,"uiBrightness");
         this.attribLocationEotfEmulate = GL32.glGetUniformLocation(this.gShaderHandle,"eotfEmulate");
@@ -41,7 +41,7 @@ public class MixinCustomImGuiImplGl3 {
         this.attribLocationTransferFunction =  GL32.glGetUniformLocation(this.gShaderHandle, "transferFunction");
     }
 
-    @Inject(method = "bind", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glUniform1i(II)V"))
+    @Inject(method = "bind", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glUniform1i(II)V"), remap = false)
     private void hdr_mod$setHDRModUniforms(CallbackInfo ci){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         GL32.glUniform1f(attribLocationUIBrightness, config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.uiBrightness);
@@ -49,7 +49,7 @@ public class MixinCustomImGuiImplGl3 {
         GL32.glUniform1i(attribLocationPrimaries, config.autoSetPrimaries ? GLFWColorManagement.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().getWindow()) : config.customPrimaries.getId());
         GL32.glUniform1i(attribLocationTransferFunction, config.autoSetTransferFunction ? GLFWColorManagement.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().getWindow()) : config.customTransferFunction.getId());
     }
-    @Redirect(method = "createShaders", at = @At(value = "INVOKE", target = "Lcom/moulberry/axiom/editor/CustomImGuiImplGl3;getFragmentShaderGlsl120()Ljava/lang/String;"))
+    @Redirect(method = "createShaders", at = @At(value = "INVOKE", target = "Lcom/moulberry/axiom/editor/CustomImGuiImplGl3;getFragmentShaderGlsl120()Ljava/lang/String;"), remap = false)
     private String hdr_mod$redirectToColorTransformProgramGlsl120(CustomImGuiImplGl3 instance){
         return this.glslVersion + "\n" +
                 "#ifdef GL_ES\n" +
@@ -127,7 +127,7 @@ public class MixinCustomImGuiImplGl3 {
                 "    gl_FragColor = color;\n" +
                 "}\n";
     }
-    @Redirect(method = "createShaders", at = @At(value = "INVOKE", target = "Lcom/moulberry/axiom/editor/CustomImGuiImplGl3;getFragmentShaderGlsl130()Ljava/lang/String;"))
+    @Redirect(method = "createShaders", at = @At(value = "INVOKE", target = "Lcom/moulberry/axiom/editor/CustomImGuiImplGl3;getFragmentShaderGlsl130()Ljava/lang/String;"), remap = false)
     private String hdr_mod$redirectToColorTransformProgramGlsl130(CustomImGuiImplGl3 instance) {
         return this.glslVersion + "\n" +
                 "uniform sampler2D Texture;\n" +
@@ -203,7 +203,7 @@ public class MixinCustomImGuiImplGl3 {
                 "    Out_Color = color;\n" +
                 "}\n";
     }
-    @Redirect(method = "createShaders", at = @At(value = "INVOKE", target = "Lcom/moulberry/axiom/editor/CustomImGuiImplGl3;getFragmentShaderGlsl300es()Ljava/lang/String;"))
+    @Redirect(method = "createShaders", at = @At(value = "INVOKE", target = "Lcom/moulberry/axiom/editor/CustomImGuiImplGl3;getFragmentShaderGlsl300es()Ljava/lang/String;"), remap = false)
     private String hdr_mod$redirectToColorTransformProgramGlsl300es(CustomImGuiImplGl3 instance) {
         return this.glslVersion + "\n" +
                 "precision mediump float;\n" +
@@ -280,7 +280,7 @@ public class MixinCustomImGuiImplGl3 {
                 "    Out_Color = color;\n" +
                 "}\n";
     }
-    @Redirect(method = "createShaders", at = @At(value = "INVOKE", target = "Lcom/moulberry/axiom/editor/CustomImGuiImplGl3;getFragmentShaderGlsl410Core()Ljava/lang/String;"))
+    @Redirect(method = "createShaders", at = @At(value = "INVOKE", target = "Lcom/moulberry/axiom/editor/CustomImGuiImplGl3;getFragmentShaderGlsl410Core()Ljava/lang/String;"), remap = false)
     private String hdr_mod$redirectToColorTransformProgramGlsl410Core(CustomImGuiImplGl3 instance){
         return this.glslVersion + "\n" +
                 "in vec2 Frag_UV;\n" +

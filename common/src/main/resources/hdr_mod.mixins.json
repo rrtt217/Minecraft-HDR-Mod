@@ -6,7 +6,6 @@
   "minVersion": "0.8",
   "client": [
     "MixinKeyboardHandler",
-    "MixinGameRenderer",
     "MixinMainTarget",
     "MixinRenderSystem",
     "MixinRenderTarget",

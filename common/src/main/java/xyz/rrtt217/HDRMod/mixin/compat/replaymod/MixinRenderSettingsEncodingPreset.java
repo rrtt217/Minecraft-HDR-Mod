@@ -18,7 +18,7 @@ public class MixinRenderSettingsEncodingPreset {
      * @author rrtt217
      * @reason overwrite default cmd prefix on HDR export enabled
      */
-    @Overwrite
+    @Overwrite(remap = false)
     public String getValue(){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport) return  "-color_primaries bt2020 -color_trc smpte2084 -color_range pc -y -f rawvideo -pix_fmt rgba64 -s %WIDTH%x%HEIGHT% -r %FPS% -i - %FILTERS%" + this.preset;

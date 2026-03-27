@@ -7,6 +7,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 
 @Mixin(OpenGlFrameCapturer.class)
 public interface OpenGlFrameCapturerAccessor {
-    @Invoker
+    @Invoker(remap = false)
     RenderTarget callFrameBuffer();
 }

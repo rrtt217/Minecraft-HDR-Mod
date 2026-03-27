@@ -45,7 +45,7 @@ public final class HDRMod {
     public static boolean isReplayRendering = false;
 
     static {
-        if(Platform.isForgeLike()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        if(Platform.isForge()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
     }
 
     public HDRMod() {
@@ -70,7 +70,7 @@ public final class HDRMod {
         });
 
         // Register config and set enableHDR once and for all.
-        if (!Platform.isForgeLike()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        if (!Platform.isForge()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         enableHDR = config.enableHDR;
 

@@ -24,13 +24,13 @@ import static xyz.rrtt217.HDRMod.HDRMod.ReplayColorTransformRenderer;
 @Mixin(OpenGlFrameCapturer.class)
 public class MixinOpenGlFrameCapturer {
 
-    @Inject(method = "renderFrame(IFLcom/replaymod/render/capturer/CaptureData;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At("HEAD"))
+    @Inject(method = "renderFrame(IFLcom/replaymod/render/capturer/CaptureData;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At("HEAD"), remap = false)
     private void hdr_mod$onRenderFrameBegin(CallbackInfoReturnable<OpenGlFrame> cir) {
         HDRMod.isReplayRendering = true;
     }
 
 
-    @Inject(method = "renderFrame(IFLcom/replaymod/render/capturer/CaptureData;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At(value = "INVOKE", target = "Lcom/replaymod/core/versions/MCVer;popMatrix()V"))
+    @Inject(method = "renderFrame(IFLcom/replaymod/render/capturer/CaptureData;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At(value = "INVOKE", target = "Lcom/replaymod/core/versions/MCVer;popMatrix()V"), remap = false)
     private void hdr_mod$doReplayModColorTransform(CallbackInfoReturnable<OpenGlFrame> cir) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport){
@@ -51,7 +51,7 @@ public class MixinOpenGlFrameCapturer {
         }
         HDRMod.isReplayRendering = false;
     }
-    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/utils/ByteBufferPool;allocate(I)Ljava/nio/ByteBuffer;"), index = 0)
+    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/utils/ByteBufferPool;allocate(I)Ljava/nio/ByteBuffer;"), index = 0, remap = false)
     private int hdr_mod$enlargeByteBuffer(int size){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport){
@@ -60,7 +60,7 @@ public class MixinOpenGlFrameCapturer {
         }
         return size;
     }
-    @Redirect(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;bindWrite(Z)V"))
+    @Redirect(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;bindWrite(Z)V"), remap = false)
     private void hdr_mod$bindDstTexure(RenderTarget instance, boolean bl){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport) {
@@ -73,7 +73,7 @@ public class MixinOpenGlFrameCapturer {
             ((OpenGlFrameCapturerAccessor) this).callFrameBuffer().bindWrite(bl);
         }
     }
-    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL11;glReadPixels(IIIIIILjava/nio/ByteBuffer;)V"), index = 5)
+    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL11;glReadPixels(IIIIIILjava/nio/ByteBuffer;)V"), index = 5, remap = false)
     private int hdr_mod$modifyReadPixelsType(int x){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport) return ReplayColorTransformRenderer.getDstReadPixelFormat();
@@ -81,15 +81,15 @@ public class MixinOpenGlFrameCapturer {
     }
 
     @PlatformOnly(PlatformOnly.FABRIC)
-    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/frame/OpenGlFrame;<init>(ILcom/replaymod/lib/de/johni0702/minecraft/gui/utils/lwjgl/ReadableDimension;ILjava/nio/ByteBuffer;)V"), index = 2)
+    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/frame/OpenGlFrame;<init>(ILcom/replaymod/lib/de/johni0702/minecraft/gui/utils/lwjgl/ReadableDimension;ILjava/nio/ByteBuffer;)V"), index = 2, remap = false)
     private int hdr_mod$modifyOpenGlFrameReturn(int bpp){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport) return bpp * 2;
         return bpp;
     }
     @PlatformOnly(PlatformOnly.FORGE)
-    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/frame/OpenGlFrame;<init>(ILcom/replaymod/lib/de/johni0702/minecraft/gui/utils/lwjgl/ReadableDimension;ILjava/nio/ByteBuffer;)V"), index = 2)
-    private int hdr_mod$modifyOpenGlFrameReturnNeoForge(int bpp){
+    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/frame/OpenGlFrame;<init>(ILde/johni0702/minecraft/gui/utils/lwjgl/ReadableDimension;ILjava/nio/ByteBuffer;)V"), index = 2, remap = false)
+    private int hdr_mod$modifyOpenGlFrameReturnForge(int bpp){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport) return bpp * 2;
         return bpp;
