@@ -5,16 +5,22 @@
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
+    "MixinKeyboardHandler",
     "MixinGameRenderer",
     "MixinMainTarget",
     "MixinRenderSystem",
     "MixinRenderTarget",
+    "MixinScreenshot",
     "MixinWindow"
   ],
   "mixins": [
     "MixinVanillaPackResources",
     "compat.iris.MixinIrisExclusiveUniforms",
-    "compat.iris.MixinStandardMacros"
+    "compat.iris.MixinStandardMacros",
+    "compat.replaymod.MixinOpenGlFrameCapturer",
+    "compat.replaymod.MixinPboOpenGlFrameCapturer",
+    "compat.replaymod.MixinRenderSettingsEncodingPreset",
+    "compat.replaymod.OpenGlFrameCapturerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -7,6 +7,7 @@ A minecraft mod that enables native HDR on Windows/Linux with Iris shaders. Curr
 - UI color correction by a BEFORE_BLIT pass.
 - Ingame config using Cloth Config API.
 - Ingame HDR screenshot.
+- Replay Mod HDR Video Export (only for versions above 1.21.10, need custom FFmpeg commandline, which can be found in config menu)
 ## For Users
 - See XgarhontX's temporary patches for HDR output and tonemapping on select shaderpacks with support for this mod: [Google Sheets](https://docs.google.com/spreadsheets/d/1WgOqKED2FxC11-2oyW4aBIyl8tAHo-8WJ7JPxhYAO2Q/edit?gid=0#gid=0)
   - See some pics here: [Wiki](https://github.com/rrtt217/Minecraft-HDR-Mod/wiki#gallery)
@@ -15,7 +16,7 @@ A minecraft mod that enables native HDR on Windows/Linux with Iris shaders. Curr
 - Supported platforms:
   - Windows: Nvidia/AMD GPU. **Intel GPU is not supported** and HDR is automatically turned off.
   - Linux Wayland: AMD/Intel GPU generally run flawlessly. People using Nvidia GPU may encounter some problems/crashes, see the troubleshooting for a potential workaround.
-  - macOS: **Currently not supported**, but mac testers are welcome if you have enough time and energy.
+  - macOS: Supported but need more testing, bugs are expected. Also, shaderpack support on macOS is limited.
   - Android/iOS: **Not supported**. If Mobile launcher developers are interested in the project, my glfw fork can be a starting point for HDR support in the future.
 - **Troubleshooting**:
     - ReShade is currently not compatible, failing to load and breaking sky.

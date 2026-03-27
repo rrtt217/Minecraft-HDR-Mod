@@ -1,3 +1,3 @@
-[submodule "thirdparty/glfw"]
-	path = thirdparty/glfw
+[submodule "native/glfw"]
+	path = native/glfw
 	url = https://github.com/rrtt217/glfw.git

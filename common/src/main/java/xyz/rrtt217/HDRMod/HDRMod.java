@@ -8,19 +8,24 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.LoggerFactory;
+import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 import xyz.rrtt217.HDRMod.util.Enums.*;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
+import java.io.IOException;
+
 public final class HDRMod {
     public static final String MOD_ID = "hdr_mod";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    // Default Internal values for HDR. We should register a hook to change them before shaderpack preload, and after window init.
-    public static Primaries WindowPrimaries = Primaries.SRGB;
-    public static TransferFunction WindowTransferFunction = TransferFunction.SRGB;
+    // Global Renderers.
+    public static ColorTransformRenderer PresentationColorTransformRenderer; // Unused now.
+    public static ColorTransformRenderer ScreenshotColorTransformRenderer;
+    public static ColorTransformRenderer ReplayColorTransformRenderer;
 
     // Key Mapping.;
     public static final KeyMapping CUSTOM_KEYMAPPING = new KeyMapping(
@@ -37,10 +42,10 @@ public final class HDRMod {
     );
     public static boolean enableHDR = true;
 
+    public static boolean isReplayRendering = false;
+
     static {
-        if(Platform.isForge()) {
-            AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-        }
+        if(Platform.isForgeLike()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
     }
 
     public HDRMod() {
@@ -65,9 +70,7 @@ public final class HDRMod {
         });
 
         // Register config and set enableHDR once and for all.
-        if(!Platform.isForge()) {
-            AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-        }
+        if (!Platform.isForgeLike()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         enableHDR = config.enableHDR;
 

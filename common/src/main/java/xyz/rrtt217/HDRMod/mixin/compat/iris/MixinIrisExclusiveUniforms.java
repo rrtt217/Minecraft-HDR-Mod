@@ -24,9 +24,37 @@ public class MixinIrisExclusiveUniforms {
         HDRMod.LOGGER.info("GLFW Reported Paper: {}", GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle));
         // Add uniforms. Almost no performance lost at least on Linux for calling GLFW functions every tick.
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        uniforms.uniform1f(UniformUpdateFrequency.PER_TICK,"HdrGameMinimumBrightness",() -> config.customGameMinimumBrightness < 0 ? GLFWColorManagement.glfwGetWindowMinLuminance(handle) : config.customGameMinimumBrightness );
-        uniforms.uniform1f(UniformUpdateFrequency.PER_TICK,"HdrGamePeakBrightness",() -> config.customGamePeakBrightness < 0 ? GLFWColorManagement.glfwGetWindowMaxLuminance(handle) : config.customGamePeakBrightness );
-        uniforms.uniform1f(UniformUpdateFrequency.PER_TICK,"HdrGamePaperWhiteBrightness", () -> config.customGamePaperWhiteBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle) : config.customGamePaperWhiteBrightness);
-        uniforms.uniform1f(UniformUpdateFrequency.PER_TICK,"HdrUIBrightness", () -> config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle) : config.uiBrightness);
+        uniforms.uniform1f(
+                UniformUpdateFrequency.PER_TICK,"HdrGameMinimumBrightness",
+                () -> {
+                    if(HDRMod.isReplayRendering && config.enableReplayHDRVideoExport && config.replayGameMinimumBrightness > 0)
+                        return config.replayGameMinimumBrightness;
+                    return config.customGameMinimumBrightness < 0 ? GLFWColorManagement.glfwGetWindowMinLuminance(handle) : config.customGameMinimumBrightness;
+                }
+        );
+        uniforms.uniform1f(
+                UniformUpdateFrequency.PER_TICK,"HdrGamePeakBrightness",
+                () ->{
+                    if(HDRMod.isReplayRendering && config.enableReplayHDRVideoExport && config.replayGamePeakBrightness > 0)
+                        return config.replayGamePeakBrightness;
+                    return config.customGamePeakBrightness < 0 ? GLFWColorManagement.glfwGetWindowMaxLuminance(handle) : config.customGamePeakBrightness;
+                }
+        );
+        uniforms.uniform1f(
+                UniformUpdateFrequency.PER_TICK,"HdrGamePaperWhiteBrightness",
+                () -> {
+                    if(HDRMod.isReplayRendering && config.enableReplayHDRVideoExport && config.replayGamePaperWhiteBrightness > 0)
+                        return config.replayGamePaperWhiteBrightness;
+                    return config.customGamePaperWhiteBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle) : config.customGamePaperWhiteBrightness;
+                }
+        );
+        uniforms.uniform1f(
+                UniformUpdateFrequency.PER_TICK,"HdrUIBrightness",
+                () -> {
+                    if(HDRMod.isReplayRendering && config.enableReplayHDRVideoExport && config.replayUIBrightness > 0)
+                        return config.replayUIBrightness;
+                    return config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle) : config.uiBrightness;
+                }
+        );
     }
 }
