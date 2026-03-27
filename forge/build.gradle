@@ -78,7 +78,8 @@ dependencies {
     modLocalRuntime "maven.modrinth:oculus:${minecraft_version}-${oculus_version}"
     modImplementation "curse.maven:reforgedplay-mod-1018692:5637596"
 
-    //forgeRuntimeLibrary "org.anarres:jcpp:1.4.14"
+    localRuntime "org.anarres:jcpp:1.4.14"
+    forgeRuntimeLibrary "org.anarres:jcpp:1.4.14"
 
     implementation 'ar.com.hjg:pngj:2.1.0'
     forgeRuntimeLibrary 'ar.com.hjg:pngj:2.1.0'

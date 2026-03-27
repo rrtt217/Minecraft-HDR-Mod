@@ -44,6 +44,7 @@ public class MixinPboOpenGlFrameCapturer {
         if (config.enableReplayHDRVideoExport) return bpp * 2;
         return bpp;
     }
+    @Coerce
     @Redirect(method = "captureFrame(ILjava/lang/Enum;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;bindWrite(Z)V"), remap = false)
     private void hdr_mod$bindDstTexure(RenderTarget instance, boolean bl){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
