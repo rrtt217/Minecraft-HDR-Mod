@@ -45,8 +45,8 @@ public class ColorTransformRenderer implements AutoCloseable {
         this.dstTextureFramebufferId = GlStateManager.glGenFramebuffers();
         this.dstTextureId = TextureUtil.generateTextureId();
         GlStateManager._bindTexture(this.dstTextureId);
-        GlStateManager._texParameter(3553, 10241, srcTarget.filterMode);
-        GlStateManager._texParameter(3553, 10240, srcTarget.filterMode);
+        GlStateManager._texParameter(3553, 10241, 9728);
+        GlStateManager._texParameter(3553, 10240, 9728);
         GlStateManager._texParameter(3553, 10242, 33071);
         GlStateManager._texParameter(3553, 10243, 33071);
         GlStateManager._texImage2D(3553, 0, this.dstTextureFormat, width, height, 0, 6408, this.dstReadPixelFormat, (IntBuffer)null);
