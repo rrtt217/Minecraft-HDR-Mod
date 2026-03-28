@@ -79,6 +79,7 @@ dependencies {
     modImplementation "curse.maven:reforgedplay-mod-1018692:5637596"
 
     localRuntime "org.anarres:jcpp:1.4.14"
+    include "org.anarres:jcpp:1.4.14"
     forgeRuntimeLibrary "org.anarres:jcpp:1.4.14"
 
     implementation 'ar.com.hjg:pngj:2.1.0'
