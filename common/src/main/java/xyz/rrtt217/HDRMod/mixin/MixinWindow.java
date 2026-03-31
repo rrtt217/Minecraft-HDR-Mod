@@ -61,18 +61,22 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
                 GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 16);
                 GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
                 GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);
+                if(config.forceActivateGlDxInterop)
+                {
+                    GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
+                    GLFW.glfwWindowHint(0x00025004,GLFW.GLFW_TRUE);
+                }
                 // For float buffer. Note: Because Intel on Windows do not support float buffer (WGL_TYPE_RGBA_FLOAT_ARB), Intel users can't use this mod natively.
                 if(!applyLinuxWorkaround && !applyWindowsWorkaround && !config.useUNORMWindowPixelFormat) {
                     GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
                 }
                 else if(applyLinuxWorkaround) {
-                    HDRMod.LOGGER.warn("A workaround has been applied for your platform and hardware. HDR Mod may or may not work.");
+                    HDRMod.LOGGER.warn("A workaround (LinuxNvidiaMissingSupportForEGLFloatBuffer) has been applied for your platform and hardware. HDR Mod may or may not work.");
                 }
                 else if(applyWindowsWorkaround) {
                     GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
-                    GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
-                    GLFW.glfwWindowHint(0x00025004,GLFW.GLFW_TRUE);
-                    HDRMod.LOGGER.warn("A workaround has been applied for your platform and hardware. HDR Mod may or may not work.");
+                    if(!config.forceActivateGlDxInterop) GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
+                    HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
                 }
             }
         }
