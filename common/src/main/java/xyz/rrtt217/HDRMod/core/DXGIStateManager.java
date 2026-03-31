@@ -1,26 +1,49 @@
 package xyz.rrtt217.HDRMod.core;
 
 import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.blaze3d.platform.Window;
+
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL30;
+
+import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
 
 public class DXGIStateManager {
     public static int fbo = 0;
-    public static int texture = 0;
-    public static int update(int originalFbo){
-        if(originalFbo == 0 && GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WIN32) {
-            if(fbo == 0) fbo = GlStateManager.glGenFramebuffers();
-            if(texture != GLFWDXGIUtils.glfwGetWindowSwapchainImageTexture(Minecraft.getInstance().getWindow().handle())){
-                texture = GLFWDXGIUtils.glfwGetWindowSwapchainImageTexture(Minecraft.getInstance().getWindow().handle());
-                if(texture == 0) return originalFbo;
-                bindFrameBufferTextures(fbo, texture, 0, 0, GL30.GL_FRAMEBUFFER,false);
-            }
-            return fbo;
-        }
+    private static int currentTexture = 0;
+    private static int currentWidth = 0;
+    private static int currentHeight = 0;
+    public static int update(int originalFbo) {
+    if (originalFbo != 0 || GLFW.glfwGetPlatform() != GLFW.GLFW_PLATFORM_WIN32)
         return originalFbo;
+
+    Window window = Minecraft.getInstance().getWindow();
+    int newTexture = GLFWDXGIUtils.glfwGetWindowSwapchainImageTexture(window.handle());
+    int width = window.getWidth(), height = window.getHeight();
+
+    // Check if we need to update the FBO
+    if (fbo == 0 || newTexture != currentTexture || width != currentWidth || height != currentHeight) {
+        if (newTexture == 0) return originalFbo;
+
+        if (fbo == 0) fbo = GlStateManager.glGenFramebuffers();
+
+        // Rebind Color Texture To FBO
+        bindFrameBufferTextures(fbo, newTexture, 0, 0, GL30.GL_FRAMEBUFFER, false);
+
+        // Validate FBO
+        int status = GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
+        if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
+            HDRMod.LOGGER.error("FBO incomplete after resize: {}", status);
+        }
+
+        currentTexture = newTexture;
+        currentWidth = width;
+        currentHeight = height;
     }
+    return fbo;
+    }    
     private static void bindFrameBufferTextures(int k, int l, int m, int n, int o, boolean useStencil) {
         int i = o == 0 ? GL30.GL_DRAW_FRAMEBUFFER : o;
         int j = GlStateManager.getFrameBuffer(i);
