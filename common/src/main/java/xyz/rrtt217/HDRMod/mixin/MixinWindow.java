@@ -54,17 +54,23 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
                     hasOnlyIntelCard = false;
                 }
             }
-            boolean applyWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND) || (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32)) && !config.forceDisableGlfwWorkaround;
+            boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
+            boolean applyWindowsWorkaround = (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32) && !config.forceDisableGlfwWorkaround;
             if(platform != GLFW.GLFW_PLATFORM_X11 && enableHDR && HDRModMixinPlugin.hasGlfwLib) {
                 // For 16 bits per channel.
                 GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 16);
                 GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
                 GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);
                 // For float buffer. Note: Because Intel on Windows do not support float buffer (WGL_TYPE_RGBA_FLOAT_ARB), Intel users can't use this mod natively.
-                if(!applyWorkaround && !config.useUNORMWindowPixelFormat) {
+                if(!applyLinuxWorkaround && !applyWindowsWorkaround && !config.useUNORMWindowPixelFormat) {
                     GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
                 }
-                else if(applyWorkaround) {
+                else if(applyLinuxWorkaround) {
+                    HDRMod.LOGGER.warn("A workaround has been applied for your platform and hardware. HDR Mod may or may not work.");
+                }
+                else if(applyWindowsWorkaround) {
+                    GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
+                    GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
                     HDRMod.LOGGER.warn("A workaround has been applied for your platform and hardware. HDR Mod may or may not work.");
                 }
             }
