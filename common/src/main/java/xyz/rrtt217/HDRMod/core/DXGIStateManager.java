@@ -15,6 +15,7 @@ public class DXGIStateManager {
     private static int currentTexture = 0;
     private static int currentWidth = 0;
     private static int currentHeight = 0;
+    private static boolean currentIsMinimized = false;
     public static int update(int originalFbo) {
     if (originalFbo != 0 || GLFW.glfwGetPlatform() != GLFW.GLFW_PLATFORM_WIN32)
         return originalFbo;
@@ -22,9 +23,10 @@ public class DXGIStateManager {
     Window window = Minecraft.getInstance().getWindow();
     int newTexture = GLFWDXGIUtils.glfwGetWindowSwapchainImageTexture(window.handle());
     int width = window.getWidth(), height = window.getHeight();
+    boolean isMinimized = window.isMinimized();
 
     // Check if we need to update the FBO
-    if (fbo == 0 || newTexture != currentTexture || width != currentWidth || height != currentHeight) {
+    if (fbo == 0 || newTexture != currentTexture || width != currentWidth || height != currentHeight || isMinimized != currentIsMinimized) {
         if (newTexture == 0) return originalFbo;
 
         if (fbo == 0) fbo = GlStateManager.glGenFramebuffers();
@@ -41,6 +43,7 @@ public class DXGIStateManager {
         currentTexture = newTexture;
         currentWidth = width;
         currentHeight = height;
+        currentIsMinimized = isMinimized;
     }
     return fbo;
     }    
