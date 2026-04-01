@@ -1,14 +1,10 @@
 package xyz.rrtt217.HDRMod.mixin;
 
 import com.mojang.blaze3d.opengl.GlStateManager;
-import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.core.DXGIStateManager;
-import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
 
 @Mixin(GlStateManager.class)
 public class MixinGlStateManager {
