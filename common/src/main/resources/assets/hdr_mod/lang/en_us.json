@@ -27,7 +27,7 @@
   "text.autoconfig.hdr_mod.option.replayGamePeakBrightness": "Game Peak Brightness When Replay Mod Rendering",
 
   "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat": "Use UNORM Window Pixel Format",
-  "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat.@Tooltip": "Improve precision when using BT.2100 PQ transfer function, but completely breaks scRGB linear.\nAlso improve performance when OpenGL-DirectX Interop is enabled.\nKeep default if unsure.",
+  "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat.@Tooltip": "Improve precision when using BT.2100 PQ transfer function, but completely breaks scRGB linear.\nAlso improve performance when OpenGL-DirectX Interop is enabled, but breaks HDR on Windows without GL-DX Interop.\nKeep default if unsure.",
   "text.autoconfig.hdr_mod.option.forceActivateGlDxInterop": "(Windows) Force Activate OpenGL-DirectX Interop",
   "text.autoconfig.hdr_mod.option.forceActivateGlDxInterop.@Tooltip": "Use OpenGL to render offscreen and use DirectX to present the result in HDR format. May cause huge performance loss and mod incompatibilities.",
 

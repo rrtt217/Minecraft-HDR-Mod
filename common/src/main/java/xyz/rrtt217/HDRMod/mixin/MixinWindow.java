@@ -69,7 +69,7 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
                 GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
                 GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);
                 }
-                if(config.forceActivateGlDxInterop)
+                if(platform == GLFW.GLFW_PLATFORM_WIN32 && config.forceActivateGlDxInterop)
                 {
                     GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
                     GLFW.glfwWindowHint(0x00025004,GLFW.GLFW_TRUE);
