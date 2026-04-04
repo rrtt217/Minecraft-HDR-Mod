@@ -7,6 +7,7 @@
   "client": [
     "MixinGlCommandEncoder",
     "MixinGlDevice",
+    "MixinGlStateManager",
     "MixinKeyboardHandler",
     "MixinMainTarget",
     "MixinMinecraft",

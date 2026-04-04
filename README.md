@@ -23,7 +23,8 @@ A minecraft mod that enables native HDR on Windows/Linux with Iris shaders. Curr
     - Mods also messing with GLFW may be incompatible. (e.g. [Ixeris](https://modrinth.com/mod/ixeris))
     - If your game is too bright/dark, try to adjust the custom brightness values yourself.
     - If you're on Windows, don't forget to install the latest [Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170).
-    - If your game crashes on NeoForge, disable `earlyWindowControl` in `<game folder>/config/fml.toml`
+    - If your game crashes on NeoForge/Forge, disable `earlyWindowControl` in `<game folder>/config/fml.toml`
+    - If HDR is broken when shaders are enabled, please reset "Colorspace" setting in Iris/Oculus to "sRGB".
     - Clean temp file if your game doesn't start or some features are broken (path can be found in log, %TEMP%/glfw on Windows and /tmp/glfw on Linux).
     - For Linux Nvidia users, if your game can't start, or you feel too much banding ingame, here's a potential workaround (using Zink, so performance degradation is expected):
       - Use these environment variables:

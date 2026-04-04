@@ -53,6 +53,9 @@ public class HDRModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")
     public boolean useUNORMWindowPixelFormat = System.getProperty("os.name").toLowerCase().contains("linux");
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("advanced")
+    public boolean forceActivateGlDxInterop = false;
 
     @ConfigEntry.Category("debug")
     public boolean autoSetPrimaries = true;
