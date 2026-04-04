@@ -15,7 +15,7 @@ import java.util.Set;
 
 public class HDRModMixinPlugin implements IMixinConfigPlugin {
     private final String MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.";
-    private final String LIBRARY_VERSION = "3.5.1";
+    private final String LIBRARY_VERSION = "3.5.2";
     public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_mixin_plugin");
     public static boolean hasGlfwLib = false;
     public static boolean enableHDR = true;

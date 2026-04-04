@@ -9,10 +9,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.core.DXGIStateManager;
 import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
 
 import java.lang.reflect.Field;
@@ -28,6 +30,11 @@ public class MixinCustomImGuiImplGl3 {
     protected int attribLocationPrimaries = 0;
     @Unique
     protected int attribLocationTransferFunction = 0;
+
+    @ModifyArg(method = "setupRenderState", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL30;glBindFramebuffer(II)V", ordinal = -1), index = 1)
+    private int hdr_mod$useDxPboForImgui(int target){
+        return DXGIStateManager.replaceFbo(target);
+    }
 
     @Inject(method = "createDeviceObjects", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL20;glGetUniformLocation(ILjava/lang/CharSequence;)I"))
     private void hdr_mod$getHDRModUniformsLocation(CallbackInfoReturnable<Boolean> cir) throws NoSuchFieldException, IllegalAccessException {
