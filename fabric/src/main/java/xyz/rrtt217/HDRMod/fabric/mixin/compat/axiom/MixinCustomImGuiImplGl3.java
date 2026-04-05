@@ -9,9 +9,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.core.DXGIStateManager;
 import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
 
 
@@ -33,7 +35,12 @@ public class MixinCustomImGuiImplGl3 {
     @Shadow
     private String glslVersion;
 
-    @Inject(method = "createDeviceObjects", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glGetUniformLocation(ILjava/lang/CharSequence;)I"), remap = false)
+    @ModifyArg(method = "bind", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glBindFramebuffer(II)V", ordinal = -1), index = 1, remap = false)
+    private int hdr_mod$useDxPboForImgui(int target){
+        return DXGIStateManager.replaceFbo(target);
+    }
+
+    @Inject(method = "createDeviceObjects", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glGetUniformLocation(ILjava/lang/CharSequence;)I"))
     private void hdr_mod$getHDRModUniformsLocation(CallbackInfo ci) {
         this.attribLocationUIBrightness = GL32.glGetUniformLocation(this.gShaderHandle,"uiBrightness");
         this.attribLocationEotfEmulate = GL32.glGetUniformLocation(this.gShaderHandle,"eotfEmulate");
