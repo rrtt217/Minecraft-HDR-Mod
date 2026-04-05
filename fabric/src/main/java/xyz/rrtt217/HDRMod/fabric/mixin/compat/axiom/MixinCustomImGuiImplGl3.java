@@ -40,7 +40,7 @@ public class MixinCustomImGuiImplGl3 {
         return DXGIStateManager.replaceFbo(target);
     }
 
-    @Inject(method = "createDeviceObjects", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glGetUniformLocation(ILjava/lang/CharSequence;)I"))
+    @Inject(method = "createDeviceObjects", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glGetUniformLocation(ILjava/lang/CharSequence;)I"), remap = false)
     private void hdr_mod$getHDRModUniformsLocation(CallbackInfo ci) {
         this.attribLocationUIBrightness = GL32.glGetUniformLocation(this.gShaderHandle,"uiBrightness");
         this.attribLocationEotfEmulate = GL32.glGetUniformLocation(this.gShaderHandle,"eotfEmulate");
