@@ -1,4 +1,6 @@
 # Minecraft HDR Mod
+中文 | [English](https://github.com/rrtt217/Minecraft-HDR-Mod/blob/master/README.md)
+
 一个允许你在Windows / macOS / Linux 平台上使用Iris光影实现HDR输出的Minecraft模组.
 ## 已实现功能
 - 原生HDR输出, 支持 scRGB , HDR10/PQ 输出格式.
