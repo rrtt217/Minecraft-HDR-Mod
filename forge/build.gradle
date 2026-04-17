@@ -9,6 +9,7 @@ loom {
         client {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            vmArgs '-Dorg.lwjgl.glfw.libname=C:\\Users\\21899\\AppData\\Local\\Temp\\glfw\\glfw3.3.5.2.dll'
         }
     }
 }
