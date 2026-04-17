@@ -1,6 +1,7 @@
 package xyz.rrtt217.HDRMod.mixin;
 
 import com.mojang.blaze3d.platform.DisplayData;
+import com.mojang.blaze3d.platform.Monitor;
 import com.mojang.blaze3d.platform.ScreenManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.platform.WindowEventHandler;
@@ -19,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
 import oshi.SystemInfo;
 import oshi.hardware.GraphicsCard;
 import oshi.hardware.HardwareAbstractionLayer;
@@ -37,6 +40,10 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
     @Shadow
     public abstract long getWindow();
     @Shadow @Final @Mutable private long window;
+    @Shadow @Final private int width;
+    @Shadow @Final private int height;
+    @Shadow @Final private boolean fullscreen;
+    @Shadow @Final private Monitor monitor;
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwWindowHint(II)V", ordinal = 0))
     private void hdr_mod$16BitWindowHint(int hint, int value) {
@@ -114,76 +121,13 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
                 DXGIStateManager.setMinimized(newWidth == 0 || newHeight == 0);
             }
         }
-    @PlatformOnly(PlatformOnly.FORGE)
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwMakeContextCurrent(J)V", ordinal = 0))
-    private void hdr_mod$RecreateContext(long window) {
-        GLFW.glfwTerminate();
-        Util.timeSource = RenderSystem.initBackendSystem();
-        GLFW.glfwDefaultWindowHints();
-        GLFW.glfwWindowHint(139265, 196609);
-        GLFW.glfwWindowHint(139275, 221185);
-        GLFW.glfwWindowHint(139266, 3);
-        GLFW.glfwWindowHint(139267, 2);
-        GLFW.glfwWindowHint(139272, 204801);
-        GLFW.glfwWindowHint(139270, 1);
-        
-        // Get GLFW platform.
-        int platform = GLFW.glfwGetPlatform();
-
-        // Get config.
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-
-        // Get GPU.
-        SystemInfo systemInfo = new SystemInfo();
-        HardwareAbstractionLayer hardware = systemInfo.getHardware();
-        List<GraphicsCard> graphicsCards = hardware.getGraphicsCards();
-        boolean hasNvidiaCard = false;
-        boolean hasOnlyIntelCard = true;
-        for (GraphicsCard card : graphicsCards) {
-            if (card.getVendor().toLowerCase().contains("nvidia") && !hasNvidiaCard) {
-                hasNvidiaCard = true;
-            }
-            if (!card.getVendor().toLowerCase().contains("intel") && hasOnlyIntelCard) {
-                hasOnlyIntelCard = false;
-            }
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/loading/ImmediateWindowHandler;setupMinecraftWindow(Lcom/mojang/blaze3d/platform/Window;)V"))
+        private long hdr_mod$redirectForgeWindowSetup(CallbackInfoReturnable<Long> cir) {
+            // Do nothing to prevent Forge from messing with our window.
+            return GLFW.glfwCreateWindow(this.width, this.height, "string2", this.fullscreen && monitor != null ? monitor.getMonitor() : 0L, 0L);
         }
-            boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
-            boolean applyWindowsWorkaround = (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32) && !config.forceDisableGlfwWorkaround;
-            if(platform != GLFW.GLFW_PLATFORM_X11 && enableHDR && HDRModMixinPlugin.hasGlfwLib) {
-                // For 16 bits per channel.
-                if(applyWindowsWorkaround && config.useUNORMWindowPixelFormat) {
-                    GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 10);
-                    GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 10);
-                    GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 10);
-                    GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, 2);
-                }
-                else {
-                GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 16);
-                GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
-                GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);
-                }
-                if(platform == GLFW.GLFW_PLATFORM_WIN32 && config.forceActivateGlDxInterop)
-                {
-                    GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
-                    GLFW.glfwWindowHint(0x00025004,GLFW.GLFW_TRUE);
-                }
-                // For float buffer. Note: Because Intel on Windows do not support float buffer (WGL_TYPE_RGBA_FLOAT_ARB), Intel users can't use this mod natively.
-                if(!applyLinuxWorkaround && !applyWindowsWorkaround && !config.useUNORMWindowPixelFormat) {
-                    GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
-                }
-                else if(applyLinuxWorkaround) {
-                    HDRMod.LOGGER.warn("A workaround (LinuxNvidiaMissingSupportForEGLFloatBuffer) has been applied for your platform and hardware. HDR Mod may or may not work.");
-                }
-                else if(applyWindowsWorkaround) {
-                    if(!config.useUNORMWindowPixelFormat) GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
-                    if(!config.forceActivateGlDxInterop){ 
-                        GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
-                        if(config.useUNORMWindowPixelFormat) GLFW.glfwWindowHint(0x00025004,GLFW.GLFW_TRUE);
-                    }
-                    HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
-                }
-            }
-        window = GLFW.glfwCreateWindow(GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()).width(), GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()).height(), "Minecraft", 0L, 0L);
-        GLFW.glfwMakeContextCurrent(window);
-    }
+    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraftforge/fml/loading/ImmediateWindowHandler;positionWindow"))
+        private void hdr_mod$redirectForgeWindowSetup2(Object instance, Window window, CallbackInfo ci) {
+            // Do nothing to prevent Forge from messing with our window.
+        }
 }
