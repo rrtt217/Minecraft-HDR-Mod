@@ -24,6 +24,14 @@ configurations {
     }
 }
 
+loom{
+    runs {
+        client {
+            vmArgs '-Dorg.lwjgl.glfw.libname=/tmp/glfw/libglfw.3.5.2.so'
+        }
+    }
+}
+
 repositories {
     maven {
         name = 'NeoForged'

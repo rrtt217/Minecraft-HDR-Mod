@@ -44,3 +44,6 @@ side = "BOTH"
 
 [[mixins]]
 config = "hdr_mod.mixins.json"
+
+[[mixins]]
+config = "hdr_mod.neoforge.mixins.json"

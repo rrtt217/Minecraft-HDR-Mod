@@ -16,9 +16,9 @@ public final class HDRModNeoForge {
         if (FMLEnvironment.getDist().isClient()) {
             HDRModForgeConfigHelper.registerConfig();
         }
-        if (FMLConfig.getBoolConfigValue(FMLConfig.ConfigValue.EARLY_WINDOW_CONTROL)){
-            FMLConfig.updateConfig(FMLConfig.ConfigValue.EARLY_WINDOW_CONTROL, false);
-            JOptionPane.showMessageDialog(null, "HDR Mod is currently incompatible with (Neo)Forge Early Window Control!\n The game will crash and auto disable Early Window Control so the next launch will be successful.", "Error", JOptionPane.ERROR_MESSAGE);
-        }
+//        if (FMLConfig.getBoolConfigValue(FMLConfig.ConfigValue.EARLY_WINDOW_CONTROL)){
+//            FMLConfig.updateConfig(FMLConfig.ConfigValue.EARLY_WINDOW_CONTROL, false);
+//            JOptionPane.showMessageDialog(null, "HDR Mod is currently incompatible with (Neo)Forge Early Window Control!\n The game will crash and auto disable Early Window Control so the next launch will be successful.", "Error", JOptionPane.ERROR_MESSAGE);
+//        }
     }
 }

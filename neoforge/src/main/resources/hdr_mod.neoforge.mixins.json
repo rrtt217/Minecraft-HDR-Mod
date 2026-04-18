@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "package": "xyz.rrtt217.HDRMod.neoforge.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+    "NeoForgeMixinRenderSystem",
+    "NeoForgeMixinWindow"
+  ],
+  "mixins": [
+    "NeoForgeMixinLoadingScreenRenderer"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
