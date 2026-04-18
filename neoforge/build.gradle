@@ -27,7 +27,7 @@ configurations {
 loom{
     runs {
         client {
-            vmArgs '-Dorg.lwjgl.glfw.libname=/tmp/glfw/libglfw.3.5.2.so'
+            vmArgs '-Dorg.lwjgl.glfw.libname=/tmp/glfw/libglfw.3.5.2.so', '-Dmixin.debug.export=true'
         }
     }
 }
