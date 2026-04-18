@@ -23,6 +23,7 @@ dependencies {
 
     modImplementation "maven.modrinth:iris:${iris_version}+${minecraft_version}-fabric"
     modImplementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
+    modImplementation "maven.modrinth:imblocker-original:Y0MhxxPc"
 
     implementation 'com.github.oshi:oshi-core:6.9.3'
     implementation 'ar.com.hjg:pngj:2.1.0'

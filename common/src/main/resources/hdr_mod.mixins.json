@@ -17,6 +17,7 @@
     "MixinWindow"
   ],
   "mixins": [
+    "compat.imblocker.MixinIMManagerLinux",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros"
   ],

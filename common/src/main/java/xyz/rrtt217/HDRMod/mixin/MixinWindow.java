@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import oshi.SystemInfo;
 import oshi.hardware.GraphicsCard;
 import oshi.hardware.HardwareAbstractionLayer;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
+import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
@@ -95,7 +95,7 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
         private void hdr_mod$setupWindowData(WindowEventHandler windowEventHandler, ScreenManager screenManager, DisplayData displayData, String string, String string2, CallbackInfo ci)
         {
             HDRMod.LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ",
-                GLFW.glfwGetWindowAttrib(this.handle(),GLFW.GLFW_RED_BITS), GLFWColorManagement.glfwGetWindowSdrWhiteLevel(this.handle()), GLFWColorManagement.glfwGetWindowMaxLuminance(this.handle()) ,GLFWColorManagement.glfwGetWindowMinLuminance(this.handle()),GLFWColorManagement.glfwGetWindowPrimaries(this.handle),GLFWColorManagement.glfwGetWindowTransfer(this.handle())
+                GLFW.glfwGetWindowAttrib(this.handle(),GLFW.GLFW_RED_BITS), GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(this.handle()), GLFWColorManagementUtils.glfwGetWindowMaxLuminance(this.handle()) , GLFWColorManagementUtils.glfwGetWindowMinLuminance(this.handle()), GLFWColorManagementUtils.glfwGetWindowPrimaries(this.handle), GLFWColorManagementUtils.glfwGetWindowTransfer(this.handle())
             );
             if(GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
         }
