@@ -26,6 +26,16 @@
   "text.autoconfig.hdr_mod.option.replayGameMinimumBrightness": "Game Minimum Brightness When Replay Mod Rendering",
   "text.autoconfig.hdr_mod.option.replayGamePeakBrightness": "Game Peak Brightness When Replay Mod Rendering",
 
+  "text.autoconfig.hdr_mod.option.enableCharCallbackReplacement": "Enable Vanilla GLFW Character Callback Replacement",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetStateIntegration": "Enable IMBlocker Set Input Method State Integration",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditOverlayPositionIntegration": "Enable IMBlocker Set Preedit Overlay Position Integration",
+  "text.autoconfig.hdr_mod.option.PreeditOverlayPositionFollowMonitorScale": "Divide By Monitor Scale When Setting Preedit Overlay Position",
+
+  "text.autoconfig.hdr_mod.option.enableCharCallbackReplacement.@Tooltip": "Necessary for input methods proper working on some platforms.",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetStateIntegration.@Tooltip": "Use native Wayland protocols in modified GLFW instead of commandline to control IME on/off. May not work as expected in some cases.",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditOverlayPositionIntegration.@Tooltip": "Use LWJGL 3.4.1 function to set IME overlay position.",
+  "text.autoconfig.hdr_mod.option.PreeditOverlayPositionFollowMonitorScale.@Tooltip": "Necessary for some platforms to make IME overlay position correct.",
+
   "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat": "Use UNORM Window Pixel Format",
   "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat.@Tooltip": "Improve precision when using BT.2100 PQ transfer function, but completely breaks scRGB linear.\nAlso improve performance when OpenGL-DirectX Interop is enabled, but breaks HDR on Windows without GL-DX Interop.\nKeep default if unsure.",
   "text.autoconfig.hdr_mod.option.forceActivateGlDxInterop": "(Windows) Force Activate OpenGL-DirectX Interop",
@@ -45,6 +55,7 @@
   "text.autoconfig.hdr_mod.category.advanced": "Advanced",
   "text.autoconfig.hdr_mod.category.screenshot": "Screenshot",
   "text.autoconfig.hdr_mod.category.replay": "Replay Mod",
+  "text.autoconfig.hdr_mod.category.ime": "Input Method",
   "text.autoconfig.hdr_mod.category.debug": "Debug",
 
   "key.hdr_mod.open_config_menu": "Open Config Menu",
