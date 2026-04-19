@@ -16,7 +16,7 @@ public class DXGIStateManager {
     private static int currentDXWidth = 0;
     private static int currentDXHeight = 0;
     private static boolean currentDXIsMinimized = false;
-    private static boolean currentIsMinimized = false;
+    private static volatile boolean currentIsMinimized = false;
     public static int replaceFbo(int originalFbo) {
         if (originalFbo != 0 || GLFW.glfwGetPlatform() != GLFW.GLFW_PLATFORM_WIN32)
             return originalFbo;
@@ -49,6 +49,9 @@ public class DXGIStateManager {
     }
     public static void setMinimized(boolean isMinimized) {
         currentIsMinimized = isMinimized;
+    }
+    public static boolean getMinimized() {
+        return currentIsMinimized;
     }
 
     public static int replaceFboGLOnly(int newTexture, int width, int height,

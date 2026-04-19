@@ -23,7 +23,7 @@ public class MixinIMManagerLinux {
     @Inject(method = "setState", at = @At("HEAD"), cancellable = true, remap = false)
     private void setState(boolean on, CallbackInfo ci) {
         if (state != on) {
-            GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().handle(),0x00033007, on ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+            GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().getWindow(),0x00033007, on ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
             state = on;
         }
         ci.cancel();
@@ -31,7 +31,7 @@ public class MixinIMManagerLinux {
     // This works on the original LWJGL 3.4.1 GLFW.
     @Unique
     public void updateCompositionWindowPos(Point pos) {
-        long handle = Minecraft.getInstance().getWindow().handle();
+        long handle = Minecraft.getInstance().getWindow().getWindow();
         FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
         FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
         GLFW.glfwGetWindowContentScale(handle, xscale, yscale);

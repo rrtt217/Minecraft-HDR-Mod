@@ -92,7 +92,7 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
         private void hdr_mod$setupWindowData(WindowEventHandler windowEventHandler, ScreenManager screenManager, DisplayData displayData, String string, String string2, CallbackInfo ci)
         {
             HDRMod.LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ",
-                    GLFW.glfwGetWindowAttrib(this.getWindow(),GLFW.GLFW_RED_BITS), GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(this.getWindow()), GLFWColorManagementUtils.glfwGetWindowMaxLuminance(this.getWindow()) ,GLFWColorManagementUtils.glfwGetWindowMinLuminance(this.getWindow()),Enums.Primaries.fromId(GLFWColorManagement.glfwGetWindowPrimaries(this.getWindow())),Enums.TransferFunction.fromId(GLFWColorManagementUtils.glfwGetWindowTransfer(this.getWindow()))
+                    GLFW.glfwGetWindowAttrib(this.getWindow(),GLFW.GLFW_RED_BITS), GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(this.getWindow()), GLFWColorManagementUtils.glfwGetWindowMaxLuminance(this.getWindow()) ,GLFWColorManagementUtils.glfwGetWindowMinLuminance(this.getWindow()),Enums.Primaries.fromId(GLFWColorManagementUtils.glfwGetWindowPrimaries(this.getWindow())),Enums.TransferFunction.fromId(GLFWColorManagementUtils.glfwGetWindowTransfer(this.getWindow()))
             );
             if(GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
         }

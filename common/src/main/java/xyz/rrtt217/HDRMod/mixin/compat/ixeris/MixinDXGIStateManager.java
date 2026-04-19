@@ -26,7 +26,7 @@ public class MixinDXGIStateManager {
 
         com.mojang.blaze3d.platform.Window window =
                 net.minecraft.client.Minecraft.getInstance().getWindow();
-        long handle = window.handle();
+        long handle = window.getWindow();
 
         if (GLFWDXGIUtils.glfwGetPendingDXGIResize(handle) > 0) {
             GLFWDXGIUtils.glfwReleaseCurrentContext();
@@ -50,6 +50,6 @@ public class MixinDXGIStateManager {
         cir.setReturnValue(DXGIStateManager.replaceFboGLOnly(
                 DXGISwapchainCache.texture,
                 window.getWidth(), window.getHeight(),
-                window.isMinimized(), originalFbo));
+                DXGIStateManager.getMinimized(), originalFbo));
     }
 }

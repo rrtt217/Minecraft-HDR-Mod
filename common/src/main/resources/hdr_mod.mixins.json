@@ -15,15 +15,16 @@
   ],
   "mixins": [
     "MixinVanillaPackResources",
+    "compat.imblocker.MixinIMManagerLinux",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
+    "compat.ixeris.MixinDXGIStateManager",
+    "compat.ixeris.MixinGLFWColorManagementUtils",
+    "compat.ixeris.MixinGLFWIMEUtils",
     "compat.replaymod.MixinOpenGlFrameCapturer",
     "compat.replaymod.MixinPboOpenGlFrameCapturer",
     "compat.replaymod.MixinRenderSettingsEncodingPreset",
-    "compat.replaymod.OpenGlFrameCapturerAccessor",
-    "compat.ixeris.MixinDXGIStateManager",
-    "compat.ixeris.MixinGLFWColorManagementUtils",
-    "compat.ixeris.MixinGLFWIMEUtils"
+    "compat.replaymod.OpenGlFrameCapturerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
