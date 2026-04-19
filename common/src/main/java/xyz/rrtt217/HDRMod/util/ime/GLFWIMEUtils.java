@@ -7,7 +7,6 @@ import org.lwjgl.system.NativeType;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.system.APIUtil.apiGetFunctionAddress;
-import static org.lwjgl.system.APIUtil.apiGetFunctionAddressOptional;
 import static org.lwjgl.system.Checks.*;
 import static org.lwjgl.system.JNI.*;
 import static org.lwjgl.system.MemoryUtil.memAddressSafe;
@@ -20,9 +19,9 @@ public class GLFWIMEUtils {
 
         /** Function address. */
         public static final long
-                SetPreeditCallback            = apiGetFunctionAddressOptional(GLFW.getLibrary(), "glfwSetPreeditCallback"),
-                SetIMEStatusCallback          = apiGetFunctionAddressOptional(GLFW.getLibrary(), "glfwSetIMEStatusCallback"),
-                SetPreeditCandidateCallback   = apiGetFunctionAddressOptional(GLFW.getLibrary(), "glfwSetPreeditCandidateCallback"),
+                SetPreeditCallback            = apiGetFunctionAddress(GLFW.getLibrary(), "glfwSetPreeditCallback"),
+                SetIMEStatusCallback          = apiGetFunctionAddress(GLFW.getLibrary(), "glfwSetIMEStatusCallback"),
+                SetPreeditCandidateCallback   = apiGetFunctionAddress(GLFW.getLibrary(), "glfwSetPreeditCandidateCallback"),
                 GetPreeditCursorRectangle     = apiGetFunctionAddress(GLFW.getLibrary(), "glfwGetPreeditCursorRectangle"),
                 SetPreeditCursorRectangle     = apiGetFunctionAddress(GLFW.getLibrary(), "glfwSetPreeditCursorRectangle");
 

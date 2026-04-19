@@ -77,6 +77,8 @@ dependencies {
     modLocalRuntime "maven.modrinth:embeddium:${embeddium_version}+mc${minecraft_version}"
     modLocalRuntime "maven.modrinth:oculus:${minecraft_version}-${oculus_version}"
     modImplementation "curse.maven:reforgedplay-mod-1018692:5637596"
+    modCompileOnly "maven.modrinth:imblocker-original:6XnV6Gqd"
+    modImplementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
 
     localRuntime "org.anarres:jcpp:1.4.14"
     include "org.anarres:jcpp:1.4.14"

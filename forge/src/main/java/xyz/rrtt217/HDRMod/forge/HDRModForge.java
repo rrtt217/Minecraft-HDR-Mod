@@ -2,6 +2,7 @@ package xyz.rrtt217.HDRMod.forge;
 
 import net.minecraftforge.fml.common.Mod;
 
+import net.minecraftforge.fml.loading.FMLConfig;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import xyz.rrtt217.HDRMod.HDRMod;
 
