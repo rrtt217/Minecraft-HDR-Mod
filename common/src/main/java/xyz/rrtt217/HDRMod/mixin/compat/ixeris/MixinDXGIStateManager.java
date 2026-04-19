@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.fabric.mixin.compat.ixeris;
+package xyz.rrtt217.HDRMod.mixin.compat.ixeris;
 
 import me.decce.ixeris.api.IxerisApi;
 import org.lwjgl.glfw.GLFW;

@@ -17,7 +17,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     private final String MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.";
     private final String FABRIC_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.fabric.mixin.";
     private final String NEOFORGE_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.neoforge.mixin.";
-    private final String IXERIS_COMPAT_MIXIN_PREFIX = "xyz.rrtt217.HDRMod.fabric.mixin.compat.ixeris.";
+    private final String IXERIS_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.ixeris.";
     private final String LIBRARY_VERSION = "3.5.3";
     public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_mixin_plugin");
     public static boolean hasGlfwLib = false;
@@ -60,7 +60,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String tClass, String mClassPath) {
-        if (mClassPath.startsWith(IXERIS_COMPAT_MIXIN_PREFIX)) {
+        if (mClassPath.startsWith(IXERIS_COMPAT_MIXIN_CLASS_START)) {
             return hasIxeris;
         }
         return mClassPath.startsWith(MIXIN_CLASS_START) || mClassPath.startsWith(FABRIC_MIXIN_CLASS_START) ||  mClassPath.startsWith(NEOFORGE_MIXIN_CLASS_START);

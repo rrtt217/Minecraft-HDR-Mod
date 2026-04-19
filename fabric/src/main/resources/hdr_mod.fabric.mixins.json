@@ -10,9 +10,7 @@
     "compat.flashback.MixinCustomImGuiImplGl3",
     "compat.replaymod.MixinOpenGlFrameCapturer",
     "compat.replaymod.MixinPboOpenGlFrameCapturer",
-    "compat.replaymod.MixinRenderSettingsEncodingPreset",
-    "compat.ixeris.MixinDXGIStateManager",
-    "compat.ixeris.MixinGLFWColorManagementUtils"
+    "compat.replaymod.MixinRenderSettingsEncodingPreset"
   ],
   "injectors": {
     "defaultRequire": 1
