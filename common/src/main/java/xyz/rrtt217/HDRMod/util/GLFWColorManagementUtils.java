@@ -7,7 +7,7 @@ import static org.lwjgl.system.APIUtil.*;
 import static org.lwjgl.system.Checks.*;
 import static org.lwjgl.system.JNI.*;
 
-public class GLFWColorManagement {
+public class GLFWColorManagementUtils {
     /** Contains the function pointers loaded from {@code GLFW.getLibrary()}. */
     public static final class Functions {
 
@@ -23,7 +23,7 @@ public class GLFWColorManagement {
 
     }
 
-    protected GLFWColorManagement() {
+    protected GLFWColorManagementUtils() {
         throw new UnsupportedOperationException();
     }
     // --- [ glfwGetWindowSdrWhiteLevel ] ---

@@ -49,6 +49,8 @@ dependencies {
     modImplementation "maven.modrinth:replaymod:1.21-2.6.23"
     modImplementation "maven.modrinth:flashback:vQyhWboq"
     modCompileOnly "maven.modrinth:axiom:jTdCyf2H"
+    modImplementation "maven.modrinth:imblocker-original:pqm5KOAS"
+    modImplementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"

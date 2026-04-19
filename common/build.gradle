@@ -24,6 +24,7 @@ dependencies {
     modCompileOnly "maven.modrinth:iris:${iris_version}+${minecraft_version}-fabric"
     //modLocalRuntime "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
     modCompileOnly "maven.modrinth:replaymod:1.21-2.6.23"
+    modImplementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
 
     implementation 'com.github.oshi:oshi-core:6.9.3'
     implementation 'ar.com.hjg:pngj:2.1.0'
