@@ -47,8 +47,20 @@ public class HDRModConfig implements ConfigData {
     public float replayGamePeakBrightness = 10000.0f;
     @ConfigEntry.Category("replay")
     public float replayGameMinimumBrightness = 0.0f;
-
     // Due to export pixel format, the primaries is always Rec.2020 and tf always PQ.
+
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("ime")
+    public boolean enableCharCallbackReplacement = true;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("ime")
+    public boolean enableIMBlockerSetStateIntegration = true;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("ime")
+    public boolean enableIMBlockerSetPreeditOverlayPositionIntegration = true;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("ime")
+    public boolean PreeditOverlayPositionFollowMonitorScale = true;
 
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")

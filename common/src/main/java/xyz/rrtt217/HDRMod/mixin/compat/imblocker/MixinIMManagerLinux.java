@@ -1,6 +1,7 @@
 package xyz.rrtt217.HDRMod.mixin.compat.imblocker;
 
 import io.github.reserveword.imblocker.common.gui.Point;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
@@ -10,6 +11,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
 import java.nio.FloatBuffer;
 
@@ -22,6 +24,8 @@ public class MixinIMManagerLinux {
     // This only works on our modified GLFW, not the original LWJGL 3.4.1 version!
     @Inject(method = "setState", at = @At("HEAD"), cancellable = true, remap = false)
     private void setState(boolean on, CallbackInfo ci) {
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(!config.enableIMBlockerSetStateIntegration) return;
         if (state != on) {
             GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().getWindow(),0x00033007, on ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
             state = on;
@@ -31,10 +35,17 @@ public class MixinIMManagerLinux {
     // This works on the original LWJGL 3.4.1 GLFW.
     @Unique
     public void updateCompositionWindowPos(Point pos) {
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(!config.enableIMBlockerSetPreeditOverlayPositionIntegration) return;
         long handle = Minecraft.getInstance().getWindow().getWindow();
-        FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
-        FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
-        GLFW.glfwGetWindowContentScale(handle, xscale, yscale);
-        glfwSetPreeditCursorRectangle(handle, (int)(pos.x() / xscale.get()), (int)(pos.y() / yscale.get()), 0, 0);
+        if(config.enableIMBlockerSetPreeditOverlayPositionIntegration) {
+            FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
+            FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
+            GLFW.glfwGetWindowContentScale(handle, xscale, yscale);
+            glfwSetPreeditCursorRectangle(handle, (int) (pos.x() / xscale.get()), (int) (pos.y() / yscale.get()), 0, 0);
+        }
+        else{
+            glfwSetPreeditCursorRectangle(handle, pos.x(), pos.y(), 0, 0);
+        }
     }
 }
