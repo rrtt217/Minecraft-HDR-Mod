@@ -16,34 +16,55 @@ public class GLFWDXGIUtils {
 
         /** Function address. */
         public static final long
-                GetWin32SwapchainImageHandle = apiGetFunctionAddress(GLFW.getLibrary(), "glfwGetWin32SwapchainImageHandle"),
-                GetWindowSwapchainImageTexture = apiGetFunctionAddress(GLFW.getLibrary(), "glfwGetWindowSwapchainImageTexture");
-
+                GetWin32SwapchainImageHandle   = apiGetFunctionAddress(GLFW.getLibrary(), "glfwGetWin32SwapchainImageHandle"),
+                GetWindowSwapchainImageTexture = apiGetFunctionAddress(GLFW.getLibrary(), "glfwGetWindowSwapchainImageTexture"),
+                CompletePendingDXGIResize      = apiGetFunctionAddress(GLFW.getLibrary(), "glfwCompletePendingDXGIResize"),
+                GetPendingDXGIResize           = apiGetFunctionAddress(GLFW.getLibrary(), "glfwGetPendingDXGIResize"),
+                ReleaseCurrentContext          = apiGetFunctionAddress(GLFW.getLibrary(), "glfwReleaseCurrentContext"),
+                ReacquireCurrentContext        = apiGetFunctionAddress(GLFW.getLibrary(), "glfwReacquireCurrentContext"),
+                GetPendingDXGIResizeHeight     = apiGetFunctionAddress(GLFW.getLibrary(), "glfwGetPendingDXGIResizeHeight");
     }
 
-    protected GLFWDXGIUtils() {
-        throw new UnsupportedOperationException();
-    }
-    // --- [ glfwGetWin32SwapchainImageHandle ] ---
+    protected GLFWDXGIUtils() { throw new UnsupportedOperationException(); }
 
     /** {@code long glfwGetWin32SwapchainImageHandle(GLFWwindow *window)} */
     @NativeType("long")
     public static long glfwGetWin32SwapchainImageHandle(@NativeType("GLFWwindow *") long window) {
-        long __functionAddress = GLFWDXGIUtils.Functions.GetWin32SwapchainImageHandle;
-        if (CHECKS) {
-            check(window);
-        }
-        return invokePJ(window, __functionAddress);
+        if (CHECKS) check(window);
+        return invokePJ(window, Functions.GetWin32SwapchainImageHandle);
     }
     // --- [ glfwGetWindowSwapchainImageTexture ] ---
 
     /** {@code int glfwGetWin32SwapchainImageHandle(GLFWwindow *window)} */
     @NativeType("int")
     public static int glfwGetWindowSwapchainImageTexture(@NativeType("GLFWwindow *") long window) {
-        long __functionAddress = GLFWDXGIUtils.Functions.GetWindowSwapchainImageTexture;
-        if (CHECKS) {
-            check(window);
-        }
-        return invokePI(window, __functionAddress);
+        if (CHECKS) check(window);
+        return invokePI(window, Functions.GetWindowSwapchainImageTexture);
+    }
+
+    public static void glfwCompletePendingDXGIResize(@NativeType("GLFWwindow *") long window) {
+        if (CHECKS) check(window);
+        invokePV(window, Functions.CompletePendingDXGIResize);
+    }
+
+    public static int glfwGetPendingDXGIResize(@NativeType("GLFWwindow *") long window) {
+        if (CHECKS) check(window);
+        return invokePI(window, Functions.GetPendingDXGIResize);
+    }
+
+    /** Calls wglMakeCurrent(NULL, NULL) on the calling thread. */
+    public static void glfwReleaseCurrentContext() {
+        invokeV(Functions.ReleaseCurrentContext);
+    }
+
+    public static int glfwGetPendingDXGIResizeHeight(@NativeType("GLFWwindow *") long window) {
+        if (CHECKS) check(window);
+        return invokePI(window, Functions.GetPendingDXGIResizeHeight);
+    }
+
+    /** Restores Minecraft's WGL context on the calling thread. */
+    public static void glfwReacquireCurrentContext(@NativeType("GLFWwindow *") long window) {
+        if (CHECKS) check(window);
+        invokePV(window, Functions.ReacquireCurrentContext);
     }
 }

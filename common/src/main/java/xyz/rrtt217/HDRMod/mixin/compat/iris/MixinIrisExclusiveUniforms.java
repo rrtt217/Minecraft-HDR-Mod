@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
+import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
 
@@ -19,9 +19,9 @@ public class MixinIrisExclusiveUniforms {
     @Inject(method = "addIrisExclusiveUniforms", at = @At("RETURN"), remap = false)
     private static void addHDRModExclusiveUniforms(UniformHolder uniforms, CallbackInfo ci) {
         var handle = Minecraft.getInstance().getWindow().getWindow();
-        HDRMod.LOGGER.info("GLFW Reported Min: {}", GLFWColorManagement.glfwGetWindowMinLuminance(handle));
-        HDRMod.LOGGER.info("GLFW Reported Peak: {}", GLFWColorManagement.glfwGetWindowMaxLuminance(handle));
-        HDRMod.LOGGER.info("GLFW Reported Paper: {}", GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle));
+        HDRMod.LOGGER.info("GLFW Reported Min: {}", GLFWColorManagementUtils.glfwGetWindowMinLuminance(handle));
+        HDRMod.LOGGER.info("GLFW Reported Peak: {}", GLFWColorManagementUtils.glfwGetWindowMaxLuminance(handle));
+        HDRMod.LOGGER.info("GLFW Reported Paper: {}", GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(handle));
         // Add uniforms. Almost no performance lost at least on Linux for calling GLFW functions every tick.
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         uniforms.uniform1f(
@@ -29,7 +29,7 @@ public class MixinIrisExclusiveUniforms {
                 () -> {
                     if(HDRMod.isReplayRendering && config.enableReplayHDRVideoExport && config.replayGameMinimumBrightness > 0)
                         return config.replayGameMinimumBrightness;
-                    return config.customGameMinimumBrightness < 0 ? GLFWColorManagement.glfwGetWindowMinLuminance(handle) : config.customGameMinimumBrightness;
+                    return config.customGameMinimumBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowMinLuminance(handle) : config.customGameMinimumBrightness;
                 }
         );
         uniforms.uniform1f(
@@ -37,7 +37,7 @@ public class MixinIrisExclusiveUniforms {
                 () ->{
                     if(HDRMod.isReplayRendering && config.enableReplayHDRVideoExport && config.replayGamePeakBrightness > 0)
                         return config.replayGamePeakBrightness;
-                    return config.customGamePeakBrightness < 0 ? GLFWColorManagement.glfwGetWindowMaxLuminance(handle) : config.customGamePeakBrightness;
+                    return config.customGamePeakBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowMaxLuminance(handle) : config.customGamePeakBrightness;
                 }
         );
         uniforms.uniform1f(
@@ -45,7 +45,7 @@ public class MixinIrisExclusiveUniforms {
                 () -> {
                     if(HDRMod.isReplayRendering && config.enableReplayHDRVideoExport && config.replayGamePaperWhiteBrightness > 0)
                         return config.replayGamePaperWhiteBrightness;
-                    return config.customGamePaperWhiteBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle) : config.customGamePaperWhiteBrightness;
+                    return config.customGamePaperWhiteBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(handle) : config.customGamePaperWhiteBrightness;
                 }
         );
         uniforms.uniform1f(
@@ -53,7 +53,7 @@ public class MixinIrisExclusiveUniforms {
                 () -> {
                     if(HDRMod.isReplayRendering && config.enableReplayHDRVideoExport && config.replayUIBrightness > 0)
                         return config.replayUIBrightness;
-                    return config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(handle) : config.uiBrightness;
+                    return config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(handle) : config.uiBrightness;
                 }
         );
     }
