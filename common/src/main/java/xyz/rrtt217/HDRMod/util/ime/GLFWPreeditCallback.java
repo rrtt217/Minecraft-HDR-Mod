@@ -1,6 +1,6 @@
 package xyz.rrtt217.HDRMod.util.ime;
 
-import org.jspecify.annotations.*;
+import org.jetbrains.annotations.*;
 
 import org.lwjgl.system.*;
 

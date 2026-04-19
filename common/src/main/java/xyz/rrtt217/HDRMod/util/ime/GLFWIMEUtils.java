@@ -1,6 +1,6 @@
 package xyz.rrtt217.HDRMod.util.ime;
 
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.NativeType;
 

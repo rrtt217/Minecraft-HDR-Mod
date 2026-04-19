@@ -7,7 +7,7 @@ package xyz.rrtt217.HDRMod.util.ime;
  * MACHINE GENERATED FILE, DO NOT EDIT
  */
 
-import org.jspecify.annotations.*;
+import org.jetbrains.annotations.*;
 
 import org.lwjgl.system.*;
 
