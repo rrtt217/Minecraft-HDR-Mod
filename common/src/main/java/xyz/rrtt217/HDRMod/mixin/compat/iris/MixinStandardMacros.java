@@ -6,14 +6,13 @@ import net.irisshaders.iris.gl.shader.StandardMacros;
 import net.irisshaders.iris.helpers.StringPair;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagement;
+import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
 
 import java.util.ArrayList;
 
@@ -27,8 +26,8 @@ public class MixinStandardMacros {
         standardDefines.add(new StringPair("HDR_MOD_INSTALLED",""));
         if(enableHDR) {
             standardDefines.add(new StringPair("HDR_ENABLED", ""));
-            standardDefines.add(new StringPair("CURRENT_PRIMARIES", config.autoSetPrimaries ? Enums.Primaries.fromId(GLFWColorManagement.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle())).toString() : config.customPrimaries.toString()));
-            standardDefines.add(new StringPair("CURRENT_TRANSFER_FUNCTION", config.autoSetTransferFunction ? Enums.TransferFunction.fromId(GLFWColorManagement.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle())).toString() : config.customTransferFunction.toString()));
+            standardDefines.add(new StringPair("CURRENT_PRIMARIES", config.autoSetPrimaries ? Enums.Primaries.fromId(GLFWColorManagementUtils.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle())).toString() : config.customPrimaries.toString()));
+            standardDefines.add(new StringPair("CURRENT_TRANSFER_FUNCTION", config.autoSetTransferFunction ? Enums.TransferFunction.fromId(GLFWColorManagementUtils.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle())).toString() : config.customTransferFunction.toString()));
         }
         else{
             // Always set SRGB on non-HDR.

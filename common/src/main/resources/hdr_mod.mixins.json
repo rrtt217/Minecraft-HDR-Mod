@@ -17,8 +17,12 @@
     "MixinWindow"
   ],
   "mixins": [
+    "compat.imblocker.MixinIMManagerLinux",
     "compat.iris.MixinIrisExclusiveUniforms",
-    "compat.iris.MixinStandardMacros"
+    "compat.iris.MixinStandardMacros",
+    "compat.ixeris.MixinDXGIStateManager",
+    "compat.ixeris.MixinGLFWColorManagementUtils",
+    "compat.ixeris.MixinGLFWIMEUtils"
   ],
   "injectors": {
     "defaultRequire": 1

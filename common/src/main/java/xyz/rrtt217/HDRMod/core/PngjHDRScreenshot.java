@@ -48,8 +48,8 @@ public class PngjHDRScreenshot {
                 ScreenshotColorTransformRenderer.setSrcTarget(renderTarget);
             }
             ScreenshotColorTransformRenderer.updateColorTransformUniforms(
-                    config.uiBrightness < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
-                    config.customEotfEmulate < 0 ? GLFWColorManagement.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate,
+                    config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
+                    config.customEotfEmulate < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate,
                     Enums.Primaries.BT2020.getId(),
                     Enums.TransferFunction.ST2084_PQ.getId()
             );

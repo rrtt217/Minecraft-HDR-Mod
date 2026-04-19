@@ -46,7 +46,29 @@ public class DXGIStateManager {
         currentIsMinimized = isMinimized;
     }
     return fbo;
-    }    
+    }
+    public static int replaceFboGLOnly(int newTexture, int width, int height,
+                                       boolean isMinimized, int originalFbo) {
+        if (newTexture == 0) return originalFbo;
+
+        if (fbo == 0 || newTexture != currentTexture || width != currentWidth
+                || height != currentHeight || isMinimized != currentIsMinimized) {
+            if (fbo == 0) fbo = GlStateManager.glGenFramebuffers();
+
+            bindFrameBufferTextures(fbo, newTexture, 0, 0, GL30.GL_FRAMEBUFFER, false);
+
+            int status = GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
+            if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
+                HDRMod.LOGGER.error("FBO incomplete after resize: {}", status);
+            }
+
+            currentTexture = newTexture;
+            currentWidth = width;
+            currentHeight = height;
+            currentIsMinimized = isMinimized;
+        }
+        return fbo;
+    }
     private static void bindFrameBufferTextures(int k, int l, int m, int n, int o, boolean useStencil) {
         int i = o == 0 ? GL30.GL_DRAW_FRAMEBUFFER : o;
         int j = GlStateManager.getFrameBuffer(i);
