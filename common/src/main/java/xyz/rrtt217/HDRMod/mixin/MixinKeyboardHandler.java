@@ -1,6 +1,7 @@
 package xyz.rrtt217.HDRMod.mixin;
 
 import com.mojang.blaze3d.platform.Window;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.CharacterEvent;
@@ -12,6 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
 
 @Mixin(KeyboardHandler.class)
@@ -31,6 +33,8 @@ public class MixinKeyboardHandler {
     // Still need IMBlocker to properly show preedit.
     @Inject(method = "setup", at = @At(value = "TAIL"))
     private void hdr_mod$afterSetUp(Window window, CallbackInfo ci){
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(!config.enableCharCallbackReplacement) return;
         GLFW.glfwSetCharModsCallback(window.handle(), null);
         GLFW.glfwSetCharCallback(window.handle(), (l, i) -> {
             CharacterEvent characterEvent = new CharacterEvent(i, 0);
