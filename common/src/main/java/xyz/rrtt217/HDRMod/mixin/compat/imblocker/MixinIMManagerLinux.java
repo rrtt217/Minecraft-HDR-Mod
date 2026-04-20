@@ -1,7 +1,7 @@
 package xyz.rrtt217.HDRMod.mixin.compat.imblocker;
 
 import io.github.reserveword.imblocker.common.LinuxIMFramework;
-import io.github.reserveword.imblocker.common.gui.Point;
+import io.github.reserveword.imblocker.common.gui.*;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.BufferUtils;
@@ -16,6 +16,7 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
 import java.nio.FloatBuffer;
 
+import static io.github.reserveword.imblocker.common.IMManager.calculateCaretPos;
 import static xyz.rrtt217.HDRMod.util.ime.GLFWIMEUtils.glfwSetPreeditCursorRectangle;
 
 @Mixin(targets = "io.github.reserveword.imblocker.common.IMManagerLinux")
@@ -26,6 +27,8 @@ public class MixinIMManagerLinux {
     private void checkIMFramework() {}
     @Shadow
     private LinuxIMFramework imFramework;
+    @Unique
+    private volatile int fontsize;
 
 
     // This only works on our modified GLFW, not the original LWJGL 3.4.1 version!
@@ -60,10 +63,23 @@ public class MixinIMManagerLinux {
             FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
             FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
             GLFW.glfwGetWindowContentScale(handle, xscale, yscale);
-            glfwSetPreeditCursorRectangle(handle, (int) (pos.x() / xscale.get()), (int) (pos.y() / yscale.get()), 0, 0);
+            glfwSetPreeditCursorRectangle(handle, (int) (pos.x() / xscale.get()), (int) (pos.y() / yscale.get()), 0, -fontsize);
         }
         else{
             glfwSetPreeditCursorRectangle(handle, pos.x(), pos.y(), 0, 0);
         }
+        FocusableObject focusedWidget = FocusManager.getFocusOwner();
+        if(focusedWidget != null) {
+            Point caretPos = calculateCaretPos(focusedWidget, false);
+            UniversalIMEPreeditOverlay.getInstance().
+                    updateCaretPosition(caretPos.x(), caretPos.y());
+            UniversalIMECandidateOverlay.getInstance().
+                    updateCaretPosition(caretPos.x(), caretPos.y());
+        }
+    }
+
+    @Unique
+    public void updateCompositionFontSize(int fontSize) {
+        this.fontsize = fontSize;
     }
 }
