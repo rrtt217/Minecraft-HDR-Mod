@@ -10,7 +10,7 @@ A minecraft mod that enables native HDR on Windows / macOS / Linux with Iris sha
 - Ingame config using Cloth Config API.
 - Ingame HDR screenshot.
 - Replay Mod HDR Video Export (need custom FFmpeg commandline, which can be found in config menu)
-- Full Wayland IME fix.
+- Full Wayland IME fix (need IMBlocker).
 ## For Users
 - See XgarhontX's temporary patches for HDR output and tonemapping on select shaderpacks with support for this mod: [Google Sheets](https://docs.google.com/spreadsheets/d/1WgOqKED2FxC11-2oyW4aBIyl8tAHo-8WJ7JPxhYAO2Q/edit?gid=0#gid=0)
   - See some pics here: [Wiki](https://github.com/rrtt217/Minecraft-HDR-Mod/wiki#gallery)
