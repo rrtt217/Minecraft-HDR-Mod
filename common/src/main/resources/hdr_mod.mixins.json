@@ -15,7 +15,8 @@
     "MixinRenderTarget",
     "MixinScreenshot",
     "MixinWindow",
-    "compat.imblocker.MixinKeyboardHandler"
+    "compat.imblocker.MixinKeyboardHandler",
+    "compat.ixeris.MixinTitieScreen"
   ],
   "mixins": [
     "compat.imblocker.MixinIMManagerLinux",
