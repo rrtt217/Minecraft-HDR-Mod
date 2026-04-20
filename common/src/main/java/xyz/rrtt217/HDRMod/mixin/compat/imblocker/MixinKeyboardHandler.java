@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import io.github.reserveword.imblocker.common.gui.UniversalIMEPreeditOverlay;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.system.MemoryUtil;
@@ -12,6 +13,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.ime.GLFWIMEUtils;
 
 import java.nio.IntBuffer;
@@ -22,7 +24,8 @@ public class MixinKeyboardHandler {
     // Still need IMBlocker to properly show preedit.
     @Inject(method = "setup", at = @At(value = "TAIL"))
     private void hdr_mod$setPreeditCallbackForIMBlocker(Window window, CallbackInfo ci){
-        GLFWIMEUtils.glfwSetPreeditCallback(Minecraft.getInstance().getWindow().handle(), MixinKeyboardHandler::hdr_mod$preeditCallback);
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(config.enableIMBlockerSetPreeditCallbackIntegration) GLFWIMEUtils.glfwSetPreeditCallback(Minecraft.getInstance().getWindow().handle(), MixinKeyboardHandler::hdr_mod$preeditCallback);
     }
     // Work like vanilla 26.1.
     @Unique

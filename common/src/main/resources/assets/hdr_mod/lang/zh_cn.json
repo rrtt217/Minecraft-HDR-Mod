@@ -29,11 +29,15 @@
   "text.autoconfig.hdr_mod.option.enableIMBlockerSetStateIntegration": "启用 IMBlocker 输入法状态设置集成",
   "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditOverlayPositionIntegration": "启用 IMBlocker 输入法预编辑覆盖层定位集成",
   "text.autoconfig.hdr_mod.option.PreeditOverlayPositionFollowMonitorScale": "设置输入法预编辑覆盖层位置时除以显示器缩放比",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetEnglishStateIntegration": "启用 IMBlocker 输入法英文状态设置集成",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditCallbackIntegration": "Use LWJGL 3.4.1 callback to Get IME Preedit Content.",
 
   "text.autoconfig.hdr_mod.option.enableCharCallbackReplacement.@Tooltip": "在某些平台上必须开启才能让输入法正确工作。",
-  "text.autoconfig.hdr_mod.option.enableIMBlockerSetStateIntegration.@Tooltip": "使用原生 Wayland 协议来控制输入法开启/关闭。在某些情况下可能会出问题。",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetStateIntegration.@Tooltip": "使用原生 Wayland 协议来控制输入法开启/关闭。使用此功能时请将 IMBlocker 中",
   "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditOverlayPositionIntegration.@Tooltip": "使用LWJGL 3.4.1的相关函数来设置输入法预编辑覆盖层的位置。",
   "text.autoconfig.hdr_mod.option.PreeditOverlayPositionFollowMonitorScale.@Tooltip": "在某些平台上需要开启来保证输入法预编辑覆盖层位置正确。",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetEnglishStateIntegration.@Tooltip": "使用 IMBlocker 原有方法来控制输入法英文/CJK状态切换。",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditCallbackIntegration.@Tooltip": "使用LWJGL 3.4.1的相关回调来获取输入法预编辑内容，以让 IMBlocker 在非Windows平台显示预编辑提示框。",
 
 
   "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat": "为窗口使用归一化定点格式",
