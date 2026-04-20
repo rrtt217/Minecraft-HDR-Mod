@@ -23,14 +23,14 @@ public class MixinKeyboardHandler {
     // Fix IME on Rebased LWJGL 3.4.1.
     // Still need IMBlocker to properly show preedit.
     @Inject(method = "setup", at = @At(value = "TAIL"))
-    private void hdr_mod$setPreeditCallbackForIMBlocker(Window window, CallbackInfo ci){
+    private void hdr_mod$setPreeditCallbackForIMBlocker(long l, CallbackInfo ci){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(config.enableIMBlockerSetPreeditCallbackIntegration) GLFWIMEUtils.glfwSetPreeditCallback(Minecraft.getInstance().getWindow().handle(), MixinKeyboardHandler::hdr_mod$preeditCallback);
+        if(config.enableIMBlockerSetPreeditCallbackIntegration) GLFWIMEUtils.glfwSetPreeditCallback(Minecraft.getInstance().getWindow().getWindow(), MixinKeyboardHandler::hdr_mod$preeditCallback);
     }
     // Work like vanilla 26.1.
     @Unique
     private static void hdr_mod$preeditCallback(long window, int preeditSize, long preeditPtr, int blockCount, long blockSizesPtr, int focused_block, int caret){
-        if(window == Minecraft.getInstance().getWindow().handle()){
+        if(window == Minecraft.getInstance().getWindow().getWindow()){
             if (preeditSize == 0) {
                 UniversalIMEPreeditOverlay.getInstance().preeditContentUpdated(null, 0);
             } else {

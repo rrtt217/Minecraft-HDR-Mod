@@ -30,7 +30,7 @@ public class MixinIMManagerMac {
     private void hdr_mod$LinuxSetEnglishState(boolean englishState, CallbackInfo ci) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(!config.enableIMBlockerSetEnglishStateIntegration) return;
-        GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().handle(),0x00033007, englishState ? GLFW.GLFW_FALSE : GLFW.GLFW_TRUE);
+        GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().getWindow(),0x00033007, englishState ? GLFW.GLFW_FALSE : GLFW.GLFW_TRUE);
         ci.cancel();
     }
 
@@ -40,7 +40,7 @@ public class MixinIMManagerMac {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(!config.enableIMBlockerSetPreeditOverlayPositionIntegration) return;
         if(!state) return;
-        long handle = Minecraft.getInstance().getWindow().handle();
+        long handle = Minecraft.getInstance().getWindow().getWindow();
         if(config.enableIMBlockerSetPreeditOverlayPositionIntegration) {
             FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
             FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
