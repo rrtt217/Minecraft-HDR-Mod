@@ -1,6 +1,6 @@
-package xyz.rrtt217.HDRMod.util.neoforge;
+package xyz.rrtt217.HDRMod.util.forge;
 
-import net.neoforged.fml.loading.FMLConfig;
+import net.minecraftforge.fml.loading.FMLConfig;
 
 public class SetupBeforeGLFWInitImpl {
     public static void setup(){
