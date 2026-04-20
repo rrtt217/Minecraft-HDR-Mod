@@ -8,6 +8,7 @@
 - 使用 Cloth Config API 实现的游戏内配置界面.
 - 游戏内 HDR PNG 截图.
 - Replay Mod HDR 视频导出 (需要自定义 FFmpeg 命令行, 可以在配置菜单里找到)
+- 完全的Wayland输入法修复。
 ## 用户指南
 - 参见 XgarhontX 的关于 HDR 输出和色调映射并兼容该模组的对特定光影包的临时补丁: [Google Sheets](https://docs.google.com/spreadsheets/d/1WgOqKED2FxC11-2oyW4aBIyl8tAHo-8WJ7JPxhYAO2Q/edit?gid=0#gid=0)
   - 在这里查看截图效果: [Wiki](https://github.com/rrtt217/Minecraft-HDR-Mod/wiki#gallery)

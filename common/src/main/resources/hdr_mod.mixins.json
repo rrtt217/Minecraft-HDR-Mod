@@ -11,11 +11,14 @@
     "MixinRenderSystem",
     "MixinRenderTarget",
     "MixinScreenshot",
-    "MixinWindow"
+    "MixinWindow",
+    "compat.imblocker.MixinKeyboardHandler",
+    "compat.ixeris.MixinTitieScreen"
   ],
   "mixins": [
     "MixinVanillaPackResources",
     "compat.imblocker.MixinIMManagerLinux",
+    "compat.imblocker.MixinIMManagerMac",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",

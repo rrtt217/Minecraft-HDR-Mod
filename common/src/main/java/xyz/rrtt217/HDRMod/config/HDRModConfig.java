@@ -57,7 +57,13 @@ public class HDRModConfig implements ConfigData {
     public boolean enableIMBlockerSetStateIntegration = true;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("ime")
+    public boolean enableIMBlockerSetEnglishStateIntegration = true;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("ime")
     public boolean enableIMBlockerSetPreeditOverlayPositionIntegration = true;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("ime")
+    public boolean enableIMBlockerSetPreeditCallbackIntegration = true;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("ime")
     public boolean PreeditOverlayPositionFollowMonitorScale = true;
