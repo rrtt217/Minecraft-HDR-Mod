@@ -60,6 +60,7 @@ public class MixinIMManagerLinux {
     public void updateCompositionWindowPos(Point pos) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(!config.enableIMBlockerSetPreeditOverlayPositionIntegration) return;
+        if(!state) return;
         long handle = Minecraft.getInstance().getWindow().handle();
         if(config.enableIMBlockerSetPreeditOverlayPositionIntegration) {
             FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
