@@ -5,7 +5,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import xyz.rrtt217.HDRMod.util.ime.GLFWIMEUtils;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import xyz.rrtt217.HDRMod.util.ime.*;
+import xyz.rrtt217.HDRMod.compat.ixeris.*;
 
 import java.nio.IntBuffer;
 
@@ -29,4 +31,64 @@ public class MixinGLFWIMEUtils {
             api.runNowOnMainThread(() -> GLFWIMEUtils.glfwSetPreeditCursorRectangle(window, x, y, w, h));
         }
     }
+    @Inject(method = "glfwSetIMEStatusCallback", at = @At("HEAD"))
+    private static void ixeris$glfwSetIMEStatusCallback(long window, GLFWIMEStatusCallbackI cbfun, CallbackInfoReturnable<GLFWIMEStatusCallbackI> cir) {
+        var dispatcher = IMEStatusCallbackDispatcher.get(window);
+        if (dispatcher.suppressChecks) {
+            return;
+        }
+        dispatcher.update(cbfun);
+    }
+
+    @Inject(method = "nglfwSetIMEStatusCallback", at = @At("RETURN"), cancellable = true)
+    private static void ixeris$nglfwSetIMEStatusCallback(long window, long cbfun, CallbackInfoReturnable<Long> cir) {
+        var dispatcher = IMEStatusCallbackDispatcher.get(window);
+        if (dispatcher.suppressChecks) {
+            return;
+        }
+        if (cbfun != CommonCallbacks_334.iMEStatusCallback.address()) {
+            cir.setReturnValue(dispatcher.update(cbfun));
+        }
+    }
+
+    @Inject(method = "glfwSetPreeditCallback", at = @At("HEAD"))
+    private static void ixeris$glfwSetPreeditCallback(long window, GLFWPreeditCallbackI cbfun, CallbackInfoReturnable<GLFWPreeditCallbackI> cir) {
+        var dispatcher = PreeditCallbackDispatcher.get(window);
+        if (dispatcher.suppressChecks) {
+            return;
+        }
+        dispatcher.update(cbfun);
+    }
+
+    @Inject(method = "nglfwSetPreeditCallback", at = @At("RETURN"), cancellable = true)
+    private static void ixeris$nglfwSetPreeditCallback(long window, long cbfun, CallbackInfoReturnable<Long> cir) {
+        var dispatcher = PreeditCallbackDispatcher.get(window);
+        if (dispatcher.suppressChecks) {
+            return;
+        }
+        if (cbfun != CommonCallbacks_334.preeditCallback.address()) {
+            cir.setReturnValue(dispatcher.update(cbfun));
+        }
+    }
+
+    @Inject(method = "glfwSetPreeditCandidateCallback", at = @At("HEAD"))
+    private static void ixeris$glfwSetPreeditCandidateCallback(long window, GLFWPreeditCandidateCallbackI cbfun, CallbackInfoReturnable<GLFWPreeditCandidateCallbackI> cir) {
+        var dispatcher = PreeditCandidateCallbackDispatcher.get(window);
+        if (dispatcher.suppressChecks) {
+            return;
+        }
+        dispatcher.update(cbfun);
+    }
+
+    @Inject(method = "nglfwSetPreeditCandidateCallback", at = @At("RETURN"), cancellable = true)
+    private static void ixeris$nglfwSetPreeditCandidateCallback(long window, long cbfun, CallbackInfoReturnable<Long> cir) {
+        var dispatcher = PreeditCandidateCallbackDispatcher.get(window);
+        if (dispatcher.suppressChecks) {
+            return;
+        }
+        if (cbfun != CommonCallbacks_334.preeditCandidateCallback.address()) {
+            cir.setReturnValue(dispatcher.update(cbfun));
+        }
+    }
+
 }

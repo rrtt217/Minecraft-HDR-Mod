@@ -18,10 +18,12 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     private final String FABRIC_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.fabric.mixin.";
     private final String NEOFORGE_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.neoforge.mixin.";
     private final String IXERIS_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.ixeris.";
+    private final String IMBLOCKER_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.imblocker.";
     private final String LIBRARY_VERSION = "3.5.3";
     public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_mixin_plugin");
     public static boolean hasGlfwLib = false;
     public static boolean hasIxeris = false;
+    public static boolean hasIMblocker = false;
 
     @Override
     public void onLoad(String s) {
@@ -51,6 +53,14 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
         } catch (ClassNotFoundException ignored) {
             LOGGER.debug("Ixeris not found, Ixeris compatibility mixins will be skipped.");
         }
+        try{
+            // HACK
+            Class.forName("io.github.reserveword.imblocker.common.DebugUtil");
+            hasIMblocker = true;
+            LOGGER.info("IMblocker detected, enabling IMBlocker compatibility mixins.");
+        } catch (ClassNotFoundException ignored) {
+            LOGGER.debug("IMBlocker is not found, IMBlocker compatibility mixins will be skipped.");
+        }
     }
 
     @Override
@@ -62,6 +72,9 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     public boolean shouldApplyMixin(String tClass, String mClassPath) {
         if (mClassPath.startsWith(IXERIS_COMPAT_MIXIN_CLASS_START)) {
             return hasIxeris;
+        }
+        if (mClassPath.startsWith(IMBLOCKER_COMPAT_MIXIN_CLASS_START)) {
+            return hasIMblocker;
         }
         return mClassPath.startsWith(MIXIN_CLASS_START) || mClassPath.startsWith(FABRIC_MIXIN_CLASS_START) ||  mClassPath.startsWith(NEOFORGE_MIXIN_CLASS_START);
     }
