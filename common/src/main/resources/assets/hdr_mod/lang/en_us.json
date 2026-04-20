@@ -30,11 +30,16 @@
   "text.autoconfig.hdr_mod.option.enableIMBlockerSetStateIntegration": "Enable IMBlocker Set Input Method State Integration",
   "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditOverlayPositionIntegration": "Enable IMBlocker Set Preedit Overlay Position Integration",
   "text.autoconfig.hdr_mod.option.PreeditOverlayPositionFollowMonitorScale": "Divide By Monitor Scale When Setting Preedit Overlay Position",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetEnglishStateIntegration": "Enable IMBlocker Set Input Method English State Integration",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditCallbackIntegration": "Enable IMBlocker Set Preedit Callback Integration",
 
   "text.autoconfig.hdr_mod.option.enableCharCallbackReplacement.@Tooltip": "Necessary for input methods proper working on some platforms.",
-  "text.autoconfig.hdr_mod.option.enableIMBlockerSetStateIntegration.@Tooltip": "Use native Wayland protocols in modified GLFW instead of commandline to control IME on/off. May not work as expected in some cases.",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetStateIntegration.@Tooltip": "Use native Wayland protocols in modified GLFW instead of commandline to control IME on/off.",
   "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditOverlayPositionIntegration.@Tooltip": "Use LWJGL 3.4.1 function to set IME overlay position.",
   "text.autoconfig.hdr_mod.option.PreeditOverlayPositionFollowMonitorScale.@Tooltip": "Necessary for some platforms to make IME overlay position correct.",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetEnglishStateIntegration.@Tooltip": "Use IMBlocker original method to control IME English/CJK state.",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditCallbackIntegration.@Tooltip": "Use LWJGL 3.4.1 callback to get IME preedit screen so IMBlocker can show preedit overlay on non-Windows platform.",
+
 
   "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat": "Use UNORM Window Pixel Format",
   "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat.@Tooltip": "Improve precision when using BT.2100 PQ transfer function, but completely breaks scRGB linear.\nAlso improve performance when OpenGL-DirectX Interop is enabled, but breaks HDR on Windows without GL-DX Interop.\nKeep default if unsure.",
