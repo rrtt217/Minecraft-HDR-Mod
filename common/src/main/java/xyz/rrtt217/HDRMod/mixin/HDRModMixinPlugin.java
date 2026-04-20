@@ -19,7 +19,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     private final String NEOFORGE_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.neoforge.mixin.";
     private final String IXERIS_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.ixeris.";
     private final String IMBLOCKER_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.imblocker.";
-    private final String LIBRARY_VERSION = "3.5.3";
+    private final String LIBRARY_VERSION = "3.5.4";
     public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_mixin_plugin");
     public static boolean hasGlfwLib = false;
     public static boolean enableHDR = true;
