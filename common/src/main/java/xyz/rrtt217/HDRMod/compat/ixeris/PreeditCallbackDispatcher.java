@@ -1,0 +1,101 @@
+package xyz.rrtt217.HDRMod.compat.ixeris;
+
+import it.unimi.dsi.fastutil.longs.Long2ReferenceMap;
+import it.unimi.dsi.fastutil.longs.Long2ReferenceArrayMap;
+import it.unimi.dsi.fastutil.objects.ReferenceArrayList;
+import me.decce.ixeris.core.threading.RenderThreadDispatcher;
+import me.decce.ixeris.core.util.MemoryHelper;
+import xyz.rrtt217.HDRMod.util.ime.*;
+import org.lwjgl.system.Callback;
+
+public class PreeditCallbackDispatcher {
+    private static final Long2ReferenceMap<PreeditCallbackDispatcher> instance = new Long2ReferenceArrayMap<>(1);
+
+    private final ReferenceArrayList<GLFWPreeditCallbackI> mainThreadCallbacks = new ReferenceArrayList<>(1);
+    private boolean lastCallbackSet;
+    public GLFWPreeditCallbackI lastCallback;
+    public long lastCallbackAddress;
+
+    private final long window;
+    public volatile boolean suppressChecks;
+
+    private PreeditCallbackDispatcher(long window) {
+        this.window = window;
+    }
+
+    public synchronized static PreeditCallbackDispatcher get(long window) {
+        if (!instance.containsKey(window)) {
+            instance.put(window, new PreeditCallbackDispatcher(window));
+            instance.get(window).validate();
+        }
+        return instance.get(window);
+    }
+
+    public synchronized void registerMainThreadCallback(GLFWPreeditCallbackI callback) {
+        mainThreadCallbacks.add(callback);
+        this.validate();
+    }
+
+    public synchronized long update(long newAddress) {
+        suppressChecks = true;
+        long ret = lastCallbackAddress;
+        if (newAddress == 0L && this.mainThreadCallbacks.isEmpty()) {
+            GLFWIMEUtils.nglfwSetPreeditCallback(window, 0L);
+        }
+        else {
+            GLFWIMEUtils.nglfwSetPreeditCallback(window, CommonCallbacks_334.preeditCallback.address());
+        }
+        lastCallbackAddress = newAddress;
+        if (!lastCallbackSet) {
+            lastCallback = newAddress == 0L ? null : Callback.get(newAddress);
+        }
+        lastCallbackSet = false;
+        suppressChecks = false;
+        return ret;
+    }
+
+    public synchronized void update(GLFWPreeditCallbackI callback) {
+        lastCallback = callback;
+        lastCallbackSet = true;
+    }
+
+    public synchronized void validate() {
+        suppressChecks = true;
+        var current = GLFWIMEUtils.nglfwSetPreeditCallback(window, CommonCallbacks_334.preeditCallback.address());
+        if (current == 0L) {
+            if (this.mainThreadCallbacks.isEmpty()) {
+                // Remove callback when not needed
+                GLFWIMEUtils.nglfwSetPreeditCallback(window, 0L);
+            }
+        }
+        else if (current != CommonCallbacks_334.preeditCallback.address()) {
+            // This only happens when mods register callbacks without using LWJGL (e.x. directly in native code)
+            lastCallback = Callback.get(current);
+            lastCallbackAddress = current;
+        }
+        suppressChecks = false;
+    }
+
+    public void onCallback(long window, int preedit_count, long preedit_string, int block_count, long block_sizes, int focused_block, int caret) {
+        if (this.window != window) {
+            return;
+        }
+        for (int i = 0; i < mainThreadCallbacks.size(); i++) {
+            mainThreadCallbacks.get(i).invoke(window, preedit_count, preedit_string, block_count, block_sizes, focused_block, caret);
+        }
+        if (lastCallback != null && preedit_string != 0 && block_sizes != 0) {
+            var callback = lastCallback; // Keep a reference to the current callback; they are used as FunctionalInterface's so there are no issue even if the callback is already freed when we use it
+            var stringCopy = MemoryHelper.copyIntArray(preedit_string, preedit_count);
+            var blockCopy = MemoryHelper.copyIntArray(block_sizes, block_count);
+            RenderThreadDispatcher.runLater((DispatchedRunnable) () -> {
+                callback.invoke(window, preedit_count, stringCopy, block_count, blockCopy, focused_block, caret);
+                MemoryHelper.free(stringCopy);
+                MemoryHelper.free(blockCopy);
+            });
+        }
+    }
+
+    @FunctionalInterface
+    public interface DispatchedRunnable extends Runnable {
+    }
+}
