@@ -17,7 +17,7 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import java.nio.FloatBuffer;
 
 import static io.github.reserveword.imblocker.common.IMManager.calculateCaretPos;
-import static xyz.rrtt217.HDRMod.util.ime.GLFWIMEUtils.glfwSetPreeditCursorRectangle;
+import static org.lwjgl.glfw.GLFW.glfwSetPreeditCursorRectangle;
 
 @Mixin(targets = "io.github.reserveword.imblocker.common.IMManagerLinux")
 public class MixinIMManagerLinux {
@@ -27,9 +27,6 @@ public class MixinIMManagerLinux {
     private void checkIMFramework() {}
     @Shadow
     private LinuxIMFramework imFramework;
-    @Unique
-    private volatile int fontsize;
-
 
     // This only works on our modified GLFW, not the original LWJGL 3.4.1 version!
     // Internally use zwp_text_input_v3::enable/disable or zwp_text_input_v1::activate/deactivate to completely disable IME when unneeded.
@@ -52,37 +49,5 @@ public class MixinIMManagerLinux {
         this.checkIMFramework();
         this.imFramework.setState(!englishState);
         ci.cancel();
-    }
-
-
-    // This works on original LWJGL 3.4.1 GLFW. Upstream accepted similar change in 26.1 and this will be unnecessary.
-    @Unique
-    public void updateCompositionWindowPos(Point pos) {
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(!config.enableIMBlockerSetPreeditOverlayPositionIntegration) return;
-        if(!state) return;
-        long handle = Minecraft.getInstance().getWindow().handle();
-        if(config.enableIMBlockerSetPreeditOverlayPositionIntegration) {
-            FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
-            FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
-            GLFW.glfwGetWindowContentScale(handle, xscale, yscale);
-            glfwSetPreeditCursorRectangle(handle, (int) (pos.x() / xscale.get()), (int) (pos.y() / yscale.get()), 0, -fontsize);
-        }
-        else{
-            glfwSetPreeditCursorRectangle(handle, pos.x(), pos.y(), 0, 0);
-        }
-        FocusableObject focusedWidget = FocusManager.getFocusOwner();
-        if(focusedWidget != null) {
-            Point caretPos = calculateCaretPos(focusedWidget, false);
-            UniversalIMEPreeditOverlay.getInstance().
-                    updateCaretPosition(caretPos.x(), caretPos.y());
-            UniversalIMECandidateOverlay.getInstance().
-                    updateCaretPosition(caretPos.x(), caretPos.y());
-        }
-    }
-
-    @Unique
-    public void updateCompositionFontSize(int fontSize) {
-        this.fontsize = fontSize;
     }
 }

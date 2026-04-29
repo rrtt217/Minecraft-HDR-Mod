@@ -22,6 +22,14 @@ configurations {
         canBeResolved = true
         canBeConsumed = false
     }
+    apiElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
+    runtimeElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
 }
 
 repositories {
@@ -36,19 +44,23 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+    maven {
+        name "caffeinemcRepositoryReleases"
+        url "https://maven.caffeinemc.net/releases"
+    }
 }
 
 dependencies {
     neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
 
     // Architectury API. This is optional, and you can comment it out if you don't need it.
-    modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
+    //implementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
 
-    modImplementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_api_version}"
-    //modImplementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-neoforge"
-    modLocalRuntime "maven.modrinth:iris:${iris_version}+${minecraft_version}-neoforge"
-    modImplementation "maven.modrinth:imblocker-original:dH4Iejf6"
-    modCompileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-neoforge"
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_api_version}"
+    implementation "net.caffeinemc:sodium-neoforge:${sodium_version}+mc${minecraft_version}"
+    localRuntime "maven.modrinth:iris:${iris_version}-neoforge"
+    implementation "maven.modrinth:imblocker-original:BO7litNl"
+    compileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-neoforge"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"
@@ -57,8 +69,8 @@ dependencies {
     implementation 'ar.com.hjg:pngj:2.1.0'
     include 'ar.com.hjg:pngj:2.1.0'
 
-    modLocalRuntime "maven.modrinth:renderscale:1.3.6"
-    common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
+    //modLocalRuntime "maven.modrinth:renderscale:1.3.6"
+    common(project(path: ":common")) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
 }
 
@@ -70,11 +82,16 @@ processResources {
     }
 }
 
-shadowJar {
-    configurations = [project.configurations.shadowBundle]
-    archiveClassifier = 'dev-shadow'
+jar {
+    archiveClassifier = "raw"
 }
 
-remapJar {
-    inputFile.set shadowJar.archiveFile
+shadowJar {
+    dependsOn(jar)
+    mainSpec.sourcePaths.clear()       // Remove default source set inclusion
+    from(zipTree(jar.archiveFile))     // Unpack jar output (preserves Loom modifications)
+
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = null           // shadowJar becomes the main artifact
+    from rootProject.file("LICENSE.md")
 }

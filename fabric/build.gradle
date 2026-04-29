@@ -31,44 +31,51 @@ configurations {
         canBeResolved = true
         canBeConsumed = false
     }
+    apiElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
+    runtimeElements {
+        outgoing.artifacts.clear()
+        outgoing.artifact(shadowJar)
+    }
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
+    implementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
 
     // Fabric API. This is technically optional, but you probably want it anyway.
-    modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
+    implementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
 
     // Architectury API. This is optional, and you can comment it out if you don't need it.
-    modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
+    //implementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
 
-    modImplementation "me.shedaniel.cloth:cloth-config-fabric:${cloth_config_api_version}"
-    modImplementation "maven.modrinth:modmenu:${mod_menu_version}"
-    modImplementation "maven.modrinth:iris:${iris_version}+${minecraft_version}-fabric"
-    modImplementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
-    modImplementation "maven.modrinth:advancement-screenshot:1.21.11-5.2-fabric+forge+neo"
-    modImplementation "maven.modrinth:collective:1.21.11-8.13-fabric+forge+neo"
-    modImplementation "maven.modrinth:replaymod:1.21.11-2.6.25"
-    modImplementation "maven.modrinth:imblocker-original:Y0MhxxPc"
-    modImplementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
+    implementation "me.shedaniel.cloth:cloth-config-fabric:${cloth_config_api_version}"
+    implementation "maven.modrinth:modmenu:${mod_menu_version}"
+    implementation "maven.modrinth:iris:${iris_version}-fabric"
+    implementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
+    implementation "maven.modrinth:replaymod:26.1-2.6.26"
+    implementation "maven.modrinth:imblocker-original:u1ode5o8"
+    compileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
     // Axiom refuse to start with modImplementation. Just use modCompileOnly, download one from modrinth and put it in run/mods.
-    modCompileOnly "maven.modrinth:axiom:uoTNUpOT"
-    modCompileOnly "maven.modrinth:flashback:DDcDAzpe"
+    compileOnly "maven.modrinth:axiom:FR24mVMv"
+    compileOnly "maven.modrinth:flashback:xs2Obe8Z"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"
     implementation "io.github.douira:glsl-transformer:3.0.0-pre3"
     implementation "com.moulberry:mixinconstraints:1.0.8"
-    modImplementation "com.moulberry:lattice:1.3.1"
+    implementation "com.moulberry:lattice:1.3.1"
 
     implementation 'ar.com.hjg:pngj:2.1.0'
     include 'ar.com.hjg:pngj:2.1.0'
 
-    modLocalRuntime "maven.modrinth:renderscale:1.3.6"
-    modLocalRuntime "maven.modrinth:spark:1.10.156-fabric"
-    modLocalRuntime "maven.modrinth:fabric-permissions-api:0.6.1"
+    //localRuntime "maven.modrinth:renderscale:1.3.6"
+    //modLocalRuntime "maven.modrinth:spark:1.10.156-fabric"
+    //modLocalRuntime "maven.modrinth:fabric-permissions-api:0.6.1"
+    localRuntime "maven.modrinth:lambdynamiclights:4.10.2+26.1.2"
 
-    common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
+    common(project(path: ":common")) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
 }
 
@@ -80,11 +87,17 @@ processResources {
     }
 }
 
-shadowJar {
-    configurations = [project.configurations.shadowBundle]
-    archiveClassifier = 'dev-shadow'
+jar {
+    archiveClassifier = "raw"
 }
 
-remapJar {
-    inputFile.set shadowJar.archiveFile
+shadowJar {
+    dependsOn(jar)
+    mainSpec.sourcePaths.clear()       // Remove default source set inclusion
+    from(zipTree(jar.archiveFile))     // Unpack jar output (preserves Loom modifications)
+
+    configurations = [project.configurations.shadowBundle]
+    archiveClassifier = null           // shadowJar becomes the main artifact
+    from rootProject.file("LICENSE.md")
 }
+

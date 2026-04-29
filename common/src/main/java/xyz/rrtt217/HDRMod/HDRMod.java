@@ -1,8 +1,6 @@
 package xyz.rrtt217.HDRMod;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import dev.architectury.event.events.client.ClientTickEvent;
-import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
@@ -43,6 +41,8 @@ public final class HDRMod {
 
     public static boolean isReplayRendering = false;
 
+    public static Minecraft minecraft;
+
     public HDRMod() {
     }
 
@@ -50,26 +50,11 @@ public final class HDRMod {
         // Register config.
         AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
 
-        // Register Key Mapping.
-        KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
-        ClientTickEvent.CLIENT_POST.register(minecraft -> {
-            while (CUSTOM_KEYMAPPING.consumeClick()) {
-                Minecraft.getInstance().setScreen(AutoConfigClient.getConfigScreen(HDRModConfig.class, Minecraft.getInstance().screen).get());
-            }
-        });
-        KeyMappingRegistry.register(CUSTOM_KEYMAPPING_2);
-        ClientTickEvent.CLIENT_POST.register(minecraft -> {
-            while (CUSTOM_KEYMAPPING_2.consumeClick()) {
-                PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
-                    minecraft.gui.getChat().addMessage(arg);
-                    minecraft.getNarrator().saySystemChatQueued(arg);
-                }));
-            }
-        });
-
         // Set enableHDR once and for all.
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         enableHDR = config.enableHDR;
+
+        //minecraft = Minecraft.getInstance();
 
         LOGGER.debug("HDRMod Initialized!");
     }

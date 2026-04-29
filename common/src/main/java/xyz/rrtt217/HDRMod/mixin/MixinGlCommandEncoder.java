@@ -1,13 +1,12 @@
 package xyz.rrtt217.HDRMod.mixin;
 
-import com.mojang.blaze3d.opengl.GlCommandEncoder;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import xyz.rrtt217.HDRMod.core.DXGIStateManager;
 import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
-@Mixin(GlCommandEncoder.class)
+@Mixin(targets = "com.mojang.blaze3d.opengl.GlCommandEncoder")
 public class MixinGlCommandEncoder {
     @ModifyArg(method = "copyTextureToBuffer(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/buffers/GpuBuffer;JLjava/lang/Runnable;IIIII)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlStateManager;_readPixels(IIIIIIJ)V"), index = 5)
     private int hdr_mod$modifyReadPixelFormat(int i){

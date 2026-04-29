@@ -24,6 +24,7 @@ import java.nio.charset.StandardCharsets;
 
 import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
+import static xyz.rrtt217.HDRMod.HDRMod.minecraft;
 
 @Mixin(Minecraft.class)
 public class MixinMinecraft {
@@ -62,5 +63,9 @@ public class MixinMinecraft {
             }
         };
         gpuDevice.precompilePipeline(ColorTransformRenderer.COLOR_TRANSFORM, shaderSource);
+    }
+    @Inject(method = "<init>", at = @At("TAIL"))
+    private void hdr_mod$setupMinecraft(CallbackInfo ci) {
+        minecraft = Minecraft.getInstance();
     }
 }

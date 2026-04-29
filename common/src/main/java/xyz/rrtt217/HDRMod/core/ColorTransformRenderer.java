@@ -3,7 +3,6 @@ package xyz.rrtt217.HDRMod.core;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.platform.DepthTestFunction;
 import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -22,7 +21,7 @@ import java.util.OptionalInt;
 
 public class ColorTransformRenderer implements AutoCloseable {
     static{
-        RenderPipeline.Builder builder = RenderPipeline.builder(new RenderPipeline.Snippet[0]).withLocation("pipeline/color_transform").withFragmentShader(Identifier.fromNamespaceAndPath("hdr_mod","color_transform")).withVertexShader("core/screenquad").withSampler("InSampler").withDepthWrite(false).withDepthTestFunction(DepthTestFunction.NO_DEPTH_TEST).withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES).withUniform("ColorTransform", UniformType.UNIFORM_BUFFER);
+        RenderPipeline.Builder builder = RenderPipeline.builder(new RenderPipeline.Snippet[0]).withLocation("pipeline/color_transform").withFragmentShader(Identifier.fromNamespaceAndPath("hdr_mod","color_transform")).withVertexShader("core/screenquad").withSampler("InSampler").withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES).withUniform("ColorTransform", UniformType.UNIFORM_BUFFER);
         for(Enums.Primaries p : Enums.Primaries.values()) {
             builder = builder.withShaderDefine("PRIMARIES_"+p.toString(), p.getId());
         }

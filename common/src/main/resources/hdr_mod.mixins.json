@@ -2,21 +2,21 @@
   "required": true,
   "package": "xyz.rrtt217.HDRMod.mixin",
   "plugin": "xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "minVersion": "0.8",
   "client": [
+    "MixinGlBackend",
     "MixinGlCommandEncoder",
     "MixinGlDevice",
     "MixinGlStateManager",
+    "MixinGLX",
     "MixinKeyboardHandler",
     "MixinMainTarget",
     "MixinMinecraft",
     "MixinRenderSystem",
     "MixinRenderTarget",
     "MixinScreenshot",
-    "MixinWindow",
-    "compat.imblocker.MixinKeyboardHandler",
-    "compat.ixeris.MixinTitieScreen"
+    "MixinWindow"
   ],
   "mixins": [
     "compat.imblocker.MixinIMManagerLinux",
@@ -24,8 +24,7 @@
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",
-    "compat.ixeris.MixinGLFWColorManagementUtils",
-    "compat.ixeris.MixinGLFWIMEUtils"
+    "compat.ixeris.MixinGLFWColorManagementUtils"
   ],
   "injectors": {
     "defaultRequire": 1

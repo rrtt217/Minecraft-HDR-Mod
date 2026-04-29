@@ -7,7 +7,7 @@ license = "MIT"
 modId = "hdr_mod"
 version = "${version}"
 displayName = "HDR Mod"
-credits = "XgarhontX\nmoyongxin\nCommandGenius"
+credits = "XgarhontX, moyongxin, CommandGenius"
 authors = "rrtt217"
 description = '''
 Enable native HDR in Minecraft with Iris shaders.
@@ -17,14 +17,14 @@ Enable native HDR in Minecraft with Iris shaders.
 [[dependencies.hdr_mod]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.10,)"
+versionRange = "[26.1,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.hdr_mod]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21.11,)"
+versionRange = "[26.1,)"
 ordering = "NONE"
 side = "BOTH"
 
@@ -34,14 +34,6 @@ type = "required"
 versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
-
-[[dependencies.hdr_mod]]
-modId = "architectury"
-type = "required"
-versionRange = "*"
-ordering = "NONE"
-side = "BOTH"
-
 
 [[mixins]]
 config = "hdr_mod.mixins.json"
