@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import oshi.SystemInfo;
 import oshi.hardware.GraphicsCard;
@@ -98,5 +99,12 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
                 GLFW.glfwGetWindowAttrib(this.handle(),GLFW.GLFW_RED_BITS), GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(this.handle()), GLFWColorManagementUtils.glfwGetWindowMaxLuminance(this.handle()) , GLFWColorManagementUtils.glfwGetWindowMinLuminance(this.handle()), GLFWColorManagementUtils.glfwGetWindowPrimaries(this.handle), GLFWColorManagementUtils.glfwGetWindowTransfer(this.handle())
             );
             if(GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
+        }
+
+        @Redirect(method = "setIcon", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwGetPlatform()I"))
+        private int hdr_mod$bypassWaylandCheckOnSetIcon(){
+            int i = GLFW.glfwGetPlatform();
+            if(i == GLFW.GLFW_PLATFORM_WAYLAND) return GLFW.GLFW_PLATFORM_X11;
+            return i;
         }
     }
