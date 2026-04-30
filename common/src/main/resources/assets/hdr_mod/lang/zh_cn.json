@@ -41,7 +41,7 @@
 
 
   "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat": "为窗口使用归一化定点格式",
-  "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat.@Tooltip": "提高使用BT.2100 PQ转换函数时的精度，但会完全破坏scRGB。\n 也会在使用 OpenGL-DirectX 互操作时提升性能，但会在未启用GL-DX互操作时破坏Windows上的HDR.\n 如果不确定，请保持默认值。",
+  "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat.@Tooltip": "在Linux平台或启用GL-DX互操作的Windows平台上，切换该选项可在 RGB10A2+BT.2100 PQ (更佳性能) 或 RGBA16F+scRGB (更佳精度) 间切换。会在未启用GL-DX互操作时破坏Windows上的HDR.\n 如果不确定，请保持默认值。",
   "text.autoconfig.hdr_mod.option.forceActivateGlDxInterop": "(Windows) 强制启用OpenGL-DirectX互操作",
   "text.autoconfig.hdr_mod.option.forceActivateGlDxInterop.@Tooltip": "使用OpenGL离屏渲染，使用DirectX以HDR格式呈现。可能造成较大性能损失与模组兼容问题。",
 

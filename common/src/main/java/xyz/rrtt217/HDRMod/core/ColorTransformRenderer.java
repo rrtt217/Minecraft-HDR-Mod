@@ -42,7 +42,7 @@ public class ColorTransformRenderer implements AutoCloseable {
     public ColorTransformRenderer(RenderTarget srcTarget, String string) {
         this.srcTarget = srcTarget;
         this.colorTransformUbo = new ColorTransformUBO(string);
-        // Set a group of default UBO values. You may call updateColorTransformUBO manually to update later.
+        // Set a group of default UBO values. You may call updateColorTransformUniforms manually to update later.
         updateColorTransformUniforms(203.0F, 0.0F, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
         TextureUpgradeUtils.setTargetTextureFormat(GL30.GL_RGBA16F);
         TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_HALF_FLOAT);
