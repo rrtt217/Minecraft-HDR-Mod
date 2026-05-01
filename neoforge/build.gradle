@@ -43,6 +43,10 @@ repositories {
         }
     }
     maven { url "https://jitpack.io" }
+    maven {
+        name "caffeinemcRepositoryReleases"
+        url "https://maven.caffeinemc.net/releases"
+    }
 }
 
 dependencies {
