@@ -94,7 +94,8 @@ void main() {
         // scRGB encode
         color.rgb *= uiBrightness / 80.0;
     }
-    else if((transferFunction == TRANSFER_FUNCTION_SRGB) || (transferFunction == TRANSFER_FUNCTION_EXT_SRGB)){
+    // Consider Gamma 22 as sRGB. We may use EOTF Emulate to correct that?
+    else if((transferFunction == TRANSFER_FUNCTION_SRGB) || (transferFunction == TRANSFER_FUNCTION_EXT_SRGB) || (transferFunction == TRANSFER_FUNCTION_GAMMA22)){
         // sRGB encode
         color.rgb *= uiBrightness / 203.0;
         color.rgb = sRGB_EncodeSafe(color.rgb);
