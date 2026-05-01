@@ -16,7 +16,7 @@
     "sources": "https://github.com/rrtt217/Minecraft-HDR-Mod"
   },
   "license": "MIT",
-  "icon": "assets/hdr_mod/icon.png",
+  "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
