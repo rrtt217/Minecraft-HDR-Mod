@@ -62,7 +62,6 @@ public class MixinIMManagerLinux {
         if(!config.enableIMBlockerSetPreeditOverlayPositionIntegration) return;
         if(!state) return;
         long handle = Minecraft.getInstance().getWindow().getWindow();
-        if(config.enableIMBlockerSetPreeditOverlayPositionIntegration) {
         int height = Minecraft.getInstance().getWindow().getHeight();
         if(config.PreeditOverlayPositionFollowMonitorScale) {
             FloatBuffer xscale = BufferUtils.createFloatBuffer(1);

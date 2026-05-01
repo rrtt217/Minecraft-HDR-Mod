@@ -4,11 +4,9 @@ import ar.com.hjg.pngj.ImageInfo;
 import ar.com.hjg.pngj.ImageLineInt;
 import ar.com.hjg.pngj.PngWriter;
 import ar.com.hjg.pngj.chunks.PngChunkICCP;
-import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.CommandEncoder;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTexture;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -17,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.Util;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL30;
+import org.lwjgl.system.MemoryUtil;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.*;
@@ -104,57 +103,44 @@ public class PngjHDRScreenshot {
                     // Close the file.
                     png.end();
                 });
-                Component component = Component.literal(screenshotFile.getName()).withStyle(ChatFormatting.UNDERLINE).withStyle((style) -> style.withClickEvent(new ClickEvent.OpenFile(screenshotFile.getAbsoluteFile())));
+                Component component = Component.literal(screenshotFile.getName()).withStyle(ChatFormatting.UNDERLINE).withStyle((style) -> style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, screenshotFile.getAbsolutePath())));
                 consumer.accept(Component.translatable("screenshot.success", new Object[]{component}));
             }));
     }
     public static void takeScreenshot(RenderTarget renderTarget, Consumer<ImageBuffer> consumer){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-
+        if (!enableHDR) return;
         // Create ScreenshotColorTransformRenderer if there's not one.
         if(ScreenshotColorTransformRenderer == null){
-            ScreenshotColorTransformRenderer = new ColorTransformRenderer(renderTarget, "Screenshot");
+            try {
+                ScreenshotColorTransformRenderer = new ColorTransformRenderer(renderTarget, "Screenshot");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
         // Update ScreenshotColorTransformRenderer.srcTarget.
         if(ScreenshotColorTransformRenderer.getSrcTarget() != renderTarget){
             ScreenshotColorTransformRenderer.setSrcTarget(renderTarget);
         }
         ScreenshotColorTransformRenderer.updateColorTransformUniforms(
-                config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
-                config.customEotfEmulate < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate,
+                config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.uiBrightness, // For UI Brightness
+                config.customEotfEmulate < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.customEotfEmulate,
                 Enums.Primaries.BT2020.getId(),
                 Enums.TransferFunction.ST2084_PQ.getId()
         );
         ScreenshotColorTransformRenderer.render();
 
-        // The actual screenshot part
-        GpuTexture gpuTexture = ScreenshotColorTransformRenderer.getDstTexture();
-        if (gpuTexture == null) {
-            throw new IllegalStateException("color texture is null");
-        }
-        if (!enableHDR) return;
         // Width and height.
-        int width = gpuTexture.getWidth(0);
-        int height = gpuTexture.getHeight(0);
+        int width = renderTarget.width;
+        int height = renderTarget.height;
 
         // Get the buffer.
-        GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "HDR Mod Screenshot buffer", 9,  width *  height * 8);
-
-        CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
-        TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_UNSIGNED_SHORT);
-        RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(gpuTexture, gpuBuffer, 0, () -> {
-            try (GpuBuffer.MappedView mappedView = commandEncoder.mapBuffer(gpuBuffer, true, false)) {
-                ShortBuffer shortBuffer = ShortBuffer.allocate( width * height * 4);
-                // You should read mappedView.data() in the same way as TextureUpgradeUtils.setTargetReadPixelFormat() specifies. Any other ways (e.g. call bytebuffer.put(mappedView.data()) for GL30.GL_UNSIGNED_SHORT is undefined.
-                shortBuffer.put(mappedView.data().asShortBuffer());
-                shortBuffer.flip();
-                consumer.accept(new ImageBuffer(shortBuffer, width, height));
-            } catch (Exception e) {
-                HDRMod.LOGGER.error("Error while trying to capture screenshot:" , e);
-            }
-            // Close the buffer.
-            gpuBuffer.close();
-        }, 0);
+        long pixels = MemoryUtil.nmemAlloc((long) width * height * 4 * 2);
+        RenderSystem.bindTexture(ScreenshotColorTransformRenderer.getDstTextureId());
+        GlStateManager._pixelStore(GL30.GL_UNPACK_ALIGNMENT, 4);
+        GlStateManager._getTexImage(3553, 0, GL30.GL_RGBA, GL30.GL_UNSIGNED_SHORT, pixels);
+        ShortBuffer buffer = MemoryUtil.memShortBuffer(pixels, width * height * 4);
+        consumer.accept(new ImageBuffer(buffer, width, height));
     }
     private static File getScreenshotFile(File baseDirectory) {
         if(!baseDirectory.exists()) {
