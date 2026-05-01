@@ -138,11 +138,11 @@ public class PngjHDRScreenshot {
         int height = gpuTexture.getHeight(0);
 
         // Get the buffer.
-        GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "HDR Mod Screenshot buffer", 9, (long) width * (long) height * 8L);
+        GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "HDR Mod Screenshot buffer", 9,  width *  height * 8);
 
         CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
         TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_UNSIGNED_SHORT);
-        RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(gpuTexture, gpuBuffer, 0L, () -> {
+        RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(gpuTexture, gpuBuffer, 0, () -> {
             try (GpuBuffer.MappedView mappedView = commandEncoder.mapBuffer(gpuBuffer, true, false)) {
                 ShortBuffer shortBuffer = ShortBuffer.allocate( width * height * 4);
                 // You should read mappedView.data() in the same way as TextureUpgradeUtils.setTargetReadPixelFormat() specifies. Any other ways (e.g. call bytebuffer.put(mappedView.data()) for GL30.GL_UNSIGNED_SHORT is undefined.
