@@ -7,6 +7,7 @@ license = "MIT"
 modId = "hdr_mod"
 version = "${version}"
 displayName = "HDR Mod"
+logoFile = "icon.png"
 credits = "XgarhontX, moyongxin, CommandGenius"
 authors = "rrtt217"
 description = '''
