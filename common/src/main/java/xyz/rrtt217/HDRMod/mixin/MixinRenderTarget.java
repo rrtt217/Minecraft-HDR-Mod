@@ -3,6 +3,7 @@ package xyz.rrtt217.HDRMod.mixin;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.MouseHandler;
 import org.lwjgl.opengl.GL30;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
@@ -64,7 +65,7 @@ public class MixinRenderTarget {
 
     @Redirect(method = "_blitToScreen", at = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;colorTextureId:I", opcode = Opcodes.GETFIELD))
     private int hdr_mod$replaceBlitTarget(RenderTarget instance) {
-        if (HDRModInjectHooks.getTargetDisableBlend()) {
+        if (HDRModInjectHooks.getTargetDisableBlend() && enableHDR) {
             HDRModInjectHooks.unsetTargetDisableBlend();
             return PresentationColorTransformRenderer.getDstTextureId();
         }

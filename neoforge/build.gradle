@@ -65,7 +65,7 @@ dependencies {
     modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
 
     modImplementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_api_version}"
-    modImplementation "maven.modrinth:imblocker-original:4ywy41Dt"
+    modImplementation "maven.modrinth:imblocker-original:s9gm1AKM"
     modCompileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-neoforge"
 
     modCompileOnly "maven.modrinth:iris:${iris_version}+${minecraft_version}-neoforge"
