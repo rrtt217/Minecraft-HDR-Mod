@@ -8,10 +8,14 @@
   "text.autoconfig.hdr_mod.option.enableHDR.@Tooltip": "Enable HDR (Requires Client Restart).",
   "text.autoconfig.hdr_mod.option.uiBrightness.@Tooltip": "In nits, the paper white of UI elements and vanilla game (i.e without shaders).\nSet it negative to use display reported SDR paper white.",
   "text.autoconfig.hdr_mod.option.customGamePaperWhiteBrightness.@Tooltip": "In nits, the paper white of the game/scene.\nSet it negative to use display reported value.",
-  "text.autoconfig.hdr_mod.option.customGameMinimumBrightness.@Tooltip": "In nits, the minimum the display can output.\n(Linux) Set it negative to use display reported value. Leave 0 if unsure.",
-  "text.autoconfig.hdr_mod.option.customGamePeakBrightness.@Tooltip": "In nits, the maximum the display can output.\n(Linux) Set it negative to use display reported value.",
+  "text.autoconfig.hdr_mod.option.customGameMinimumBrightness.@Tooltip": "In nits, the minimum the display can output.\n(Linux / Window with DX-GL interop) Set it negative to use display reported value. Leave 0 if unsure.",
+  "text.autoconfig.hdr_mod.option.customGamePeakBrightness.@Tooltip": "In nits, the maximum the display can output.\n(Linux / Window with DX-GL interop) Set it negative to use display reported value.",
   "text.autoconfig.hdr_mod.option.customEotfEmulate.@Tooltip": "Correct raised shadows to match SDR.\nUse if OS or display doesn't do so already.\n Set it negative to use display reported SDR paper white.",
 
+  "text.autoconfig.hdr_mod.option.screenshotDownscaleFactor": "HDR Screenshot Downscale Factor",
+  "text.autoconfig.hdr_mod.option.screenshotDownscaleFactor.@Tooltip": "Set to higher than 1 to downscale the image with nearest neighbour method.\n Values lower than 1 have the same effect as 1.\n Useful when used with mods like RenderScale.",
+  "text.autoconfig.hdr_mod.option.screenshotCompressLevel": "HDR Screenshot Compression Level",
+  "text.autoconfig.hdr_mod.option.screenshotCompressLevel.@Tooltip": "Higher level saves disk space but takes more time,\nLower level takes more disk space but saves time.",
   "text.autoconfig.hdr_mod.option.behaviorOnVanillaScreenshotCalled": "Behavior When Other Mods Call Vanilla Screenshot Method",
   "text.autoconfig.hdr_mod.option.behaviorOnVanillaScreenshotCalled.@Tooltip": "ONLY_VANILLA means only taking vanilla screenshot,\nBOTH means taking both vanilla and HDR screenshot, \nONLY_HDR means only taking HDR screenshot.",
   "text.autoconfig.hdr_mod.option.behaviorOnVanillaF2": "Behavior When Taking Vanilla F2 Screenshot",
@@ -42,7 +46,7 @@
 
 
   "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat": "Use UNORM Window Pixel Format",
-  "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat.@Tooltip": "Improve precision when using BT.2100 PQ transfer function, but completely breaks scRGB linear.\nAlso improve performance when OpenGL-DirectX Interop is enabled, but breaks HDR on Windows without GL-DX Interop.\nKeep default if unsure.",
+  "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat.@Tooltip": "Switch between RGB10A2+BT.2100 PQ (better performance) or RGBA16F+scRGB (better precision) on Windows with GL-DX interop or Linux. Breaks HDR on Windows without GL-DX Interop.\nKeep default if unsure.",
   "text.autoconfig.hdr_mod.option.forceActivateGlDxInterop": "(Windows) Force Activate OpenGL-DirectX Interop",
   "text.autoconfig.hdr_mod.option.forceActivateGlDxInterop.@Tooltip": "Use OpenGL to render offscreen and use DirectX to present the result in HDR format. May cause huge performance loss and mod incompatibilities.",
 
