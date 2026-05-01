@@ -41,14 +41,18 @@ public class MixinIMManagerMac {
         if(!config.enableIMBlockerSetPreeditOverlayPositionIntegration) return;
         if(!state) return;
         long handle = Minecraft.getInstance().getWindow().getWindow();
-        if(config.enableIMBlockerSetPreeditOverlayPositionIntegration) {
+        int height = Minecraft.getInstance().getWindow().getHeight();
+        if(config.PreeditOverlayPositionFollowMonitorScale) {
             FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
             FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
             GLFW.glfwGetWindowContentScale(handle, xscale, yscale);
-            glfwSetPreeditCursorRectangle(handle, (int) (pos.x() / xscale.get()), (int) (pos.y() / yscale.get()), 0, -fontsize);
+            float xscaleValue = xscale.get();
+            float yscaleValue = yscale.get();
+            if(fontsize == 0) glfwSetPreeditCursorRectangle(handle, (int) (pos.x() / xscaleValue), (int) (pos.y() / yscaleValue), 0, 0);
+            else glfwSetPreeditCursorRectangle(handle, (int) (pos.x() / xscaleValue), (int) (pos.y() / yscaleValue), 0, (int) (- fontsize / yscaleValue * (pos.x() / yscaleValue > height - 2 * fontsize ? ((pos.x() / yscaleValue - height) / fontsize + 2 ) : 1 )));
         }
         else{
-            glfwSetPreeditCursorRectangle(handle, pos.x(), pos.y(), 0, 0);
+            glfwSetPreeditCursorRectangle(handle, pos.x(), pos.y(), 0, ( - fontsize * (pos.x() > height - 2 * fontsize ? ((pos.x() - height) / fontsize + 2 ) : 1 )));
         }
         FocusableObject focusedWidget = FocusManager.getFocusOwner();
         if(focusedWidget != null) {

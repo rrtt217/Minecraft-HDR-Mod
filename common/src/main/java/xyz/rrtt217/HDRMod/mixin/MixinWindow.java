@@ -105,4 +105,11 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
                 DXGIStateManager.setMinimized(newWidth == 0 || newHeight == 0);
             }
         }
+
+    @Redirect(method = "setIcon", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwGetPlatform()I"))
+    private int hdr_mod$bypassWaylandCheckOnSetIcon(){
+        int i = GLFW.glfwGetPlatform();
+        if(i == GLFW.GLFW_PLATFORM_WAYLAND) return GLFW.GLFW_PLATFORM_X11;
+        return i;
+    }
     }

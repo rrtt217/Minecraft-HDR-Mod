@@ -19,7 +19,7 @@ public class HDRModConfig implements ConfigData {
     public float customGamePaperWhiteBrightness = -1.0f;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("general")
-    public float customGamePeakBrightness = 1000.0f;  // It's broken intentionally for tev glfw, the system always reports the software limit instead of hardware.
+    public float customGamePeakBrightness = 1000.0f;  // We can't get actual peak value for Windows without DXGI, and some Linux compositors report wrong values.
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("general")
     public float customGameMinimumBrightness = 0.0f; // Probably unused and broken.
@@ -27,6 +27,12 @@ public class HDRModConfig implements ConfigData {
     @ConfigEntry.Category("general")
     public float customEotfEmulate = System.getProperty("os.name").startsWith("Windows") ? -1.0f : 0.0f;
 
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("screenshot")
+    public float screenshotDownscaleFactor = 1.0f;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("screenshot")
+    public int screenshotCompressLevel = 1;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("screenshot")
     public BehaviorOnVanillaScreenshotCalled behaviorOnVanillaScreenshotCalled = BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA;
