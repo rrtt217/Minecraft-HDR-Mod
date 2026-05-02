@@ -47,23 +47,49 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(!state) return;
         long handle = Minecraft.getInstance().getWindow().handle();
-        int height = Minecraft.getInstance().getWindow().getHeight();
+        float xscaleValue = 1.0f;
+        float yscaleValue = 1.0f;
         if(config.PreeditOverlayPositionFollowMonitorScale) {
             FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
             FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
             GLFW.glfwGetWindowContentScale(handle, xscale, yscale);
-            float xscaleValue = xscale.get();
-            float yscaleValue = yscale.get();
-            if(fontsize == 0) glfwSetPreeditCursorRectangle(handle, (int) (pos.x() / xscaleValue), (int) (pos.y() / yscaleValue), 0, 0);
-            else glfwSetPreeditCursorRectangle(handle, (int) (pos.x() / xscaleValue), (int) (pos.y() / yscaleValue), 0, (int) (- fontsize / yscaleValue * (pos.x() / yscaleValue > height - 2 * fontsize ? ((pos.x() / yscaleValue - height) / fontsize + 2 ) : 1 )));
+            xscaleValue = xscale.get();
+            yscaleValue = yscale.get();
         }
-        else{
-            glfwSetPreeditCursorRectangle(handle, pos.x(), pos.y(), 0, ( - fontsize * (pos.x() > height - 2 * fontsize ? ((pos.x() - height) / fontsize + 2 ) : 1 )));
-        }
-        FocusableObject focusedWidget = FocusManager.getFocusOwner();
-        if(focusedWidget != null) {
-            Point caretPos = calculateCaretPos(focusedWidget, false);
+        FocusableObject focusOwner = FocusManager.getFocusOwner();
+        if(focusOwner != null) {
+            Point caretPos = calculateCaretPos(focusOwner, false);
             if(config.enableIMBlockerSetPreeditCallbackIntegration) UniversalIMEPreeditOverlay.getInstance().updateCaretPosition(caretPos.x(), caretPos.y());
+            double widgetGuiScale = focusOwner.getGuiScale();
+            int widgetFontSize = focusOwner.getFontHeight();
+            int containerFontSize;
+            double containerGuiScale;
+            Rectangle compositionBorder;
+            if(focusOwner instanceof FocusableWidget focusedWidget) {
+                containerFontSize = focusedWidget.getFocusContainer().getFontHeight();
+                containerGuiScale = focusedWidget.getFocusContainer().getGuiScale();
+                compositionBorder = focusedWidget.getFocusContainer().getBoundsAbs();
+            } else {
+                containerFontSize = widgetFontSize;
+                containerGuiScale = widgetGuiScale;
+                compositionBorder = focusOwner.getBoundsAbs();
+            }
+
+            int inputHeight = (int) (widgetFontSize * widgetGuiScale + 5 * containerGuiScale);
+            int compositionX = pos.x(), compositionY = pos.y() + inputHeight,
+                    //compositionWidth = (int) (preEditTextWidth * containerGuiScale),
+                    compositionHeight = (int) (containerFontSize * containerGuiScale);
+            //if(compositionX + compositionWidth > compositionBorder.width()) {
+            //    compositionX = compositionBorder.width() - compositionWidth;
+            //}
+            if(compositionY + compositionHeight > compositionBorder.height()) {
+                compositionY = (int) (pos.y() - (6 + containerFontSize) * containerGuiScale);
+            }
+            int scaledMargin = (int) (2 * containerGuiScale);
+            Rectangle preeditCursorRect = new Rectangle(compositionX - scaledMargin, Math.min(pos.y(), compositionY) - scaledMargin,
+                    0, compositionHeight + inputHeight + scaledMargin * 2);
+            glfwSetPreeditCursorRectangle(Minecraft.getInstance().getWindow().handle(),
+                    (int) (preeditCursorRect.x() / xscaleValue), (int) (preeditCursorRect.y() / yscaleValue), (int) (preeditCursorRect.width() / xscaleValue), (int) (preeditCursorRect.height() / yscaleValue));
             // We do not have an IMECandidateOverlay, do not update.
         }
     }
