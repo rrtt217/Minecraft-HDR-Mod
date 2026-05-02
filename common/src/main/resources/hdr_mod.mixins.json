@@ -19,8 +19,7 @@
     "compat.ixeris.MixinTitieScreen"
   ],
   "mixins": [
-    "compat.imblocker.MixinIMManagerLinux",
-    "compat.imblocker.MixinIMManagerMac",
+    "compat.imblocker.DebugMixinIMManager",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",
