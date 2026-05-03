@@ -17,10 +17,10 @@ import java.nio.FloatBuffer;
 import static io.github.reserveword.imblocker.common.IMManager.calculateCaretPos;
 import static xyz.rrtt217.HDRMod.util.ime.GLFWIMEUtils.glfwSetPreeditCursorRectangle;
 
+@SuppressWarnings("unused")
 public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
     private LinuxIMFramework imFramework;
     private static boolean state = false;
-    private volatile int fontsize;
 
     // This only works on our modified GLFW, not the original LWJGL 3.4.1 version!
     // Internally use zwp_text_input_v3::enable/disable or zwp_text_input_v1::activate/deactivate to completely disable IME when unneeded.
@@ -46,6 +46,17 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
     public void updateCompositionWindowPos(Point pos) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(!state) return;
+        FocusableObject focusOwner = FocusManager.getFocusOwner();
+        if(focusOwner != null) {
+            Point caretPos = calculateCaretPos(focusOwner, false);
+            if (config.enableIMBlockerSetPreeditCallbackIntegration)
+                UniversalIMEPreeditOverlay.getInstance().updateCaretPosition(caretPos.x(), caretPos.y());
+        }
+    }
+
+    public static void updatePreeditCursorRectanglePosition(int x, int y, int w, int h) {
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(!state) return;
         long handle = Minecraft.getInstance().getWindow().handle();
         float xscaleValue = 1.0f;
         float yscaleValue = 1.0f;
@@ -56,47 +67,8 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
             xscaleValue = xscale.get();
             yscaleValue = yscale.get();
         }
-        FocusableObject focusOwner = FocusManager.getFocusOwner();
-        if(focusOwner != null) {
-            Point caretPos = calculateCaretPos(focusOwner, false);
-            if(config.enableIMBlockerSetPreeditCallbackIntegration) UniversalIMEPreeditOverlay.getInstance().updateCaretPosition(caretPos.x(), caretPos.y());
-            double widgetGuiScale = focusOwner.getGuiScale();
-            int widgetFontSize = focusOwner.getFontHeight();
-            int containerFontSize;
-            double containerGuiScale;
-            Rectangle compositionBorder;
-            if(focusOwner instanceof FocusableWidget focusedWidget) {
-                containerFontSize = focusedWidget.getFocusContainer().getFontHeight();
-                containerGuiScale = focusedWidget.getFocusContainer().getGuiScale();
-                compositionBorder = focusedWidget.getFocusContainer().getBoundsAbs();
-            } else {
-                containerFontSize = widgetFontSize;
-                containerGuiScale = widgetGuiScale;
-                compositionBorder = focusOwner.getBoundsAbs();
-            }
-
-            int inputHeight = (int) (widgetFontSize * widgetGuiScale + 5 * containerGuiScale);
-            int compositionX = pos.x(), compositionY = pos.y() + inputHeight,
-                    //compositionWidth = (int) (preEditTextWidth * containerGuiScale),
-                    compositionHeight = (int) (containerFontSize * containerGuiScale);
-            //if(compositionX + compositionWidth > compositionBorder.width()) {
-            //    compositionX = compositionBorder.width() - compositionWidth;
-            //}
-            if(compositionY + compositionHeight > compositionBorder.height()) {
-                compositionY = (int) (pos.y() - (6 + containerFontSize) * containerGuiScale);
-            }
-            int scaledMargin = (int) (2 * containerGuiScale);
-            Rectangle preeditCursorRect = new Rectangle(compositionX - scaledMargin, Math.min(pos.y(), compositionY) - scaledMargin,
-                    0, compositionHeight + inputHeight + scaledMargin * 2);
-            glfwSetPreeditCursorRectangle(Minecraft.getInstance().getWindow().handle(),
-                    (int) (preeditCursorRect.x() / xscaleValue), (int) (preeditCursorRect.y() / yscaleValue), (int) (preeditCursorRect.width() / xscaleValue), (int) (preeditCursorRect.height() / yscaleValue));
-            // We do not have an IMECandidateOverlay, do not update.
-        }
-    }
-
-    @Override
-    public void updateCompositionFontSize(int fontSize) {
-        this.fontsize = fontSize;
+        glfwSetPreeditCursorRectangle(Minecraft.getInstance().getWindow().handle(),
+                (int) (x / xscaleValue), (int) (y / yscaleValue), (int) (w / xscaleValue), (int) (h / yscaleValue));
     }
 
     private void checkIMFramework() {

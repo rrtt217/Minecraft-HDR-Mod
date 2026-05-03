@@ -20,6 +20,7 @@
   ],
   "mixins": [
     "compat.imblocker.DebugMixinIMManager",
+    "compat.imblocker.DebugMixinUniversalIMEPreeditOverlay",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",

@@ -27,6 +27,11 @@ public class PlatformImpl {
         return true;
     }
 
+    public static boolean isDevelopmentEnvironment(){
+        if(FMLLoader.getCurrentOrNull() == null)    return false;
+        return !FMLLoader.getCurrentOrNull().isProduction();
+    }
+
     public static boolean isModLoaded(String modId) {
         return FMLLoader.getCurrent().getLoadingModList().getModFileById(modId) != null;
     }
