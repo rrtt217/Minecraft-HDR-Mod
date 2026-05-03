@@ -60,7 +60,6 @@ dependencies {
     modImplementation "maven.modrinth:replaymod:1.20.1-2.6.23"
     // Axiom refuse to start with modImplementation. Just use modCompileOnly, download one from modrinth and put it in run/mods.
     modCompileOnly "maven.modrinth:axiom:${axiom_version}-fabric,${minecraft_version}"
-    modCompileOnly "maven.modrinth:flashback:${flashback_version}-fabric,${minecraft_version}"
     modImplementation "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
 
     implementation "org.anarres:jcpp:1.4.14"
