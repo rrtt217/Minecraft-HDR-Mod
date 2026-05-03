@@ -29,6 +29,10 @@ public class Platform {
         throw new AssertionError();
     }
     @ExpectPlatform
+    public static boolean isDevelopmentEnvironment(){
+        throw new AssertionError();
+    }
+    @ExpectPlatform
     public static boolean isModLoaded(String modId){
         throw new AssertionError();
     }

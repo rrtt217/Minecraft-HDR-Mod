@@ -69,6 +69,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String tClass, String mClassPath) {
+        if(mClassPath.contains("Debug") && !Platform.isDevelopmentEnvironment()) return false;
         if (mClassPath.startsWith(IXERIS_COMPAT_MIXIN_CLASS_START)) {
             return hasIxeris;
         }
