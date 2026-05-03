@@ -1,7 +1,7 @@
-package xyz.rrtt217.HDRMod.util.neoforge;
+package xyz.rrtt217.HDRMod.util.forge;
 
-import net.neoforged.fml.loading.FMLLoader;
-import net.neoforged.fml.loading.LoadingModList;
+import net.minecraftforge.fml.loading.FMLLoader;
+import net.minecraftforge.fml.loading.LoadingModList;
 
 public class PlatformImpl {
     public static boolean isQuilt() {
@@ -17,11 +17,11 @@ public class PlatformImpl {
     }
 
     public static boolean isNeoForge() {
-        return true;
+        return false;
     }
 
     public static boolean isForge() {
-        return false;
+        return true;
     }
 
     public static boolean isForgeLike() {
