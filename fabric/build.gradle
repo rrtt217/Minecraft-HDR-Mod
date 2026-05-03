@@ -50,7 +50,7 @@ dependencies {
     modImplementation "maven.modrinth:flashback:vQyhWboq"
     modCompileOnly "maven.modrinth:axiom:jTdCyf2H"
     modCompileOnly "maven.modrinth:imblocker-original:wSPbNle0"
-    modLocalRuntime files("/home/david/Minecraft-HDR-Mod/libs/IMBlocker-5.5.3-dev-fabric+1.17-1.21.8.jar")
+    //modLocalRuntime files("/home/david/Minecraft-HDR-Mod/libs/IMBlocker-5.5.3-dev-fabric+1.17-1.21.8.jar")
     modImplementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
 
     implementation "org.anarres:jcpp:1.4.14"
