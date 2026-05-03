@@ -1,6 +1,7 @@
 package xyz.rrtt217.HDRMod.util.neoforge;
 
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.LoadingModList;
 
 public class PlatformImpl {
     public static boolean isQuilt() {
@@ -28,11 +29,10 @@ public class PlatformImpl {
     }
 
     public static boolean isDevelopmentEnvironment(){
-        if(FMLLoader.getCurrentOrNull() == null)    return false;
-        return !FMLLoader.getCurrentOrNull().isProduction();
+        return !FMLLoader.isProduction();
     }
 
     public static boolean isModLoaded(String modId) {
-        return FMLLoader.getCurrent().getLoadingModList().getModFileById(modId) != null;
+        return LoadingModList.get().getModFileById(modId) != null;
     }
 }

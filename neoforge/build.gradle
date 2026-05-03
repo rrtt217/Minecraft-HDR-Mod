@@ -65,7 +65,8 @@ dependencies {
     modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
 
     modImplementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_api_version}"
-    modImplementation "maven.modrinth:imblocker-original:s9gm1AKM"
+    modCompileOnly "maven.modrinth:imblocker-original:s9gm1AKM"
+    modLocalRuntime files("/home/david/Minecraft-HDR-Mod/libs/IMBlocker-5.5.3-dev-neoforge+1.20.6-1.21.8.jar")
     modCompileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-neoforge"
 
     modCompileOnly "maven.modrinth:iris:${iris_version}+${minecraft_version}-neoforge"

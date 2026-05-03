@@ -28,7 +28,7 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
     @Override
     public void setState(boolean on) {
         if (state != on) {
-            GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().handle(),0x00033007, on ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+            GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().getWindow(),0x00033007, on ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
             state = on;
         }
     }
@@ -57,7 +57,7 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
     public static void updatePreeditCursorRectanglePosition(int x, int y, int w, int h) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(!state) return;
-        long handle = Minecraft.getInstance().getWindow().handle();
+        long handle = Minecraft.getInstance().getWindow().getWindow();
         float xscaleValue = 1.0f;
         float yscaleValue = 1.0f;
         if(config.PreeditOverlayPositionFollowMonitorScale) {
@@ -67,8 +67,7 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
             xscaleValue = xscale.get();
             yscaleValue = yscale.get();
         }
-        glfwSetPreeditCursorRectangle(Minecraft.getInstance().getWindow().handle(),
-                (int) (x / xscaleValue), (int) (y / yscaleValue), (int) (w / xscaleValue), (int) (h / yscaleValue));
+        glfwSetPreeditCursorRectangle(Minecraft.getInstance().getWindow().getWindow(), (int) (x / xscaleValue), (int) (y / yscaleValue), (int) (w / xscaleValue), (int) (h / yscaleValue));
     }
 
     private void checkIMFramework() {
