@@ -59,7 +59,7 @@ dependencies {
     implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_api_version}"
     localRuntime "net.caffeinemc:sodium-neoforge:${sodium_version}+mc${minecraft_version}"
     implementation "maven.modrinth:iris:${iris_version}-neoforge"
-    implementation "maven.modrinth:imblocker-original:BO7litNl"
+    implementation "maven.modrinth:imblocker-original:${imblocker_version}-neoforge,${minecraft_version}"
     compileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-neoforge"
 
     implementation "org.anarres:jcpp:1.4.14"

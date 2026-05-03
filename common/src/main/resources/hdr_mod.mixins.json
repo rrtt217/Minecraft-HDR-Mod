@@ -19,7 +19,6 @@
     "MixinWindow"
   ],
   "mixins": [
-    "compat.imblocker.DebugMixinIMManager",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",
