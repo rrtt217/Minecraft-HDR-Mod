@@ -78,7 +78,7 @@ dependencies {
     modLocalRuntime "maven.modrinth:oculus:${minecraft_version}-${oculus_version}"
     modImplementation "curse.maven:reforgedplay-mod-1018692:5637596"
     modCompileOnly "maven.modrinth:imblocker-original:6XnV6Gqd"
-    modLocalRuntime files("/home/david/Minecraft-HDR-Mod/libs/IMBlocker-5.5.3-dev-forge+1.17-1.20.4.jar")
+    //modLocalRuntime files("/home/david/Minecraft-HDR-Mod/libs/IMBlocker-5.5.3-dev-forge+1.17-1.20.4.jar")
     modImplementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
 
     localRuntime "org.anarres:jcpp:1.4.14"
