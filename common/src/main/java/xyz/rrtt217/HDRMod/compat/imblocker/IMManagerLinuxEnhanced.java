@@ -46,12 +46,8 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
     public void updateCompositionWindowPos(Point pos) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(!state) return;
-        FocusableObject focusOwner = FocusManager.getFocusOwner();
-        if(focusOwner != null) {
-            Point caretPos = calculateCaretPos(focusOwner, false);
-            if (config.enableIMBlockerSetPreeditCallbackIntegration)
-                UniversalIMEPreeditOverlay.getInstance().updateCaretPosition(caretPos.x(), caretPos.y());
-        }
+        if(config.enableIMBlockerSetPreeditCallbackIntegration)
+            UniversalIMEPreeditOverlay.getInstance().updateCaretPosition(pos.x(), pos.y());
     }
 
     public static void updatePreeditCursorRectanglePosition(int x, int y, int w, int h) {
