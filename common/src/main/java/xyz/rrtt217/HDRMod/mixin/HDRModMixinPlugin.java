@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 import xyz.rrtt217.HDRMod.util.LibraryExtractor;
+import xyz.rrtt217.HDRMod.util.Platform;
 
 import java.util.HashMap;
 import java.util.List;
@@ -53,12 +54,10 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
         } catch (ClassNotFoundException ignored) {
             LOGGER.debug("Ixeris not found, Ixeris compatibility mixins will be skipped.");
         }
-        try{
-            // HACK
-            Class.forName("io.github.reserveword.imblocker.common.DebugUtil");
+        if(Platform.isModLoaded("imblocker")) {
             hasIMblocker = true;
             LOGGER.info("IMblocker detected, enabling IMBlocker compatibility mixins.");
-        } catch (ClassNotFoundException ignored) {
+        } else {
             LOGGER.debug("IMBlocker is not found, IMBlocker compatibility mixins will be skipped.");
         }
     }
@@ -70,6 +69,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String tClass, String mClassPath) {
+        if(mClassPath.contains("Debug") && !Platform.isDevelopmentEnvironment()) return false;
         if (mClassPath.startsWith(IXERIS_COMPAT_MIXIN_CLASS_START)) {
             return hasIxeris;
         }
