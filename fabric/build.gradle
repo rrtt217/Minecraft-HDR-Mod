@@ -94,9 +94,9 @@ jar {
 shadowJar {
     dependsOn(jar)
     mainSpec.sourcePaths.clear()       // Remove default source set inclusion
-    from(zipTree(jar.archiveFile))     // Unpack jar output (preserves Loom modifications)
-
+    from(jar)
     configurations = [project.configurations.shadowBundle]
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveClassifier = null           // shadowJar becomes the main artifact
     from rootProject.file("LICENSE.md")
 }
