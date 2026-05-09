@@ -28,7 +28,7 @@ public class MixinGLFWIMEUtils {
         IxerisApi api = IxerisApi.getInstance();
         if (api.isEnabled() && !api.isOnMainThreadOrInit()) {
             ci.cancel();
-            api.runNowOnMainThread(() -> GLFWIMEUtils.glfwSetPreeditCursorRectangle(window, x, y, w, h));
+            api.runOnMainThread(() -> GLFWIMEUtils.glfwSetPreeditCursorRectangle(window, x, y, w, h));
         }
     }
     @Inject(method = "glfwSetIMEStatusCallback", at = @At("HEAD"))
