@@ -1,6 +1,7 @@
 package xyz.rrtt217.HDRMod.mixin.compat.imblocker;
 
 import com.mojang.blaze3d.platform.Window;
+import com.sun.jna.Platform;
 import io.github.reserveword.imblocker.common.gui.UniversalIMEPreeditOverlay;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
@@ -25,7 +26,7 @@ public class MixinKeyboardHandler {
     @Inject(method = "setup", at = @At(value = "TAIL"))
     private void hdr_mod$setPreeditCallbackForIMBlocker(Window window, CallbackInfo ci){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(config.enableIMBlockerSetPreeditCallbackIntegration) GLFWIMEUtils.glfwSetPreeditCallback(Minecraft.getInstance().getWindow().handle(), MixinKeyboardHandler::hdr_mod$preeditCallback);
+        if(config.enableIMBlockerSetPreeditCallbackIntegration && Platform.isLinux()) GLFWIMEUtils.glfwSetPreeditCallback(Minecraft.getInstance().getWindow().handle(), MixinKeyboardHandler::hdr_mod$preeditCallback);
     }
     // Work like vanilla 26.1.
     @Unique

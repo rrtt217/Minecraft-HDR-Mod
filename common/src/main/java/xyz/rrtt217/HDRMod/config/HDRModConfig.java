@@ -1,5 +1,6 @@
 package xyz.rrtt217.HDRMod.config;
 
+import com.sun.jna.Platform;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -60,14 +61,14 @@ public class HDRModConfig implements ConfigData {
     public boolean enableCharCallbackReplacement = true;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("ime")
-    public boolean enableIMBlockerSetPreeditCallbackIntegration = true;
+    public boolean enableIMBlockerSetPreeditCallbackIntegration = Platform.isLinux();
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("ime")
     public boolean PreeditOverlayPositionFollowMonitorScale = true;
 
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")
-    public boolean useUNORMWindowPixelFormat = System.getProperty("os.name").toLowerCase().contains("linux");
+    public boolean useUNORMWindowPixelFormat = Platform.isLinux();
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")
     public boolean forceActivateGlDxInterop = false;
