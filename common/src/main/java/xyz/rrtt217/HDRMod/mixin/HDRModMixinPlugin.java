@@ -20,7 +20,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     private final String NEOFORGE_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.neoforge.mixin.";
     private final String IXERIS_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.ixeris.";
     private final String IMBLOCKER_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.imblocker.";
-    private final String LIBRARY_VERSION = "3.5.5";
+    private final String LIBRARY_VERSION = "3.5.6";
     public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_mixin_plugin");
     public static boolean hasGlfwLib = false;
     public static boolean enableHDR = true;
@@ -31,7 +31,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     public void onLoad(String s) {
         // Switch glfw lib on MixinPlugin Load.
         HashMap<String, String> glfwLibNames = new HashMap<>();
-        glfwLibNames.put("win", "glfw3");
+        glfwLibNames.put("windows", "glfw3");
         glfwLibNames.put("mac", "libglfw");
         glfwLibNames.put("linux", "libglfw");
         String glfwLibPath = "";

@@ -1,5 +1,6 @@
 package xyz.rrtt217.HDRMod.util;
 
+import com.sun.jna.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +10,8 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+
+import static com.sun.jna.Platform.ARCH;
 
 public class LibraryExtractor {
     public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_library_extractor");
@@ -21,25 +24,24 @@ public class LibraryExtractor {
         Files.createDirectories(libExtractDir);
 
         String osName = System.getProperty("os.name").toLowerCase();
-        String osArch = System.getProperty("os.arch").toLowerCase();
 
         LOGGER.info("Extracting libraries...");
         LOGGER.info("OS: {}", osName);
-        LOGGER.info("OS arch: {}", osArch);
+        LOGGER.info("OS arch: {}", ARCH);
 
         String platformKey;
         String libExtension;
         String subDirBase;
 
-        if (osName.contains("win")) {
-            platformKey = "win";
+        if (Platform.isWindows()) {
+            platformKey = "windows";
             libExtension = ".dll";
             subDirBase = "windows";
-        } else if (osName.contains("mac")) {
+        } else if (Platform.isMac()) {
             platformKey = "mac";
             libExtension = ".dylib";
             subDirBase = "mac";
-        } else if (osName.contains("linux")) {
+        } else if (Platform.isLinux()) {
             platformKey = "linux";
             libExtension = ".so";
             subDirBase = "linux";
@@ -52,7 +54,7 @@ public class LibraryExtractor {
         // Get base name of the lib.
         String libBaseName = platformLibNameMap.get(platformKey);
         if (libBaseName == null) {
-            // fallback to linux mapping on unknown system.
+            // fallback to linux mapping on unknown system. The linux mapping is usually common *nix mapping.
             if (!platformKey.equals("linux") && !platformKey.equals("win") && !platformKey.equals("mac")) {
                 libBaseName = platformLibNameMap.get("linux");
                 if (libBaseName == null) {
@@ -66,8 +68,7 @@ public class LibraryExtractor {
         }
 
         String fullLibName = libBaseName + libExtension;
-        String archDir = mapArchitecture(osArch);
-        String resourcePath = "libraries/" + subDirBase + "/" + archDir + "/" + fullLibName;
+        String resourcePath = "libraries/" + subDirBase + "/" + ARCH + "/" + fullLibName;
 
         LOGGER.info("Looking for library in classpath: {}", resourcePath);
 
@@ -84,25 +85,6 @@ public class LibraryExtractor {
                 LOGGER.info("Extracted library to {}", outputLibPath);
             }
         }
-
         return outputLibPath;
-    }
-
-    /**
-     * Map os architecture to standard names.
-     */
-    private static String mapArchitecture(String osArch) {
-        osArch = osArch.toLowerCase();
-        if (osArch.contains("amd64") || osArch.contains("x86_64") || osArch.contains("x64")) {
-            return "x64";
-        } else if (osArch.contains("i386") || osArch.contains("i686") || osArch.contains("x86")) {
-            return "i386";
-        } else if (osArch.contains("aarch64") || osArch.contains("arm64")) {
-            return "arm64";
-        } else if (osArch.contains("arm")) {
-            return "arm";
-        } else {
-            return osArch;
-        }
     }
 }

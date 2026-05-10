@@ -42,7 +42,7 @@
   "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditOverlayPositionIntegration.@Tooltip": "Use LWJGL 3.4.1 function to set IME overlay position.",
   "text.autoconfig.hdr_mod.option.PreeditOverlayPositionFollowMonitorScale.@Tooltip": "Necessary for some platforms to make IME overlay position correct.",
   "text.autoconfig.hdr_mod.option.enableIMBlockerSetEnglishStateIntegration.@Tooltip": "Use IMBlocker original method to control IME English/CJK state.",
-  "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditCallbackIntegration.@Tooltip": "Use LWJGL 3.4.1 callback to get IME preedit screen so IMBlocker can show preedit overlay on non-Windows platform.",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditCallbackIntegration.@Tooltip": "Use LWJGL 3.4.1 callback to get IME preedit screen so IMBlocker can show preedit overlay on Linux. No effect on Windows.",
 
 
   "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat": "Use UNORM Window Pixel Format",
