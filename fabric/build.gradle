@@ -1,5 +1,6 @@
 plugins {
     id 'com.gradleup.shadow'
+    id "me.shedaniel.unified-publishing" version "0.1.+"
 }
 
 architectury {
@@ -53,7 +54,7 @@ dependencies {
     modImplementation "maven.modrinth:ixeris:${ixeris_version}+1.21.11-fabric"
     // Axiom refuse to start with modImplementation. Just use modCompileOnly, download one from modrinth and put it in run/mods.
     modCompileOnly "maven.modrinth:axiom:${axiom_version}-fabric,${minecraft_version}"
-    modCompileOnly "maven.modrinth:flashback:${flashback_version}-fabric,${minecraft_version}"
+    modImplementation "maven.modrinth:flashback:${flashback_version}-fabric,${minecraft_version}"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"
@@ -88,3 +89,52 @@ shadowJar {
 remapJar {
     inputFile.set shadowJar.archiveFile
 }
+
+unifiedPublishing {
+    project {
+        displayName = "[Fabric $project.minecraft_version] v$project.version"
+        releaseType = "release"
+        gameVersions = ["$project.minecraft_version"]
+        gameLoaders = ["fabric"]
+        changelog = file("changelog.md").toString()
+
+        version = "$project.version+fabric+$project.minecraft_version"
+
+        mainPublication remapJar
+
+        relations {
+            depends {
+                curseforge = "architectury-api"
+                modrinth = "architectury-api"
+            }
+            depends {
+                curseforge = "cloth-config"
+                modrinth = "cloth-config"
+            }
+            includes {}
+            optional {
+                curseforge = "irisshaders"
+                modrinth = "iris"
+            }
+            conflicts {}
+        }
+
+        if (project.hasProperty("CURSEFORGE_TOKEN") || System.getenv("CURSEFORGE_TOKEN") != null) {
+            curseforge {
+                token = project.hasProperty("CURSEFORGE_TOKEN") ? project.property("CURSEFORGE_TOKEN") : System.getenv("CURSEFORGE_TOKEN")
+                id = project.curseforge_id
+                gameVersions.addAll "Java 21"
+            }
+        }
+
+        if (project.hasProperty("MODRINTH_TOKEN") || System.getenv("MODRINTH_TOKEN") != null) {
+            modrinth {
+                token = project.hasProperty("MODRINTH_TOKEN") ? project.property("MODRINTH_TOKEN") : System.getenv("MODRINTH_TOKEN")
+                id = project.modrinth_id
+                // gameVersions.addAll project.minecraft_version
+            }
+        }
+    }
+}
+
+rootProject.tasks.getByName("modPublish").dependsOn tasks.getByName("publishUnified")

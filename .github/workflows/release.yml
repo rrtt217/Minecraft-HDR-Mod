@@ -1,0 +1,126 @@
+name: release.yml
+on:
+  workflow_dispatch:
+jobs:
+  # Step 1: Compile natives on specific platforms; same as build.yml
+  build-native:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # Linux Dependency Installation
+      - name: Install Linux dependencies
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt update
+          sudo apt install -y libxrandr-dev libxinerama-dev libxcursor-dev \
+                              libxi-dev libxext-dev libwayland-dev libxkbcommon-dev \
+                              libdbus-1-dev
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew (Unix)
+        if: matrix.os != 'windows-latest'
+        run: chmod +x gradlew
+
+      # Compile natives
+      - name: Compile native library
+        run: ./gradlew native:compile
+        shell: bash
+
+      # Upload natives
+      - name: Upload Linux natives
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: natives-linux
+          path: common/src/main/resources/libraries/linux/
+
+      - name: Upload macOS natives
+        if: matrix.os == 'macos-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: natives-macos
+          path: common/src/main/resources/libraries/mac/
+
+      - name: Upload Windows natives
+        if: matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: natives-windows
+          path: common/src/main/resources/libraries/windows/
+
+  release:
+    needs: build-native
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ubuntu-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ubuntu-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Download Linux natives
+        uses: actions/download-artifact@v4
+        with:
+          name: natives-linux
+          path: common/src/main/resources/libraries/linux/
+
+      - name: Download macOS natives
+        uses: actions/download-artifact@v4
+        with:
+          name: natives-macos
+          path: common/src/main/resources/libraries/mac/
+
+      - name: Download Windows natives
+        uses: actions/download-artifact@v4
+        with:
+          name: natives-windows
+          path: common/src/main/resources/libraries/windows/
+
+      # Build the mod
+      - name: Build and Auto Release with Gradle
+        run: ./gradlew modPublish
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}

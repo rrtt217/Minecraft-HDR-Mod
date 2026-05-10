@@ -1,7 +1,13 @@
 # Minecraft HDR Mod
 [中文](https://github.com/rrtt217/Minecraft-HDR-Mod/blob/master/README-zh.md) | English
 
-A minecraft mod that enables native HDR on Windows / macOS / Linux with Iris shaders. Currently, in active development.
+[![CurseForge Downloads](https://badges.moddingx.org/curseforge/downloads/1533526)](https://www.curseforge.com/minecraft/mc-mods/shaders-hdr)
+[![Modrinth Downloads](https://badges.moddingx.org/modrinth/downloads/tycXenOB)](https://modrinth.com/mod/rrtt217-s-hdr-mod)
+
+[![Versions](https://badges.moddingx.org/curseforge/versions/1533526)](https://www.curseforge.com/minecraft/mc-mods/shaders-hdr)
+[![Versions](https://badges.moddingx.org/modrinth/versions/tycXenOB)](https://modrinth.com/mod/rrtt217-s-hdr-mod)
+
+A minecraft mod that enables native HDR on Windows / macOS / Linux with Iris shaders.
 [![PhotonHDRPic](https://i.postimg.cc/tgRwc3x5/2026-02-15-20-07-37-hdr.png)](https://postimg.cc/LJ7xYZvY)
 ([Photon](https://modrinth.com/shader/photon-shader) patched to HDR w/ [Patrix](https://modrinth.com/resourcepack/patrix-32x), taken by mod's screenshot feature.)
 ## What the mod have achieved
