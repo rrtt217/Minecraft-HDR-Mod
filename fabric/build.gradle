@@ -118,7 +118,7 @@ unifiedPublishing {
             }
             conflicts {}
         }
-/*
+
         if (project.hasProperty("CURSEFORGE_TOKEN") || System.getenv("CURSEFORGE_TOKEN") != null) {
             curseforge {
                 token = project.hasProperty("CURSEFORGE_TOKEN") ? project.property("CURSEFORGE_TOKEN") : System.getenv("CURSEFORGE_TOKEN")
@@ -126,7 +126,7 @@ unifiedPublishing {
                 gameVersions.addAll "Java 21"
             }
         }
-*/
+
         if (project.hasProperty("MODRINTH_TOKEN") || System.getenv("MODRINTH_TOKEN") != null) {
             modrinth {
                 token = project.hasProperty("MODRINTH_TOKEN") ? project.property("MODRINTH_TOKEN") : System.getenv("MODRINTH_TOKEN")
