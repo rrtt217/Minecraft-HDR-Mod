@@ -13,7 +13,6 @@ authors = "rrtt217"
 description = '''
 Enable native HDR in Minecraft with Iris shaders.
 '''
-#logoFile = ""
 
 [[dependencies.hdr_mod]]
 modId = "neoforge"

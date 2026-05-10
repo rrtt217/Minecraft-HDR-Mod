@@ -26,7 +26,7 @@ public class HDRModConfig implements ConfigData {
     public float customGameMinimumBrightness = 0.0f; // Probably unused and broken.
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("general")
-    public float customEotfEmulate = System.getProperty("os.name").startsWith("Windows") ? -1.0f : 0.0f;
+    public float customEotfEmulate = Platform.isLinux() ? 0.0f : -1.0f;
 
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("screenshot")
