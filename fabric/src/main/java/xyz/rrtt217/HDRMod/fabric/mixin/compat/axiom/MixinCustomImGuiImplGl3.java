@@ -127,7 +127,7 @@ public class MixinCustomImGuiImplGl3 {
                 "    else if(transferFunction == 5){\n" +
                 "        color.rgb *= uiBrightness / 80.0;\n" +
                 "    }\n" +
-                "    else if((transferFunction == 9) || (transferFunction == 10)){\n" +
+                "    else if((transferFunction == 9) || (transferFunction == 10) || (transferFunction == 2)){\n" +
                 "        color.rgb *= uiBrightness / 203.0;\n" +
                 "        color.rgb = sRGB_EncodeSafe(color.rgb);\n" +
                 "    }\n" +
@@ -203,7 +203,7 @@ public class MixinCustomImGuiImplGl3 {
                 "    else if(transferFunction == 5){\n" +
                 "        color.rgb *= uiBrightness / 80.0;\n" +
                 "    }\n" +
-                "    else if((transferFunction == 9) || (transferFunction == 10)){\n" +
+                "    else if((transferFunction == 9) || (transferFunction == 10) || (transferFunction == 2)){\n" +
                 "        color.rgb *= uiBrightness / 203.0;\n" +
                 "        color.rgb = sRGB_EncodeSafe(color.rgb);\n" +
                 "    }\n" +
@@ -280,7 +280,7 @@ public class MixinCustomImGuiImplGl3 {
                 "    else if(transferFunction == 5){\n" +
                 "        color.rgb *= uiBrightness / 80.0;\n" +
                 "    }\n" +
-                "    else if((transferFunction == 9) || (transferFunction == 10)){\n" +
+                "    else if((transferFunction == 9) || (transferFunction == 10) || (transferFunction == 2)){\n" +
                 "        color.rgb *= uiBrightness / 203.0;\n" +
                 "        color.rgb = sRGB_EncodeSafe(color.rgb);\n" +
                 "    }\n" +
@@ -356,7 +356,7 @@ public class MixinCustomImGuiImplGl3 {
                 "    else if(transferFunction == 5){\n" +
                 "        color.rgb *= uiBrightness / 80.0;\n" +
                 "    }\n" +
-                "    else if((transferFunction == 9) || (transferFunction == 10)){\n" +
+                "    else if((transferFunction == 9) || (transferFunction == 10) || (transferFunction == 2)){\n" +
                 "        color.rgb *= uiBrightness / 203.0;\n" +
                 "        color.rgb = sRGB_EncodeSafe(color.rgb);\n" +
                 "    }\n" +

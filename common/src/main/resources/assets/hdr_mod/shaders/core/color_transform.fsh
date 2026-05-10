@@ -25,7 +25,7 @@ vec3 PQ_Encode(vec3 c, float scaling) {
     c *= scaling / 10000.0;
     c = pow(c, vec3(PQ_M1));
     c = (vec3(PQ_C1) + vec3(PQ_C2) * c) / (vec3(1.0) + vec3(PQ_C3) * c);
-    return pow(c, vec3(PQ_M2));
+    return clamp(pow(c, vec3(PQ_M2)), 0.0, 1.0);
 }
 
 const mat3 BT709_TO_BT2020_MAT = mat3(

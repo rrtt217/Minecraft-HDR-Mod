@@ -1,6 +1,7 @@
 package xyz.rrtt217.HDRMod.mixin;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.sun.jna.Platform;
 import net.minecraft.util.TimeSource;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,6 +20,9 @@ public class MixinRenderSystem {
         if(enableHDR && HDRModMixinPlugin.hasGlfwLib) {
             SetupBeforeGLFWInit.setup();
             GLFW.glfwInitHint(0x00026002,GLFW.GLFW_TRUE);
+            if(Platform.isWindows()) {
+                GLFW.glfwInitHint(0x00050005,GLFW.GLFW_FALSE);
+            }
         }
     }
 }
