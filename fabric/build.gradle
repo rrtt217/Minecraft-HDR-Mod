@@ -57,7 +57,7 @@ dependencies {
     implementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
     implementation "maven.modrinth:replaymod:26.1-2.6.26"
     implementation "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
-    compileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
+    implementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
     // Axiom refuse to start with modImplementation. Just use modCompileOnly, download one from modrinth and put it in run/mods.
     compileOnly "maven.modrinth:axiom:${axiom_version}-fabric,${minecraft_version}"
     compileOnly "maven.modrinth:flashback:${flashback_version}-fabric,${minecraft_version}"
@@ -117,8 +117,8 @@ unifiedPublishing {
 
         relations {
             depends {
-                curseforge = "architectury-api"
-                modrinth = "architectury-api"
+                curseforge = "fabric-api"
+                modrinth = "fabric-api"
             }
             depends {
                 curseforge = "cloth-config"
@@ -136,7 +136,7 @@ unifiedPublishing {
             curseforge {
                 token = project.hasProperty("CURSEFORGE_TOKEN") ? project.property("CURSEFORGE_TOKEN") : System.getenv("CURSEFORGE_TOKEN")
                 id = project.curseforge_id
-                gameVersions.addAll "Java 21"
+                gameVersions.addAll "Java 25"
             }
         }
 

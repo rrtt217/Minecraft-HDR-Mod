@@ -107,13 +107,9 @@ unifiedPublishing {
 
         version = "$project.version+neoforge+$project.minecraft_version"
 
-        mainPublication remapJar
+        mainPublication shadowJar
 
         relations {
-            depends {
-                curseforge = "architectury-api"
-                modrinth = "architectury-api"
-            }
             depends {
                 curseforge = "cloth-config"
                 modrinth = "cloth-config"
@@ -130,7 +126,7 @@ unifiedPublishing {
             curseforge {
                 token = project.hasProperty("CURSEFORGE_TOKEN") ? project.property("CURSEFORGE_TOKEN") : System.getenv("CURSEFORGE_TOKEN")
                 id = project.curseforge_id
-                gameVersions.addAll "Java 21"
+                gameVersions.addAll "Java 25"
             }
         }
 
