@@ -96,9 +96,9 @@ unifiedPublishing {
         releaseType = "release"
         gameVersions = ["$project.minecraft_version"]
         gameLoaders = ["fabric"]
-        changelog = file("changelog.md").toString()
+        changelog = file("$rootDir/changelog.md").text
 
-        version = "$project.version+fabric+$project.minecraft_version"
+        version = "$project.version+fabric"
 
         mainPublication remapJar
 
