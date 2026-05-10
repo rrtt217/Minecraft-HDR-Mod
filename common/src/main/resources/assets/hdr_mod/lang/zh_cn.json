@@ -42,7 +42,7 @@
   "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditOverlayPositionIntegration.@Tooltip": "使用LWJGL 3.4.1的相关函数来设置输入法预编辑覆盖层的位置。",
   "text.autoconfig.hdr_mod.option.PreeditOverlayPositionFollowMonitorScale.@Tooltip": "在某些平台上需要开启来保证输入法预编辑覆盖层位置正确。",
   "text.autoconfig.hdr_mod.option.enableIMBlockerSetEnglishStateIntegration.@Tooltip": "使用 IMBlocker 原有方法来控制输入法英文/CJK状态切换。",
-  "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditCallbackIntegration.@Tooltip": "使用LWJGL 3.4.1的相关回调来获取输入法预编辑内容，以让 IMBlocker 在非Windows平台显示预编辑提示框。",
+  "text.autoconfig.hdr_mod.option.enableIMBlockerSetPreeditCallbackIntegration.@Tooltip": "使用LWJGL 3.4.1的相关回调来获取输入法预编辑内容，以让 IMBlocker 在Linux平台显示预编辑提示框。Windows平台不需要该选项且该选项无效。",
 
 
   "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat": "为窗口使用归一化定点格式",

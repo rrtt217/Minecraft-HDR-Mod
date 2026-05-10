@@ -1,9 +1,19 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'net.java.dev.jna:jna:5.14.0'
+    }
+}
+
 plugins{
     id 'java'
 }
 
 import org.gradle.process.ExecOperations
 import javax.inject.Inject
+import com.sun.jna.*
 
 abstract class CompileNativeTask extends DefaultTask {
     @Inject //@javax.inject.Inject
@@ -13,7 +23,7 @@ abstract class CompileNativeTask extends DefaultTask {
         def arch = System.getProperty("os.arch").toLowerCase()
         switch (arch) {
             case ~/amd64|x86_64/:
-                return "x64"
+                return "x86-64"
             case ~/aarch64|arm64/:
                 return "arm64"
             case ~/x86|i[3-6]86/:
@@ -26,7 +36,7 @@ abstract class CompileNativeTask extends DefaultTask {
     @TaskAction
     void compile() {
         def os = org.gradle.internal.os.OperatingSystem.current()
-        def normalizedArch = getNormalizedArch()
+        def normalizedArch = com.sun.jna.Platform.ARCH
         def nativesDir = project.file("../common/src/main/resources/libraries")
         def sourceDir = project.file("glfw")
 
@@ -70,7 +80,7 @@ abstract class CompileNativeTask extends DefaultTask {
             project.copy {
                 from("$sourceDir/build-cocoa-shared/src")
                 include("libglfw.dylib")
-                into("$nativesDir/mac/x64")
+                into("$nativesDir/mac/x86-64")
             }
             project.copy {
                 from("$sourceDir/build-cocoa-shared/src")
@@ -97,7 +107,7 @@ abstract class CompileNativeTask extends DefaultTask {
             project.copy {
                 from("$sourceDir/build-win32-shared-x64/src/Release")
                 include("glfw3.dll")
-                into("$nativesDir/windows/x64")
+                into("$nativesDir/windows/x86-64")
             }
 
             // x86

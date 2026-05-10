@@ -30,7 +30,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     public void onLoad(String s) {
         // Switch glfw lib on MixinPlugin Load.
         HashMap<String, String> glfwLibNames = new HashMap<>();
-        glfwLibNames.put("win", "glfw3");
+        glfwLibNames.put("windows", "glfw3");
         glfwLibNames.put("mac", "libglfw");
         glfwLibNames.put("linux", "libglfw");
         String glfwLibPath = "";
