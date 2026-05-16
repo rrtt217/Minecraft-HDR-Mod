@@ -42,6 +42,8 @@ versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
 
-
 [[mixins]]
 config = "hdr_mod.mixins.json"
+
+[[accessTransformers]]
+file="accesstransformer.cfg"

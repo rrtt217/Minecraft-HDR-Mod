@@ -33,6 +33,7 @@
     "hdr_mod.mixins.json",
     "hdr_mod.fabric.mixins.json"
   ],
+  "accessWidener": "hdr_mod.classtweaker",
   "depends": {
     "fabricloader": ">=0.18.2",
     "minecraft": ">=1.21.11",
