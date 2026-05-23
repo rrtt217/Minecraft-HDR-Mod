@@ -40,7 +40,8 @@ public class PngjHDRScreenshot {
     record ImageBuffer(ShortBuffer shortBuffer, int width, int height){}
 
     public static void grab(File baseDirectory, @Nullable String string, RenderTarget renderTarget, Consumer<Component> consumer){
-        grab(baseDirectory, string, renderTarget, 2 ,consumer);
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        grab(baseDirectory, string, renderTarget, config.screenshotDownscaleFactor ,consumer);
     }
 
     // Implements nearest neighbor sampling. Useful with mods like RenderScale.
