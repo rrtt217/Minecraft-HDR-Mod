@@ -49,7 +49,6 @@ public class PngjHDRScreenshot {
     // Implements nearest neighbor sampling. Useful with mods like RenderScale.
     // Unlike vanilla, we accept floating point scale and do not throw an error when image size is not divisible by downscale factor.
     public static void grab(File baseDirectory, @Nullable String string, RenderTarget renderTarget, float i, Consumer<Component> consumer){
-            if (!enableHDR) return;
             takeScreenshot(renderTarget,(imageBuffer -> {
                 int origWidth = imageBuffer.width();
                 int origHeight = imageBuffer.height();
@@ -134,7 +133,6 @@ public class PngjHDRScreenshot {
         if (gpuTexture == null) {
             throw new IllegalStateException("color texture is null");
         }
-        if (!enableHDR) return;
         // Width and height.
         int width = gpuTexture.getWidth(0);
         int height = gpuTexture.getHeight(0);
