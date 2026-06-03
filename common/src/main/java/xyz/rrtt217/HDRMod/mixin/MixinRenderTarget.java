@@ -35,7 +35,7 @@ public class MixinRenderTarget {
     )
     private void hdr_mod$upgradeCreateBuffers(int target, int level, int internalformat, int width, int height,
                                               int border, int format, int type, IntBuffer pixels) {
-        if (enableHDR && internalformat == GL30.GL_RGBA8) {
+        if (internalformat == GL30.GL_RGBA8) {
             GlStateManager._texImage2D(target, level, GL30.GL_RGBA16F, width, height, border,
                     format, GL30.GL_HALF_FLOAT, pixels);
         } else {
@@ -49,7 +49,6 @@ public class MixinRenderTarget {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if (bl) {
             HDRModInjectHooks.setTargetDisableBlend();
-            if (!enableHDR) return;
             // Create PresentationColorTransformRenderer if there's not one.
             if (PresentationColorTransformRenderer == null) {
                 try {
@@ -74,7 +73,7 @@ public class MixinRenderTarget {
 
     @Redirect(method = "_blitToScreen", at = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;colorTextureId:I", opcode = Opcodes.GETFIELD))
     private int hdr_mod$replaceBlitTarget(RenderTarget instance) {
-        if (HDRModInjectHooks.getTargetDisableBlend() && enableHDR) {
+        if (HDRModInjectHooks.getTargetDisableBlend()) {
             HDRModInjectHooks.unsetTargetDisableBlend();
             return PresentationColorTransformRenderer.getDstTextureId();
         }

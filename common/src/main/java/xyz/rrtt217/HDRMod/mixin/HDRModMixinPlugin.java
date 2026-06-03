@@ -20,12 +20,14 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     private final String NEOFORGE_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.neoforge.mixin.";
     private final String IXERIS_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.ixeris.";
     private final String IMBLOCKER_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.imblocker.";
+    private final String IRIS_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.iris.";
     private final String LIBRARY_VERSION = "3.5.6";
     public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_mixin_plugin");
     public static boolean hasGlfwLib = false;
     public static boolean enableHDR = true;
     public static boolean hasIxeris = false;
     public static boolean hasIMblocker = false;
+    public static boolean hasIris = false;
 
     @Override
     public void onLoad(String s) {
@@ -55,11 +57,16 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
         } catch (ClassNotFoundException ignored) {
             LOGGER.debug("Ixeris not found, Ixeris compatibility mixins will be skipped.");
         }
+
         if(Platform.isModLoaded("imblocker")) {
             hasIMblocker = true;
             LOGGER.info("IMblocker detected, enabling IMBlocker compatibility mixins.");
         } else {
             LOGGER.debug("IMBlocker is not found, IMBlocker compatibility mixins will be skipped.");
+        }
+
+        if(Platform.isModLoaded("iris") || Platform.isModLoaded("oculus")) {
+            hasIris = true;
         }
     }
 
@@ -76,6 +83,9 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
         }
         if (mClassPath.startsWith(IMBLOCKER_COMPAT_MIXIN_CLASS_START)) {
             return hasIMblocker;
+        }
+        if (mClassPath.startsWith(IRIS_COMPAT_MIXIN_CLASS_START)) {
+            return hasIris;
         }
         return mClassPath.startsWith(MIXIN_CLASS_START) || mClassPath.startsWith(FABRIC_MIXIN_CLASS_START) ||  mClassPath.startsWith(NEOFORGE_MIXIN_CLASS_START);
     }

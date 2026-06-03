@@ -5,6 +5,7 @@ import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -40,18 +41,20 @@ public final class HDRMod {
             InputConstants.KEY_F10, // The default keycode
             "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
-    public static boolean enableHDR = true;
 
     public static boolean isReplayRendering = false;
 
-    static {
-        if(Platform.isForge()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-    }
+    public static ConfigHolder<HDRModConfig> configHolder;
+
 
     public HDRMod() {
     }
 
     public static void init() {
+        if(configHolder == null) {
+            configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+            configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
+        }
         // Register Key Mapping.
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
@@ -68,11 +71,6 @@ public final class HDRMod {
                 }));
             }
         });
-
-        // Register config and set enableHDR once and for all.
-        if (!Platform.isForge()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        enableHDR = config.enableHDR;
 
         LOGGER.debug("HDRMod Initialized!");
     }
