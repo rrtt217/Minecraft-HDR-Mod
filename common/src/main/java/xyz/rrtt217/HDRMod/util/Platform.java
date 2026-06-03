@@ -36,4 +36,6 @@ public class Platform {
     public static boolean isModLoaded(String modId){
         throw new AssertionError();
     }
+    @ExpectPlatform
+    public static String getVersion(){ throw new AssertionError();}
 }
