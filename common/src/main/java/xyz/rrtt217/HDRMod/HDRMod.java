@@ -1,6 +1,7 @@
 package xyz.rrtt217.HDRMod;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -10,6 +11,8 @@ import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.InteractionResult;
+import org.lwjgl.glfw.GLFW;
 import org.slf4j.LoggerFactory;
 import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
 import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;

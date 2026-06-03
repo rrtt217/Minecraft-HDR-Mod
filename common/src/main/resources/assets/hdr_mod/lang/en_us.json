@@ -5,7 +5,7 @@
   "text.autoconfig.hdr_mod.option.customGameMinimumBrightness": "Game Minimum Brightness",
   "text.autoconfig.hdr_mod.option.customGamePeakBrightness": "Game Peak Brightness",
   "text.autoconfig.hdr_mod.option.customEotfEmulate": "EOTF / Gamma Correction 2.2 Threshold",
-  "text.autoconfig.hdr_mod.option.enableHDR.@Tooltip": "Enable HDR (Requires Client Restart).",
+  "text.autoconfig.hdr_mod.option.enableHDR.@Tooltip": "Toggle HDR. Note that this is a soft toggle, aka, it only toggles HDR status of the shaderpack, not the window.\n To completely disable HDR, please remove/disable the mod.",
   "text.autoconfig.hdr_mod.option.uiBrightness.@Tooltip": "In nits, the paper white of UI elements and vanilla game (i.e without shaders).\nSet it negative to use display reported SDR paper white.",
   "text.autoconfig.hdr_mod.option.customGamePaperWhiteBrightness.@Tooltip": "In nits, the paper white of the game/scene.\nSet it negative to use display reported value.",
   "text.autoconfig.hdr_mod.option.customGameMinimumBrightness.@Tooltip": "In nits, the minimum the display can output.\n(Linux / Window with DX-GL interop) Set it negative to use display reported value. Leave 0 if unsure.",
