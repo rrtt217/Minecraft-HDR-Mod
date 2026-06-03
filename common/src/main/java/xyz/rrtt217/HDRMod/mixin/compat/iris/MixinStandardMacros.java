@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.util.Platform;
 
 import java.util.ArrayList;
 
@@ -19,7 +20,9 @@ public class MixinStandardMacros {
     private static void hdr_mod$addDefines(CallbackInfoReturnable<ImmutableList<StringPair>> cir, ArrayList<StringPair> standardDefines){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         standardDefines.add(new StringPair("HDR_MOD_INSTALLED",""));
-        standardDefines.add(new StringPair("HDR_MOD_VERSION","2.3.0"));
+        String version = Platform.getVersion();
+        if(version.contains("-")) version = version.substring(0, version.indexOf("-"));
+        standardDefines.add(new StringPair("HDR_MOD_VERSION", version));
         if(config.enableHDR) {
             standardDefines.add(new StringPair("HDR_ENABLED", ""));
         }

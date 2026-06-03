@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
+    "MixinDebugScreenEntries",
+    "MixinDebugScreenEntryList",
     "MixinGlCommandEncoder",
     "MixinGlDevice",
     "MixinGlStateManager",
