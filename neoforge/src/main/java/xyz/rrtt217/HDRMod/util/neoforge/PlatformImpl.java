@@ -35,4 +35,8 @@ public class PlatformImpl {
     public static boolean isModLoaded(String modId) {
         return LoadingModList.get().getModFileById(modId) != null;
     }
+
+    public static String getVersion() {
+        return FMLLoader.getCurrent().getLoadingModList().getModFileById("hdr_mod").versionString();
+    }
 }

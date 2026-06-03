@@ -1,15 +1,20 @@
 package xyz.rrtt217.HDRMod;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.platform.Platform;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.LoggerFactory;
+import net.minecraft.world.InteractionResult;
+import org.lwjgl.glfw.GLFW;
+import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
 import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 import xyz.rrtt217.HDRMod.util.Enums.*;
@@ -40,12 +45,13 @@ public final class HDRMod {
             InputConstants.KEY_F10, // The default keycode
             "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
-    public static boolean enableHDR = true;
 
     public static boolean isReplayRendering = false;
 
+    public static ConfigHolder<HDRModConfig> configHolder;
+
     static {
-        if(Platform.isForgeLike()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        if(Platform.isForgeLike()) configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
     }
 
     public HDRMod() {
@@ -53,6 +59,11 @@ public final class HDRMod {
     }
 
     public static void init() {
+        if(!Platform.isForgeLike()){
+            // Register config.
+            configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        }
+        configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
         // Register Key Mapping.
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
@@ -69,11 +80,6 @@ public final class HDRMod {
                 }));
             }
         });
-
-        // Register config and set enableHDR once and for all.
-        if (!Platform.isForgeLike()) AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        enableHDR = config.enableHDR;
 
         LOGGER.debug("HDRMod Initialized!");
     }

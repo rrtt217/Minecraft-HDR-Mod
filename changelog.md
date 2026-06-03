@@ -1,3 +1,8 @@
-# HDR Mod v2.2.2 Changelog
+# HDR Mod v2.3.0 Changelog
+## New Features
+- `HDR_MOD_VERSION` macro in shaderpacks
+- Information in debug screen
+## Changes
+- "Enable HDR" toggle now only change HDR status of shaderpack instead of the window
 ## Fixes
-- Hardcoded screenshot downscale factor to 2
+None.

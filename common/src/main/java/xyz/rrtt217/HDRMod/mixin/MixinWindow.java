@@ -23,7 +23,6 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
 import java.util.List;
 
-import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 
 @Mixin(value = Window.class, priority = 1010)
     public abstract class MixinWindow {
@@ -54,14 +53,15 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
             }
             boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
             boolean applyWindowsWorkaround = (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32) && !config.forceDisableGlfwWorkaround;
-            if(platform != GLFW.GLFW_PLATFORM_X11 && enableHDR && HDRModMixinPlugin.hasGlfwLib) {
-                // For 16 bits per channel.
+            if(platform != GLFW.GLFW_PLATFORM_X11 && HDRModMixinPlugin.hasGlfwLib) {
+                // 10 bpc for int
                 if(applyWindowsWorkaround && config.useUNORMWindowPixelFormat) {
                     GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 10);
                     GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 10);
                     GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 10);
                     GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, 2);
                 }
+                // 16 bpc for float
                 else {
                 GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 16);
                 GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
@@ -72,7 +72,7 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
                     GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
                     GLFW.glfwWindowHint(0x00025004,GLFW.GLFW_TRUE);
                 }
-                // For float buffer. Note: Because Intel on Windows do not support float buffer (WGL_TYPE_RGBA_FLOAT_ARB), Intel users can't use this mod natively.
+                // For float buffer.
                 if(!applyLinuxWorkaround && !applyWindowsWorkaround && !config.useUNORMWindowPixelFormat) {
                     GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
                 }
@@ -92,10 +92,16 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
     @Inject(method = "<init>", at = @At("RETURN"))
         private void hdr_mod$setupWindowData(WindowEventHandler windowEventHandler, ScreenManager screenManager, DisplayData displayData, String string, String string2, CallbackInfo ci)
         {
-            HDRMod.LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ",
-                    GLFW.glfwGetWindowAttrib(this.getWindow(),GLFW.GLFW_RED_BITS), GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(this.getWindow()), GLFWColorManagementUtils.glfwGetWindowMaxLuminance(this.getWindow()) ,GLFWColorManagementUtils.glfwGetWindowMinLuminance(this.getWindow()),Enums.Primaries.fromId(GLFWColorManagementUtils.glfwGetWindowPrimaries(this.getWindow())),Enums.TransferFunction.fromId(GLFWColorManagementUtils.glfwGetWindowTransfer(this.getWindow()))
-            );
-            if(GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
+            int bpc = GLFW.glfwGetWindowAttrib(this.handle,GLFW.GLFW_RED_BITS);
+            float SDRWhiteLevel = GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(this.handle);
+            float maxLuminance = GLFWColorManagementUtils.glfwGetWindowMaxLuminance(this.handle);
+            float minLuminance = GLFWColorManagementUtils.glfwGetWindowMinLuminance(this.handle);
+            Enums.Primaries primaries = Enums.Primaries.fromId(GLFWColorManagementUtils.glfwGetWindowPrimaries(this.handle));
+            Enums.TransferFunction tf = Enums.TransferFunction.fromId(GLFWColorManagementUtils.glfwGetWindowTransfer(this.handle));
+            int platform = GLFW.glfwGetPlatform();
+            HDRMod.LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ", bpc, SDRWhiteLevel, maxLuminance, minLuminance, primaries, tf);
+            if(platform == GLFW.GLFW_PLATFORM_WAYLAND) HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
+            if((platform == GLFW.GLFW_PLATFORM_WIN32 || platform == GLFW.GLFW_PLATFORM_WAYLAND) && (tf == Enums.TransferFunction.GAMMA22 || tf == Enums.TransferFunction.SRGB)) HDRMod.LOGGER.warn("Detected sRGB or Gamma2.2 EOTF, which probably means HDR isn't supported under current configuration.");
         }
     @Inject(method = "onFramebufferResize", at = @At("HEAD"))
         private void hdr_mod$setIsMinimizedOnFramebufferResize(final long handle, final int newWidth, final int newHeight, CallbackInfo callbackInfo) {
