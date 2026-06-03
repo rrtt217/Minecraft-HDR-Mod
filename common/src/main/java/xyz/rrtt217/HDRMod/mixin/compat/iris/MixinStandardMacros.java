@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class MixinStandardMacros {
     @Inject(method = "createStandardEnvironmentDefines", at = @At(value = "INVOKE", target = "Lnet/irisshaders/iris/gl/shader/StandardMacros;define(Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)V"), locals = LocalCapture.CAPTURE_FAILSOFT)
     private static void hdr_mod$addDefines(CallbackInfoReturnable<ImmutableList<StringPair>> cir, ArrayList<StringPair> standardDefines){
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         standardDefines.add(new StringPair("HDR_MOD_INSTALLED",""));
         String version = Platform.getVersion();
         if(version.contains("-")) version = version.substring(0, version.indexOf("-"));

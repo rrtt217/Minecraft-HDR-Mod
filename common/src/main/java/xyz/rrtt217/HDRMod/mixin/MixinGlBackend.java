@@ -18,8 +18,6 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
 import java.util.List;
 
-import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
-
 @Mixin(GlBackend.class)
 public class MixinGlBackend {
     @Inject(method = "setWindowHints", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwWindowHint(II)V", shift = At.Shift.AFTER))
@@ -46,7 +44,7 @@ public class MixinGlBackend {
         }
         boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
         boolean applyWindowsWorkaround = (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32) && !config.forceDisableGlfwWorkaround;
-        if(platform != GLFW.GLFW_PLATFORM_X11 && enableHDR && HDRModMixinPlugin.hasGlfwLib) {
+        if(platform != GLFW.GLFW_PLATFORM_X11 && HDRModMixinPlugin.hasGlfwLib) {
             // For 16 bits per channel.
             if(applyWindowsWorkaround && config.useUNORMWindowPixelFormat) {
                 GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 10);

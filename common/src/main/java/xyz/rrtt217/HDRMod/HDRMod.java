@@ -41,6 +41,8 @@ public final class HDRMod {
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
 
+    public static Minecraft minecraft;
+
     public static boolean isReplayRendering = false;
 
     public static ConfigHolder<HDRModConfig> configHolder;
