@@ -50,20 +50,15 @@ public final class HDRMod {
 
     public static ConfigHolder<HDRModConfig> configHolder;
 
-    static {
-        if(Platform.isForgeLike()) configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-    }
 
     public HDRMod() {
-
     }
 
     public static void init() {
-        if(!Platform.isForgeLike()){
-            // Register config.
+        if(configHolder == null) {
             configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+            configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
         }
-        configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
         // Register Key Mapping.
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {

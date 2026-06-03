@@ -37,6 +37,6 @@ public class PlatformImpl {
     }
 
     public static String getVersion() {
-        return FMLLoader.getCurrent().getLoadingModList().getModFileById("hdr_mod").versionString();
+        return LoadingModList.get().getModFileById("hdr_mod").versionString();
     }
 }

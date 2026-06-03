@@ -5,6 +5,7 @@ import com.mojang.blaze3d.platform.ScreenManager;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.platform.WindowEventHandler;
 import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -15,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import oshi.SystemInfo;
 import oshi.hardware.GraphicsCard;
 import oshi.hardware.HardwareAbstractionLayer;
+import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
 import xyz.rrtt217.HDRMod.core.DXGIStateManager;
 import xyz.rrtt217.HDRMod.util.Enums;
 import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
@@ -22,6 +24,8 @@ import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
 import java.util.List;
+
+import static xyz.rrtt217.HDRMod.HDRMod.configHolder;
 
 
 @Mixin(value = Window.class, priority = 1010)
@@ -33,6 +37,11 @@ import java.util.List;
         private void hdr_mod$16BitWindowHint(WindowEventHandler arg, ScreenManager arg2, DisplayData arg3, String string, String string2, CallbackInfo ci) {
             // Get GLFW platform.
             int platform = GLFW.glfwGetPlatform();
+
+            if(configHolder == null) {
+                configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+                configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
+            }
 
             // Get config.
             HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
