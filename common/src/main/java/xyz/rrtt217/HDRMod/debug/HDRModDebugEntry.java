@@ -4,10 +4,10 @@ import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.debug.DebugScreenDisplayer;
 import net.minecraft.client.gui.components.debug.DebugScreenEntry;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.Enums;
@@ -26,10 +26,10 @@ public class HDRModDebugEntry implements DebugScreenEntry {
         float eotfEmulate = config.customEotfEmulate < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate;
         Enums.Primaries primaries = Enums.Primaries.fromId(config.autoSetPrimaries ? GLFWColorManagementUtils.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle()) : config.customPrimaries.getId());
         Enums.TransferFunction tf = Enums.TransferFunction.fromId(config.autoSetTransferFunction ? GLFWColorManagementUtils.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle()) : config.customTransferFunction.getId());
-        debugScreenDisplayer.addToGroup(Identifier.fromNamespaceAndPath("hdr_mod","name"), String.format("HDR Mod Version %s+%s", Platform.getVersion(), Platform.isFabricLike() ? "fabric" : (Platform.isNeoForge() ? "neoforge" : "forge")));
-        debugScreenDisplayer.addToGroup(Identifier.fromNamespaceAndPath("hdr_mod","name"), String.format("Enabled: %b", config.enableHDR));
-        debugScreenDisplayer.addToGroup(Identifier.fromNamespaceAndPath("hdr_mod","name"), String.format("Bits Per Channel: %d, Primaries: %s, Transfer Function: %s", bpc, primaries, tf));
-        debugScreenDisplayer.addToGroup(Identifier.fromNamespaceAndPath("hdr_mod","name"), String.format("Max Brightness: %.1f, Min Brightness: %.1f", maxBrightness, minBrightness));
-        debugScreenDisplayer.addToGroup(Identifier.fromNamespaceAndPath("hdr_mod","name"), String.format("Paperwhite Brightness: %.1f, EOTF Correction Brightness: %.1f", paperWhiteBrightness, eotfEmulate));
+        debugScreenDisplayer.addToGroup(ResourceLocation.fromNamespaceAndPath("hdr_mod","name"), String.format("HDR Mod Version %s+%s", Platform.getVersion(), Platform.isFabricLike() ? "fabric" : (Platform.isNeoForge() ? "neoforge" : "forge")));
+        debugScreenDisplayer.addToGroup(ResourceLocation.fromNamespaceAndPath("hdr_mod","name"), String.format("Enabled: %b", config.enableHDR));
+        debugScreenDisplayer.addToGroup(ResourceLocation.fromNamespaceAndPath("hdr_mod","name"), String.format("Bits Per Channel: %d, Primaries: %s, Transfer Function: %s", bpc, primaries, tf));
+        debugScreenDisplayer.addToGroup(ResourceLocation.fromNamespaceAndPath("hdr_mod","name"), String.format("Max Brightness: %.1f, Min Brightness: %.1f", maxBrightness, minBrightness));
+        debugScreenDisplayer.addToGroup(ResourceLocation.fromNamespaceAndPath("hdr_mod","name"), String.format("Paperwhite Brightness: %.1f, EOTF Correction Brightness: %.1f", paperWhiteBrightness, eotfEmulate));
     }
 }
