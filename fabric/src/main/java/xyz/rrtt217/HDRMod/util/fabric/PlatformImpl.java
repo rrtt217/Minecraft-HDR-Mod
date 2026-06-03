@@ -34,4 +34,8 @@ public class PlatformImpl {
     public static boolean isDevelopmentEnvironment() {
         return FabricLoader.getInstance().isDevelopmentEnvironment();
     }
+
+    public static String getVersion() {
+        return FabricLoader.getInstance().getModContainer("hdr_mod").get().getMetadata().getVersion().getFriendlyString();
+    }
 }

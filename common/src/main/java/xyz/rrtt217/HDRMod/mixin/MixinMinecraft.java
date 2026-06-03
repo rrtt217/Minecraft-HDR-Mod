@@ -23,7 +23,6 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
 import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
-import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 import static xyz.rrtt217.HDRMod.HDRMod.minecraft;
 
 @Mixin(Minecraft.class)
@@ -39,7 +38,6 @@ public class MixinMinecraft {
     // Similar to preloadUiShader, because common resource manager have not yet initialized at this time.
     @Inject(method = "<init>(Lnet/minecraft/client/main/GameConfig;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/GameRenderer;preloadUiShader(Lnet/minecraft/server/packs/resources/ResourceProvider;)V",shift = At.Shift.AFTER))
     private void hdr_mod$preloadBeforeBlitShader(CallbackInfo ci) {
-        if(!enableHDR) return;
         GpuDevice gpuDevice = RenderSystem.getDevice();
         ShaderSource shaderSource = (identifier, shaderType) -> {
             Identifier identifier2 = shaderType.idConverter().idToFile(identifier);

@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_25",
   "minVersion": "0.8",
   "client": [
+    "MixinDebugScreenEntries",
+    "MixinDebugScreenEntryList",
     "MixinGlBackend",
     "MixinGlCommandEncoder",
     "MixinGlDevice",
@@ -19,6 +21,7 @@
     "MixinWindow"
   ],
   "mixins": [
+    "compat.iris.MixinIrisCompatibility",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",

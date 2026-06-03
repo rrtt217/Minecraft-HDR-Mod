@@ -14,16 +14,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import oshi.SystemInfo;
-import oshi.hardware.GraphicsCard;
-import oshi.hardware.HardwareAbstractionLayer;
+import xyz.rrtt217.HDRMod.util.Enums;
 import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
-import java.util.List;
-
-import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
 
 @Mixin(value = Window.class, priority = 1010)
     public abstract class MixinWindow {
@@ -34,12 +28,17 @@ import static xyz.rrtt217.HDRMod.HDRMod.enableHDR;
     @Final
     private long handle;
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void hdr_mod$setupWindowData(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, String title, GpuBackend backend, CallbackInfo ci)
-    {
-        HDRMod.LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ",
-            GLFW.glfwGetWindowAttrib(this.handle(),GLFW.GLFW_RED_BITS), GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(this.handle()), GLFWColorManagementUtils.glfwGetWindowMaxLuminance(this.handle()) , GLFWColorManagementUtils.glfwGetWindowMinLuminance(this.handle()), GLFWColorManagementUtils.glfwGetWindowPrimaries(this.handle), GLFWColorManagementUtils.glfwGetWindowTransfer(this.handle())
-        );
-        if(GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
+    private void hdr_mod$setupWindowData(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, String title, GpuBackend backend, CallbackInfo ci)    {
+        int bpc = GLFW.glfwGetWindowAttrib(this.handle,GLFW.GLFW_RED_BITS);
+        float SDRWhiteLevel = GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(this.handle);
+        float maxLuminance = GLFWColorManagementUtils.glfwGetWindowMaxLuminance(this.handle);
+        float minLuminance = GLFWColorManagementUtils.glfwGetWindowMinLuminance(this.handle);
+        Enums.Primaries primaries = Enums.Primaries.fromId(GLFWColorManagementUtils.glfwGetWindowPrimaries(this.handle));
+        Enums.TransferFunction tf = Enums.TransferFunction.fromId(GLFWColorManagementUtils.glfwGetWindowTransfer(this.handle));
+        int platform = GLFW.glfwGetPlatform();
+        HDRMod.LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ", bpc, SDRWhiteLevel, maxLuminance, minLuminance, primaries, tf);
+        if(platform == GLFW.GLFW_PLATFORM_WAYLAND) HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
+        if((platform == GLFW.GLFW_PLATFORM_WIN32 || platform == GLFW.GLFW_PLATFORM_WAYLAND) && (tf == Enums.TransferFunction.GAMMA22 || tf == Enums.TransferFunction.SRGB)) HDRMod.LOGGER.warn("Detected sRGB or Gamma2.2 EOTF, which probably means HDR isn't supported under current configuration.");
     }
     @Redirect(method = "setIcon", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwGetPlatform()I"))
     private int hdr_mod$bypassWaylandCheckOnSetIcon(){
