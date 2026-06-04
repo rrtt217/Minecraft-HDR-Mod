@@ -20,6 +20,8 @@ import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
+import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
+
 public final class HDRMod {
     public static final String MOD_ID = "hdr_mod";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
@@ -73,7 +75,7 @@ public final class HDRMod {
         });
 
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-
+        previousEnableHDR = config.enableHDR;
         LOGGER.debug("HDRMod Initialized!");
     }
 }

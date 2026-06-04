@@ -1,8 +1,4 @@
-# HDR Mod v2.3.0 Changelog
-## New Features
-- `HDR_MOD_VERSION` macro in shaderpacks
-- Information in debug screen
-## Changes
-- "Enable HDR" toggle now only change HDR status of shaderpack instead of the window
+# HDR Mod v2.3.1 Changelog
 ## Fixes
-None.
+- Debug Screen Information only available in develop environment due to incorrect mixin config plugin configuration
+- First toggle of "Enable HDR" option do not reload the shaderpack
