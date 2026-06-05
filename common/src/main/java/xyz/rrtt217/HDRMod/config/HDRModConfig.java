@@ -62,9 +62,6 @@ public class HDRModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("ime")
     public boolean enableIMBlockerSetPreeditCallbackIntegration = Platform.isLinux();
-    @ConfigEntry.Gui.Tooltip
-    @ConfigEntry.Category("ime")
-    public boolean PreeditOverlayPositionFollowMonitorScale = true;
 
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")

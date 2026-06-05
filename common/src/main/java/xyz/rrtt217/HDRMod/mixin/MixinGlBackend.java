@@ -1,9 +1,6 @@
 package xyz.rrtt217.HDRMod.mixin;
 
 import com.mojang.blaze3d.opengl.GlBackend;
-import com.mojang.blaze3d.platform.DisplayData;
-import com.mojang.blaze3d.platform.ScreenManager;
-import com.mojang.blaze3d.platform.WindowEventHandler;
 import me.shedaniel.autoconfig.AutoConfig;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
@@ -62,7 +59,7 @@ public class MixinGlBackend {
                 GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
                 GLFW.glfwWindowHint(0x00025004,GLFW.GLFW_TRUE);
             }
-            // For float buffer. Note: Because Intel on Windows do not support float buffer (WGL_TYPE_RGBA_FLOAT_ARB), Intel users can't use this mod natively.
+            // For float buffer.
             if(!applyLinuxWorkaround && !applyWindowsWorkaround && !config.useUNORMWindowPixelFormat) {
                 GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
             }
