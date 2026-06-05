@@ -72,9 +72,6 @@ public class HDRModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")
     public boolean forceActivateGlDxInterop = false;
-    @ConfigEntry.Gui.Tooltip
-    @ConfigEntry.Category("advanced")
-    public boolean autoIconify = true;
 
     @ConfigEntry.Category("debug")
     public boolean autoSetPrimaries = true;
