@@ -14,7 +14,7 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 @Mixin(value = IrisCompatibility.class, remap = false)
 public class MixinIrisCompatibility {
     @Shadow
-    private static Boolean previousEnableHDR;
+    public static Boolean previousEnableHDR;
 
     @Inject(method = "onConfigSave", at = @At("HEAD"))
     private static void hdr_mod$onConfigSaveIfIrisPresent(ConfigHolder<HDRModConfig> configHolder, HDRModConfig config, CallbackInfoReturnable<InteractionResult> ci) {
