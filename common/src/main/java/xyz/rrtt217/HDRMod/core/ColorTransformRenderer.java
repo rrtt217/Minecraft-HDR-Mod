@@ -47,7 +47,7 @@ public class ColorTransformRenderer implements AutoCloseable {
         TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_HALF_FLOAT);
         this.dstReadPixelFormat = GL30.GL_HALF_FLOAT;
         this.dstTextureFormat = GL30.GL_RGBA16F;
-        this.dstTexture = RenderSystem.getDevice().createTexture(()->"Color Transform Destination Texture",15, TextureFormat.RGBA8, srcTarget.width, srcTarget.height, 1, 1);
+        this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, TextureFormat.RGBA8, srcTarget.width, srcTarget.height, 1, 1);
         this.dstTextureView = RenderSystem.getDevice().createTextureView(this.dstTexture);
     }
     public void updateColorTransformUniforms(float UIBrightness, float EotfEmulate, Enums.Primaries Primaries, Enums.TransferFunction TransferFunction){
@@ -74,7 +74,7 @@ public class ColorTransformRenderer implements AutoCloseable {
         this.dstTexture.close();
         TextureUpgradeUtils.setTargetTextureFormat(this.dstTextureFormat);
         TextureUpgradeUtils.setTargetReadPixelFormat(this.dstReadPixelFormat);
-        this.dstTexture = RenderSystem.getDevice().createTexture(()->"Color Transform Destination Texture",15, TextureFormat.RGBA8, srcTarget.width, srcTarget.height, 1, 1);
+        this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, TextureFormat.RGBA8, srcTarget.width, srcTarget.height, 1, 1);
         this.dstTextureView = RenderSystem.getDevice().createTextureView(this.dstTexture);
     }
     public void render(){
