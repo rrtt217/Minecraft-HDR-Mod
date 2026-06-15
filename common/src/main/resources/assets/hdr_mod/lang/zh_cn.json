@@ -5,7 +5,7 @@
   "text.autoconfig.hdr_mod.option.customGameMinimumBrightness": "自定义游戏最小亮度",
   "text.autoconfig.hdr_mod.option.customGamePeakBrightness": "自定义游戏峰值亮度",
   "text.autoconfig.hdr_mod.option.customEotfEmulate": "EOTF / Gamma 校正 2.2 阈值",
-  "text.autoconfig.hdr_mod.option.enableHDR.@Tooltip": "切换 HDR 启用状态. 注意： 这只会更改光影包而非窗口的 HDR 状态。如果需要完全关闭 HDR，请移除或禁用该模组。",
+  "text.autoconfig.hdr_mod.option.enableHDR.@Tooltip": "切换 HDR 启用状态. 注意：这只会更改光影包而非窗口的 HDR 状态。如果需要完全关闭 HDR，请移除或禁用该模组。",
   "text.autoconfig.hdr_mod.option.uiBrightness.@Tooltip": "以尼特为单位，设置界面元素和原版游戏（即未使用光影包时）的参考白亮度。设置为负数以使用显示器报告的 SDR 参考白亮度。",
   "text.autoconfig.hdr_mod.option.customGamePaperWhiteBrightness.@Tooltip": "以尼特为单位，设置游戏/场景的参考白亮度。设置为负数以使用显示器报告的值。",
   "text.autoconfig.hdr_mod.option.customGameMinimumBrightness.@Tooltip": "以尼特为单位，设置显示器可输出的最小亮度。(Linux) 设置为负数以使用显示器报告的值。如果不确定，请留 0。",
@@ -14,13 +14,15 @@
 
 
   "text.autoconfig.hdr_mod.option.screenshotDownscaleFactor": "HDR 截图降采样因数",
-  "text.autoconfig.hdr_mod.option.screenshotDownscaleFactor.@Tooltip": "设置为大于1的值可相应地以最近邻方式执行降采样，\n小于1的值与1效果相同。\n 与 RenderScale 等模组配合很有用。",
+  "text.autoconfig.hdr_mod.option.screenshotDownscaleFactor.@Tooltip": "设置为大于1的值可相应地以最近邻方式执行降采样，小于1的值与1效果相同。 与 RenderScale 等模组配合很有用。",
   "text.autoconfig.hdr_mod.option.screenshotCompressLevel": "HDR 截图压缩等级",
-  "text.autoconfig.hdr_mod.option.screenshotCompressLevel.@Tooltip": "更高等级需要更多时间但节省磁盘空间, \n反之亦然。",
+  "text.autoconfig.hdr_mod.option.screenshotCompressLevel.@Tooltip": "更高等级需要更多时间但节省磁盘空间, 反之亦然。",
+  "text.autoconfig.hdr_mod.option.screenshotUseCICP": "HDR 截图时使用 cICP 而非 iCCP (ICC 配置文件) 来保存元数据",
+  "text.autoconfig.hdr_mod.option.screenshotUseCICP.@Tooltip": "cICP(Coding-independent code points) 是 PNG3 标准中新引入的表示图片基色和传递函数的块, iCCP 则是更旧的方式。 如果你在分享 HDR 截图时遇到了问题，试着改变这个选项。",
   "text.autoconfig.hdr_mod.option.behaviorOnVanillaScreenshotCalled": "模组调用原版截图时的行为",
-  "text.autoconfig.hdr_mod.option.behaviorOnVanillaScreenshotCalled.@Tooltip": "ONLY_VANILLA 表示只进行原版截图,\nBOTH 表示同时进行原版和HDR截图, \nONLY_HDR 表示只进行HDR截图。",
+  "text.autoconfig.hdr_mod.option.behaviorOnVanillaScreenshotCalled.@Tooltip": "ONLY_VANILLA 表示只进行原版截图,BOTH 表示同时进行原版和HDR截图, ONLY_HDR 表示只进行HDR截图。",
   "text.autoconfig.hdr_mod.option.behaviorOnVanillaF2": "原版F2截图行为",
-  "text.autoconfig.hdr_mod.option.behaviorOnVanillaF2.@Tooltip": "ONLY_VANILLA 表示只进行原版截图,\nBOTH 表示同时进行原版和HDR截图, \nONLY_HDR 表示只进行HDR截图。",
+  "text.autoconfig.hdr_mod.option.behaviorOnVanillaF2.@Tooltip": "ONLY_VANILLA 表示只进行原版截图,BOTH 表示同时进行原版和HDR截图, ONLY_HDR 表示只进行HDR截图。",
 
   "text.autoconfig.hdr_mod.option.enableReplayHDRVideoExport": "启用Replay Mod HDR 视频导出",
   "text.autoconfig.hdr_mod.option.replayRecommendedCommandline": "Replay Mod HDR 视频导出推荐命令行",
@@ -46,7 +48,7 @@
 
 
   "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat": "为窗口使用归一化定点格式",
-  "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat.@Tooltip": "在Linux平台或启用GL-DX互操作的Windows平台上，切换该选项可在 RGB10A2+BT.2100 PQ (更佳性能) 或 RGBA16F+scRGB (更佳精度) 间切换。会在未启用GL-DX互操作时破坏Windows上的HDR.\n 如果不确定，请保持默认值。",
+  "text.autoconfig.hdr_mod.option.useUNORMWindowPixelFormat.@Tooltip": "在Linux平台或启用GL-DX互操作的Windows平台上，切换该选项可在 RGB10A2+BT.2100 PQ (更佳性能) 或 RGBA16F+scRGB (更佳精度) 间切换。会在未启用GL-DX互操作时破坏Windows上的HDR. 如果不确定，请保持默认值。",
   "text.autoconfig.hdr_mod.option.forceActivateGlDxInterop": "(Windows) 强制启用OpenGL-DirectX互操作",
   "text.autoconfig.hdr_mod.option.forceActivateGlDxInterop.@Tooltip": "使用OpenGL离屏渲染，使用DirectX以HDR格式呈现。可能造成较大性能损失与模组兼容问题。",
 

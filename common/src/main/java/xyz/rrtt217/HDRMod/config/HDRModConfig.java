@@ -36,7 +36,7 @@ public class HDRModConfig implements ConfigData {
     public int screenshotCompressLevel = 1;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("screenshot")
-    public boolean screenshotUseCICP = true;
+    public boolean screenshotUseCICP = false;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("screenshot")
     public BehaviorOnVanillaScreenshotCalled behaviorOnVanillaScreenshotCalled = BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA;
