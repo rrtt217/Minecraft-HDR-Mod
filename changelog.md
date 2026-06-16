@@ -1,4 +1,6 @@
-# HDR Mod v2.3.1 Changelog
+# HDR Mod v2.3.2 Changelog
+## New Features
+- Keybind to toggle HDR ingame (default unbind)
+- Screenshot can use PNG3 cICP instead of iCCP(aka. ICC profile)
 ## Fixes
-- Debug Screen Information only available in develop environment due to incorrect mixin config plugin configuration
-- First toggle of "Enable HDR" option do not reload the shaderpack
+- Fixed virtual display card breaking workaround apply condition
