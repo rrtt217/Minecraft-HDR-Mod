@@ -110,7 +110,7 @@ import static xyz.rrtt217.HDRMod.HDRMod.configHolder;
         private static final Set<String> VIRTUAL_KEYWORDS = Set.of(
                 "vmware", "virtualbox", "qxl", "virtio", "virtio-gpu",
                 "hyper-v video", "microsoft basic display", "citrix",
-                "parallels display", "rdpud", "idd", "mirage"
+                "parallels display", "rdpud", "idd", "mirage", "virtual"
         );
         @Unique
         private boolean hdr_mod$isVirtualGraphicsCard(GraphicsCard card) {
