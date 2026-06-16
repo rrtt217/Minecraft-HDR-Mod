@@ -45,7 +45,7 @@ public final class HDRMod {
             "key.hdr_mod.toggle_hdr", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             -1, // The default keycode
-            HDRModCategory // The category translation key used to categorize in the Controls screen
+            "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
 
     public static boolean isReplayRendering = false;
