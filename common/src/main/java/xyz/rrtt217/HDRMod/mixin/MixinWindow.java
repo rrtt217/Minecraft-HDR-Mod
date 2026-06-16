@@ -9,6 +9,7 @@ import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -24,6 +25,7 @@ import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
 import java.util.List;
+import java.util.Set;
 
 import static xyz.rrtt217.HDRMod.HDRMod.configHolder;
 
@@ -51,15 +53,20 @@ import static xyz.rrtt217.HDRMod.HDRMod.configHolder;
             HardwareAbstractionLayer hardware = systemInfo.getHardware();
             List<GraphicsCard> graphicsCards = hardware.getGraphicsCards();
             boolean hasNvidiaCard = false;
+            boolean hasIntelCard = false;
             boolean hasOnlyIntelCard = true;
             for (GraphicsCard card : graphicsCards) {
                 if (card.getVendor().toLowerCase().contains("nvidia") && !hasNvidiaCard) {
                     hasNvidiaCard = true;
                 }
-                if (!card.getVendor().toLowerCase().contains("intel") && hasOnlyIntelCard) {
+                if (card.getVendor().toLowerCase().contains("intel") && !hasIntelCard) {
+                    hasIntelCard = true;
+                }
+                if (!card.getVendor().toLowerCase().contains("intel") && !hdr_mod$isVirtualGraphicsCard(card) && hasOnlyIntelCard) {
                     hasOnlyIntelCard = false;
                 }
             }
+            hasOnlyIntelCard = hasOnlyIntelCard && hasIntelCard;
             boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
             boolean applyWindowsWorkaround = (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32) && !config.forceDisableGlfwWorkaround;
             if(platform != GLFW.GLFW_PLATFORM_X11 && HDRModMixinPlugin.hasGlfwLib) {
@@ -98,6 +105,27 @@ import static xyz.rrtt217.HDRMod.HDRMod.configHolder;
                 }
             }
         }
+
+        @Unique
+        private static final Set<String> VIRTUAL_KEYWORDS = Set.of(
+                "vmware", "virtualbox", "qxl", "virtio", "virtio-gpu",
+                "hyper-v video", "microsoft basic display", "citrix",
+                "parallels display", "rdpud", "idd", "mirage"
+        );
+        @Unique
+        private boolean hdr_mod$isVirtualGraphicsCard(GraphicsCard card) {
+            String name = card.getName().toLowerCase();
+            String vendor = card.getVendor().toLowerCase();
+
+            for (String keyword : VIRTUAL_KEYWORDS) {
+                if (name.contains(keyword) || vendor.contains(keyword)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
     @Inject(method = "<init>", at = @At("RETURN"))
         private void hdr_mod$setupWindowData(WindowEventHandler windowEventHandler, ScreenManager screenManager, DisplayData displayData, String string, String string2, CallbackInfo ci)
         {
