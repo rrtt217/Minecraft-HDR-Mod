@@ -25,5 +25,11 @@ public class KeyBindingListener {
                 minecraft.getNarrator().saySystemChatQueued(arg);
             }));
         }
+        while (CUSTOM_KEYMAPPING_3.consumeClick()) {
+            HDRModConfig config = configHolder.getConfig();
+            config.enableHDR = !config.enableHDR;
+            configHolder.setConfig(config);
+            configHolder.save();
+        }
     }
 }

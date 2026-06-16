@@ -33,5 +33,6 @@ public final class HDRModNeoForge {
         event.registerCategory(HDRModCategory);
         event.register(CUSTOM_KEYMAPPING);
         event.register(CUSTOM_KEYMAPPING_2);
+        event.register(CUSTOM_KEYMAPPING_3);
     }
 }

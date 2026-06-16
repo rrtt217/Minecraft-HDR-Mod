@@ -7,8 +7,7 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 
-import static xyz.rrtt217.HDRMod.HDRMod.CUSTOM_KEYMAPPING;
-import static xyz.rrtt217.HDRMod.HDRMod.CUSTOM_KEYMAPPING_2;
+import static xyz.rrtt217.HDRMod.HDRMod.*;
 
 public final class HDRModFabricClient implements ClientModInitializer {
     @Override
@@ -16,6 +15,7 @@ public final class HDRModFabricClient implements ClientModInitializer {
         // Register key mappings.
         KeyMappingHelper.registerKeyMapping(CUSTOM_KEYMAPPING);
         KeyMappingHelper.registerKeyMapping(CUSTOM_KEYMAPPING_2);
+        KeyMappingHelper.registerKeyMapping(CUSTOM_KEYMAPPING_3);
         // Register listeners.
         ClientTickEvents.END_CLIENT_TICK.register(minecraft -> {
             while (CUSTOM_KEYMAPPING.consumeClick()) {
@@ -28,6 +28,14 @@ public final class HDRModFabricClient implements ClientModInitializer {
                     minecraft.gui.getChat().addClientSystemMessage(arg);
                     minecraft.getNarrator().saySystemChatQueued(arg);
                 }));
+            }
+        });
+        ClientTickEvents.END_CLIENT_TICK.register(minecraft -> {
+            while (CUSTOM_KEYMAPPING_3.consumeClick()) {
+                HDRModConfig config = configHolder.getConfig();
+                config.enableHDR = !config.enableHDR;
+                configHolder.setConfig(config);
+                configHolder.save();
             }
         });
     }
