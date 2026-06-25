@@ -9,7 +9,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
-import com.mojang.blaze3d.textures.TextureFormat;
+import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.resources.Identifier;
@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GL30;
 import xyz.rrtt217.HDRMod.util.Enums;
 import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
+import java.util.Optional;
 import java.util.OptionalInt;
 
 public class ColorTransformRenderer implements AutoCloseable {
@@ -34,8 +35,7 @@ public class ColorTransformRenderer implements AutoCloseable {
     private RenderTarget srcTarget;
     private GpuTexture dstTexture;
     private GpuTextureView dstTextureView;
-    private int dstTextureFormat;
-    private int dstReadPixelFormat;
+    private GpuFormat dstTextureFormat;
     private ColorTransformUBO colorTransformUbo;
     private GpuBuffer colorTransformBuffer;
     public ColorTransformRenderer(RenderTarget srcTarget, String string) {
@@ -43,10 +43,7 @@ public class ColorTransformRenderer implements AutoCloseable {
         this.colorTransformUbo = new ColorTransformUBO(string);
         // Set a group of default UBO values. You may call updateColorTransformUniforms manually to update later.
         updateColorTransformUniforms(203.0F, 0.0F, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
-        TextureUpgradeUtils.setTargetTextureFormat(GL30.GL_RGBA16F);
-        TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_HALF_FLOAT);
-        this.dstReadPixelFormat = GL30.GL_HALF_FLOAT;
-        this.dstTextureFormat = GL30.GL_RGBA16F;
+        this.dstTextureFormat = GpuFormat.RGBA16_FLOAT;
         this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, TextureFormat.RGBA8, srcTarget.width, srcTarget.height, 1, 1);
         this.dstTextureView = RenderSystem.getDevice().createTextureView(this.dstTexture);
     }
@@ -59,8 +56,7 @@ public class ColorTransformRenderer implements AutoCloseable {
         }
         this.colorTransformBuffer = colorTransformUbo.update(UIBrightness, EotfEmulate, Primaries, TransferFunction);
         if(TransferFunction == Enums.TransferFunction.ST2084_PQ.getId() && this.colorTransformUbo.lastTransferFunction != Enums.TransferFunction.ST2084_PQ.getId()) {
-            this.dstReadPixelFormat = GL30.GL_UNSIGNED_SHORT;
-            this.dstTextureFormat = GL30.GL_RGBA16;
+            this.dstTextureFormat = GpuFormat.RGBA16_UNORM;
             this.recreateTexture();
         }
     }
@@ -72,21 +68,19 @@ public class ColorTransformRenderer implements AutoCloseable {
     public void recreateTexture(){
         this.dstTextureView.close();
         this.dstTexture.close();
-        TextureUpgradeUtils.setTargetTextureFormat(this.dstTextureFormat);
-        TextureUpgradeUtils.setTargetReadPixelFormat(this.dstReadPixelFormat);
-        this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, TextureFormat.RGBA8, srcTarget.width, srcTarget.height, 1, 1);
+        this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, this.dstTextureFormat, srcTarget.width, srcTarget.height, 1, 1);
         this.dstTextureView = RenderSystem.getDevice().createTextureView(this.dstTexture);
     }
     public void render(){
         this.resize();
         // The actual renderer.
         if (srcTarget.getColorTextureView() != null) {
-            try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Color Transform", this.dstTextureView, OptionalInt.empty())) {
+            try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Color Transform", this.dstTextureView, Optional.empty())) {
                 renderPass.setPipeline(COLOR_TRANSFORM);
                 RenderSystem.bindDefaultUniforms(renderPass);
                 if (this.colorTransformUbo != null) renderPass.setUniform("ColorTransform", this.colorTransformBuffer);
                 renderPass.bindTexture("InSampler", srcTarget.getColorTextureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
-                renderPass.draw(0, 3);
+                renderPass.draw(0, 3, 0, 0);
             }
         } else {
             throw new IllegalStateException("colorTexture is null");

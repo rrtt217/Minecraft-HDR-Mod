@@ -24,36 +24,4 @@ import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 @Mixin(RenderTarget.class)
 public class MixinRenderTarget {
 
-    @Shadow
-    @Nullable
-    protected GpuTexture colorTexture;
-
-    @Inject(method = "blitToScreen", at = @At("HEAD"))
-    private void hdr_mod$beforeBlitRenderer(CallbackInfo ci) {
-        RenderSystem.assertOnRenderThread();
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-
-        if(HDRMod.PresentationColorTransformRenderer == null)
-            HDRMod.PresentationColorTransformRenderer = new ColorTransformRenderer((RenderTarget) (Object) this, "Presentation");
-        HDRMod.PresentationColorTransformRenderer.updateColorTransformUniforms(
-                config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
-                config.customEotfEmulate < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate,
-                config.autoSetPrimaries ? GLFWColorManagementUtils.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle()) : config.customPrimaries.getId(),
-                config.autoSetTransferFunction ? GLFWColorManagementUtils.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle()) : config.customTransferFunction.getId()
-        );
-        if (this.colorTexture != null && !this.colorTexture.equals(HDRMod.PresentationColorTransformRenderer.getSrcTarget().getColorTexture()))
-            HDRMod.PresentationColorTransformRenderer.setSrcTarget((RenderTarget) (Object) this);
-        HDRMod.PresentationColorTransformRenderer.render();
-    }
-@ModifyArg(method = "blitToScreen", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;presentTexture(Lcom/mojang/blaze3d/textures/GpuTextureView;)V"), index = 0)
-    private GpuTextureView hdr_mod$modifyTextureToBePresented(GpuTextureView gpuTextureView){
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(config.forceDisableBeforeBlitPipeline) return gpuTextureView;
-        return HDRMod.PresentationColorTransformRenderer.getDstTextureView();
-    }
-    @Inject(method = "createBuffers", at = @At("HEAD"))
-    private void hdr_mod$setShouldUpgradeOnCreateBuffers(CallbackInfo ci) {
-        TextureUpgradeUtils.setTargetTextureFormat(GL30.GL_RGBA16F);
-        TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_HALF_FLOAT);
-    }
 }
