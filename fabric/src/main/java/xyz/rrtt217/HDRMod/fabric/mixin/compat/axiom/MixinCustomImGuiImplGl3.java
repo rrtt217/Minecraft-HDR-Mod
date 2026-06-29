@@ -16,7 +16,7 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.DXGIStateManager;
 import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
 
-
+/*
 @Mixin(CustomImGuiImplGl3.class)
 public class MixinCustomImGuiImplGl3 {
 
@@ -364,3 +364,4 @@ public class MixinCustomImGuiImplGl3 {
                 "}\n";
     }
 }
+*/

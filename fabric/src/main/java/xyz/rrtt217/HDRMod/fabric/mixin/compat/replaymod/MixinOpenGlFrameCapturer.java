@@ -37,7 +37,7 @@ public class MixinOpenGlFrameCapturer {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport){
             if(ReplayColorTransformRenderer == null){
-                ReplayColorTransformRenderer = new ColorTransformRenderer(Minecraft.getInstance().getMainRenderTarget(), "Replay");
+                ReplayColorTransformRenderer = new ColorTransformRenderer(Minecraft.getInstance().gameRenderer.mainRenderTarget(), "Replay");
             }
             ReplayColorTransformRenderer.updateColorTransformUniforms(
                 config.replayUIBrightness,

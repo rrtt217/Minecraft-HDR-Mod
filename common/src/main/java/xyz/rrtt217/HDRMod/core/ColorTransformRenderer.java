@@ -1,28 +1,25 @@
 package xyz.rrtt217.HDRMod.core;
 
+import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.GpuFormat;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.resources.Identifier;
-import org.lwjgl.opengl.GL30;
 import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 
 public class ColorTransformRenderer implements AutoCloseable {
     static{
-        RenderPipeline.Builder builder = RenderPipeline.builder(new RenderPipeline.Snippet[0]).withLocation("pipeline/color_transform").withFragmentShader(Identifier.fromNamespaceAndPath("hdr_mod","color_transform")).withVertexShader("core/screenquad").withSampler("InSampler").withVertexFormat(DefaultVertexFormat.EMPTY, VertexFormat.Mode.TRIANGLES).withUniform("ColorTransform", UniformType.UNIFORM_BUFFER);
+        RenderPipeline.Builder builder = RenderPipeline.builder(RenderPipeline.builder().withBindGroupLayout(BindGroupLayouts.GLOBALS).buildSnippet()).withLocation("pipeline/color_transform").withFragmentShader(Identifier.fromNamespaceAndPath("hdr_mod","color_transform")).withVertexShader("core/screenquad").withBindGroupLayout(BindGroupLayouts.IN_SAMPLER)
+                .withPrimitiveTopology(PrimitiveTopology.TRIANGLES);
         for(Enums.Primaries p : Enums.Primaries.values()) {
             builder = builder.withShaderDefine("PRIMARIES_"+p.toString(), p.getId());
         }
@@ -44,7 +41,7 @@ public class ColorTransformRenderer implements AutoCloseable {
         // Set a group of default UBO values. You may call updateColorTransformUniforms manually to update later.
         updateColorTransformUniforms(203.0F, 0.0F, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
         this.dstTextureFormat = GpuFormat.RGBA16_FLOAT;
-        this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, TextureFormat.RGBA8, srcTarget.width, srcTarget.height, 1, 1);
+        this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, dstTextureFormat, srcTarget.width, srcTarget.height, 1, 1);
         this.dstTextureView = RenderSystem.getDevice().createTextureView(this.dstTexture);
     }
     public void updateColorTransformUniforms(float UIBrightness, float EotfEmulate, Enums.Primaries Primaries, Enums.TransferFunction TransferFunction){
@@ -76,11 +73,11 @@ public class ColorTransformRenderer implements AutoCloseable {
         // The actual renderer.
         if (srcTarget.getColorTextureView() != null) {
             try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Color Transform", this.dstTextureView, Optional.empty())) {
-                renderPass.setPipeline(COLOR_TRANSFORM);
                 RenderSystem.bindDefaultUniforms(renderPass);
+                renderPass.setPipeline(COLOR_TRANSFORM);
                 if (this.colorTransformUbo != null) renderPass.setUniform("ColorTransform", this.colorTransformBuffer);
                 renderPass.bindTexture("InSampler", srcTarget.getColorTextureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
-                renderPass.draw(0, 3, 0, 0);
+                renderPass.draw(3, 1, 0, 0);
             }
         } else {
             throw new IllegalStateException("colorTexture is null");

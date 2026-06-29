@@ -19,13 +19,13 @@ public final class HDRModFabricClient implements ClientModInitializer {
         // Register listeners.
         ClientTickEvents.END_CLIENT_TICK.register(minecraft -> {
             while (CUSTOM_KEYMAPPING.consumeClick()) {
-                minecraft.setScreen(AutoConfigClient.getConfigScreen(HDRModConfig.class, minecraft.screen).get());
+                minecraft.gui.setScreen(AutoConfigClient.getConfigScreen(HDRModConfig.class, minecraft.gui.screen()).get());
             }
         });
         ClientTickEvents.END_CLIENT_TICK.register(minecraft -> {
             while (CUSTOM_KEYMAPPING_2.consumeClick()) {
-                PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
-                    minecraft.gui.getChat().addClientSystemMessage(arg);
+                PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.gameRenderer.mainRenderTarget(), (arg) -> minecraft.execute(() -> {
+                    minecraft.gui.hud.getChat().addClientSystemMessage(arg);
                     minecraft.getNarrator().saySystemChatQueued(arg);
                 }));
             }

@@ -11,7 +11,6 @@
     "gl.MixinGlCommandEncoder",
     "gl.MixinGlStateManager",
     "gl.MixinGLX",
-    "MixinKeyboardHandler",
     "MixinMainTarget",
     "MixinMinecraft",
     "MixinRenderSystem",

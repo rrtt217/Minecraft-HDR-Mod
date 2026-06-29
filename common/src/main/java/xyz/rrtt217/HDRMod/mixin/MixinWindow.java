@@ -1,9 +1,6 @@
 package xyz.rrtt217.HDRMod.mixin;
 
-import com.mojang.blaze3d.platform.DisplayData;
-import com.mojang.blaze3d.platform.ScreenManager;
-import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.platform.WindowEventHandler;
+import com.mojang.blaze3d.platform.*;
 import com.mojang.blaze3d.systems.GpuBackend;
 import me.shedaniel.autoconfig.AutoConfig;
 import org.lwjgl.glfw.GLFW;
@@ -28,7 +25,7 @@ import xyz.rrtt217.HDRMod.HDRMod;
     @Final
     private long handle;
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void hdr_mod$setupWindowData(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, String title, GpuBackend backend, CallbackInfo ci)    {
+    private void hdr_mod$setupWindowData(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, boolean exclusiveFullscreen, String title, MonitorManager monitorManager, GpuBackend backend, CallbackInfo ci)    {
         int bpc = GLFW.glfwGetWindowAttrib(this.handle,GLFW.GLFW_RED_BITS);
         float SDRWhiteLevel = GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(this.handle);
         float maxLuminance = GLFWColorManagementUtils.glfwGetWindowMaxLuminance(this.handle);
@@ -40,7 +37,7 @@ import xyz.rrtt217.HDRMod.HDRMod;
         if(platform == GLFW.GLFW_PLATFORM_WAYLAND) HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
         if((platform == GLFW.GLFW_PLATFORM_WIN32 || platform == GLFW.GLFW_PLATFORM_WAYLAND) && (tf == Enums.TransferFunction.GAMMA22 || tf == Enums.TransferFunction.SRGB)) HDRMod.LOGGER.warn("Detected sRGB or Gamma2.2 EOTF, which probably means HDR isn't supported under current configuration.");
     }
-    @Redirect(method = "setIcon", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwGetPlatform()I"))
+    @Redirect(method = "setIcon", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GLX;getGlfwPlatform()I"))
     private int hdr_mod$bypassWaylandCheckOnSetIcon(){
         int i = GLFW.glfwGetPlatform();
         if(i == GLFW.GLFW_PLATFORM_WAYLAND) return GLFW.GLFW_PLATFORM_X11;

@@ -8,6 +8,7 @@ import ar.com.hjg.pngj.chunks.PngChunkICCP;
 import ar.com.hjg.pngj.chunks.PngChunkSingle;
 import ar.com.hjg.pngj.chunks.PngChunkUNKNOWN;
 import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.CommandEncoder;
@@ -197,12 +198,10 @@ public class PngjHDRScreenshot {
         // Get the buffer.
         GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "HDR Mod Screenshot buffer", 9, (long) width * (long) height * 8L);
 
-        CommandEncoder commandEncoder = RenderSystem.getDevice().createCommandEncoder();
         TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_UNSIGNED_SHORT);
         RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(gpuTexture, gpuBuffer, 0L, () -> {
-            try (GpuBuffer.MappedView mappedView = commandEncoder.mapBuffer(gpuBuffer, true, false)) {
+            try (GpuBufferSlice.MappedView mappedView = gpuBuffer.map(true,false)) {
                 ShortBuffer shortBuffer = ShortBuffer.allocate( width * height * 4);
-                // You should read mappedView.data() in the same way as TextureUpgradeUtils.setTargetReadPixelFormat() specifies. Any other ways (e.g. call bytebuffer.put(mappedView.data()) for GL30.GL_UNSIGNED_SHORT is undefined.
                 shortBuffer.put(mappedView.data().asShortBuffer());
                 shortBuffer.flip();
                 consumer.accept(new ImageBuffer(shortBuffer, width, height));

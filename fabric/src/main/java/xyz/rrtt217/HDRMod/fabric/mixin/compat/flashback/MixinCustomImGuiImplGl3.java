@@ -1,6 +1,5 @@
 package xyz.rrtt217.HDRMod.fabric.mixin.compat.flashback;
 
-import com.moulberry.flashback.editor.ui.CustomImGuiImplGl3;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL20;
@@ -19,6 +18,7 @@ import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
 
 import java.lang.reflect.Field;
 
+/*
 @Mixin(CustomImGuiImplGl3.class)
 public class MixinCustomImGuiImplGl3 {
 
@@ -395,3 +395,4 @@ public class MixinCustomImGuiImplGl3 {
                 "}\n";
     }
 }
+*/
