@@ -8,6 +8,7 @@
     "MixinColorTargetState",
     "MixinDebugScreenEntries",
     "MixinDebugScreenEntryList",
+    "MixinGpuSurface",
     "MixinGuiItemAtlas",
     "MixinLevelRenderer",
     "MixinMainTarget",

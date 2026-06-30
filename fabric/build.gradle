@@ -60,13 +60,13 @@ dependencies {
     implementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
     // Axiom refuse to start with modImplementation. Just use modCompileOnly, download one from modrinth and put it in run/mods.
     compileOnly "maven.modrinth:axiom:${axiom_version}-fabric,${minecraft_version}"
-    compileOnly "maven.modrinth:flashback:${flashback_version}-fabric,${minecraft_version}"
+    implementation "maven.modrinth:flashback:${flashback_version}-fabric,${minecraft_version}"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"
     implementation "io.github.douira:glsl-transformer:3.0.0-pre3"
     implementation "com.moulberry:mixinconstraints:1.0.8"
-    implementation "com.moulberry:lattice:1.3.1"
+    implementation "com.moulberry:lattice:2.1.0"
 
     implementation 'ar.com.hjg:pngj:2.1.0'
     include 'ar.com.hjg:pngj:2.1.0'

@@ -17,11 +17,11 @@ public class KeyBindingListener {
     @SubscribeEvent // on the game event bus only on the physical client
     public static void onClientTick(ClientTickEvent.Post event) {
         while (CUSTOM_KEYMAPPING.consumeClick()) {
-            Minecraft.getInstance().setScreen(AutoConfigClient.getConfigScreen(HDRModConfig.class, Minecraft.getInstance().screen).get());
+            minecraft.gui.setScreen(AutoConfigClient.getConfigScreen(HDRModConfig.class, minecraft.gui.screen()).get());
         }
         while (CUSTOM_KEYMAPPING_2.consumeClick()) {
-            PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
-                minecraft.gui.getChat().addClientSystemMessage(arg);
+            PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.gameRenderer.mainRenderTarget(), (arg) -> minecraft.execute(() -> {
+                minecraft.gui.hud.getChat().addClientSystemMessage(arg);
                 minecraft.getNarrator().saySystemChatQueued(arg);
             }));
         }

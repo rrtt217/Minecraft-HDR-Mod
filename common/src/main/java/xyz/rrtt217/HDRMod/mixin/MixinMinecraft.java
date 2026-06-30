@@ -72,31 +72,4 @@ public class MixinMinecraft {
     private void hdr_mod$setupMinecraft(CallbackInfo ci) {
         minecraft = Minecraft.getInstance();
     }
-
-    @Inject(method = "renderFrame(Z)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;getColorTextureView()Lcom/mojang/blaze3d/textures/GpuTextureView;"))
-    private void hdr_mod$presentationColorTransformRenderer(CallbackInfo ci) {
-        RenderSystem.assertOnRenderThread();
-
-    }
-
-    @ModifyArg(method = "renderFrame(Z)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/GpuSurface;blitFromTexture(Lcom/mojang/blaze3d/systems/CommandEncoder;Lcom/mojang/blaze3d/textures/GpuTextureView;)V"), index = 1)
-    private GpuTextureView hdr_mod$presentationColorTransformRenderer(GpuTextureView textureView) {
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-
-        if(HDRMod.PresentationColorTransformRenderer == null)
-            HDRMod.PresentationColorTransformRenderer = new ColorTransformRenderer(textureView, "Presentation");
-
-        HDRMod.PresentationColorTransformRenderer.updateColorTransformUniforms(
-                config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
-                config.customEotfEmulate < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate,
-                config.autoSetPrimaries ? GLFWColorManagementUtils.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle()) : config.customPrimaries.getId(),
-                config.autoSetTransferFunction ? GLFWColorManagementUtils.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle()) : config.customTransferFunction.getId()
-        );
-        if (minecraft.gameRenderer.mainRenderTarget().getColorTextureView() != null && !textureView.equals(HDRMod.PresentationColorTransformRenderer.getSrcTextureView()))
-            HDRMod.PresentationColorTransformRenderer.setSrcSrcTextureView(textureView);
-        HDRMod.PresentationColorTransformRenderer.render();
-
-        if(!config.forceDisableBeforeBlitPipeline) return PresentationColorTransformRenderer.getDstTextureView();
-        return textureView;
-    }
 }
