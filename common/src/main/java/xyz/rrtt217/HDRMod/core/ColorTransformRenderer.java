@@ -2,8 +2,10 @@ package xyz.rrtt217.HDRMod.core;
 
 import com.mojang.blaze3d.PrimitiveTopology;
 import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.pipeline.BindGroupLayout;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.shaders.UniformType;
 import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.FilterMode;
@@ -18,7 +20,8 @@ import java.util.Optional;
 
 public class ColorTransformRenderer implements AutoCloseable {
     static{
-        RenderPipeline.Builder builder = RenderPipeline.builder(RenderPipeline.builder().withBindGroupLayout(BindGroupLayouts.GLOBALS).buildSnippet()).withLocation("pipeline/color_transform").withFragmentShader(Identifier.fromNamespaceAndPath("hdr_mod","color_transform")).withVertexShader("core/screenquad").withBindGroupLayout(BindGroupLayouts.IN_SAMPLER)
+        BindGroupLayout COLOR_TRANSFORM_LAYOUT = BindGroupLayout.builder().withSampler("Sampler0").withUniform("ColorTransform", UniformType.UNIFORM_BUFFER).build();
+        RenderPipeline.Builder builder = RenderPipeline.builder(RenderPipeline.builder().withBindGroupLayout(BindGroupLayouts.GLOBALS).buildSnippet()).withLocation("pipeline/color_transform").withFragmentShader(Identifier.fromNamespaceAndPath("hdr_mod","color_transform")).withVertexShader("core/screenquad").withBindGroupLayout(BindGroupLayouts.IN_SAMPLER).withBindGroupLayout(COLOR_TRANSFORM_LAYOUT)
                 .withPrimitiveTopology(PrimitiveTopology.TRIANGLES);
         for(Enums.Primaries p : Enums.Primaries.values()) {
             builder = builder.withShaderDefine("PRIMARIES_"+p.toString(), p.getId());

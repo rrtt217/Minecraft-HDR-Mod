@@ -5,18 +5,21 @@
   "compatibilityLevel": "JAVA_25",
   "minVersion": "0.8",
   "client": [
+    "MixinColorTargetState",
     "MixinDebugScreenEntries",
     "MixinDebugScreenEntryList",
-    "gl.MixinGlBackend",
-    "gl.MixinGlCommandEncoder",
-    "gl.MixinGlStateManager",
-    "gl.MixinGLX",
+    "MixinLevelRenderer",
     "MixinMainTarget",
     "MixinMinecraft",
+    "MixinRenderPipelines",
     "MixinRenderSystem",
     "MixinRenderTarget",
     "MixinScreenshot",
-    "MixinWindow"
+    "MixinWindow",
+    "gl.MixinGlBackend",
+    "gl.MixinGlCommandEncoder",
+    "gl.MixinGlStateManager",
+    "gl.MixinGLX"
   ],
   "mixins": [
     "compat.iris.MixinIrisCompatibility",
