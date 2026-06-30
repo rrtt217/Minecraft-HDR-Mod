@@ -66,6 +66,7 @@ public class MixinMinecraft {
             }
         };
         gpuDevice.precompilePipeline(ColorTransformRenderer.COLOR_TRANSFORM, shaderSource);
+        gpuDevice.precompilePipeline(ColorTransformRenderer.COLOR_TRANSFORM_PQ, shaderSource);
     }
     @Inject(method = "<init>", at = @At("TAIL"))
     private void hdr_mod$setupMinecraft(CallbackInfo ci) {

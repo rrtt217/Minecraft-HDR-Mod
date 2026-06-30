@@ -32,8 +32,10 @@ public class ColorTransformRenderer implements AutoCloseable {
             builder = builder.withShaderDefine("TRANSFER_FUNCTION_"+tf.toString(), tf.getId());
         }
         COLOR_TRANSFORM = builder.build();
+        COLOR_TRANSFORM_PQ = builder.withColorTargetState(new ColorTargetState(Optional.empty(), GpuFormat.RGBA16_UNORM, 15)).build();
     }
     public static RenderPipeline COLOR_TRANSFORM;
+    public static RenderPipeline COLOR_TRANSFORM_PQ;
     private GpuTextureView srcTextureView;
     private GpuTexture dstTexture;
     private GpuTextureView dstTextureView;
@@ -64,12 +66,10 @@ public class ColorTransformRenderer implements AutoCloseable {
         this.colorTransformBuffer = colorTransformUbo.update(UIBrightness, EotfEmulate, Primaries, TransferFunction);
         if(TransferFunction == Enums.TransferFunction.ST2084_PQ.getId() && this.colorTransformUbo.lastTransferFunction != Enums.TransferFunction.ST2084_PQ.getId()) {
             this.dstTextureFormat = GpuFormat.RGBA16_UNORM;
-            COLOR_TRANSFORM = builder.withColorTargetState(new ColorTargetState(Optional.empty(), this.dstTextureFormat, 15)).build();
             this.recreateTexture();
         }
         else if(TransferFunction != Enums.TransferFunction.ST2084_PQ.getId() && this.colorTransformUbo.lastTransferFunction == Enums.TransferFunction.ST2084_PQ.getId()) {
             this.dstTextureFormat = GpuFormat.RGBA16_FLOAT;
-            COLOR_TRANSFORM = builder.withColorTargetState(new ColorTargetState(Optional.empty(), this.dstTextureFormat, 15)).build();
             this.recreateTexture();
         }
     }
@@ -90,7 +90,8 @@ public class ColorTransformRenderer implements AutoCloseable {
         if (srcTextureView != null) {
             try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Color Transform", this.dstTextureView, Optional.empty())) {
                 RenderSystem.bindDefaultUniforms(renderPass);
-                renderPass.setPipeline(COLOR_TRANSFORM);
+                if(this.dstTextureFormat == GpuFormat.RGBA16_UNORM) renderPass.setPipeline(COLOR_TRANSFORM_PQ);
+                else renderPass.setPipeline(COLOR_TRANSFORM);
                 if (this.colorTransformUbo != null) renderPass.setUniform("ColorTransform", this.colorTransformBuffer);
                 renderPass.bindTexture("InSampler", srcTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
                 renderPass.draw(3, 1, 0, 0);
