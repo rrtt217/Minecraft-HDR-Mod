@@ -13,6 +13,6 @@ public class MixinLevelRenderer {
         if(format == GpuFormat.RGBA8_UNORM) {
             return GpuFormat.RGBA16_FLOAT;
         }
-        else return format;
+        return format;
     }
 }

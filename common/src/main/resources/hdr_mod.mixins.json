@@ -8,9 +8,11 @@
     "MixinColorTargetState",
     "MixinDebugScreenEntries",
     "MixinDebugScreenEntryList",
+    "MixinGuiItemAtlas",
     "MixinLevelRenderer",
     "MixinMainTarget",
     "MixinMinecraft",
+    "MixinPostChain",
     "MixinRenderPipelines",
     "MixinRenderSystem",
     "MixinRenderTarget",
@@ -19,8 +21,7 @@
     "gl.MixinGlBackend",
     "gl.MixinGlCommandEncoder",
     "gl.MixinGlStateManager",
-    "gl.MixinGLX",
-    "MixinPostChain"
+    "gl.MixinGLX"
   ],
   "mixins": [
     "compat.iris.MixinIrisCompatibility",
