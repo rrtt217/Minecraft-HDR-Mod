@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Mixin(RenderPipelines.class)
 public class MixinRenderPipelines {
-    // Common.
+    // Common
     @ModifyArg(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/ColorTargetState;<init>(Ljava/util/Optional;Lcom/mojang/blaze3d/GpuFormat;I)V"), index = 1)
     private static GpuFormat hdr_mod$modifyPipelinesColorTargetFormat(GpuFormat format) {
         if(format == GpuFormat.RGBA8_UNORM){

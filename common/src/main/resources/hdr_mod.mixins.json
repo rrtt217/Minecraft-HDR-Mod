@@ -20,7 +20,7 @@
     "gl.MixinGlCommandEncoder",
     "gl.MixinGlStateManager",
     "gl.MixinGLX",
-    "gl.MixinPostChain"
+    "MixinPostChain"
   ],
   "mixins": [
     "compat.iris.MixinIrisCompatibility",

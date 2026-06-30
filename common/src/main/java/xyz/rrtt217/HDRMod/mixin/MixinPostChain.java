@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.mixin.gl;
+package xyz.rrtt217.HDRMod.mixin;
 
 import com.mojang.blaze3d.GpuFormat;
 import net.minecraft.client.renderer.PostChain;

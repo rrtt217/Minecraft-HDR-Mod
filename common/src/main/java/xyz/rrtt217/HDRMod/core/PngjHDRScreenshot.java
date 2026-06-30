@@ -171,12 +171,12 @@ public class PngjHDRScreenshot {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
 
         // Create ScreenshotColorTransformRenderer if there's not one.
-        if(ScreenshotColorTransformRenderer == null){
-            ScreenshotColorTransformRenderer = new ColorTransformRenderer(renderTarget, "Screenshot");
+        if(ScreenshotColorTransformRenderer == null && renderTarget.getColorTextureView() != null) {
+            ScreenshotColorTransformRenderer = new ColorTransformRenderer(renderTarget.getColorTextureView(), "Screenshot");
         }
-        // Update ScreenshotColorTransformRenderer.srcTarget.
-        if(ScreenshotColorTransformRenderer.getSrcTarget() != renderTarget){
-            ScreenshotColorTransformRenderer.setSrcTarget(renderTarget);
+        // Update ScreenshotColorTransformRenderer.srcTextureView.
+        if(ScreenshotColorTransformRenderer.getSrcTextureView() != renderTarget.getColorTextureView()){
+            ScreenshotColorTransformRenderer.setSrcSrcTextureView(renderTarget.getColorTextureView());
         }
         ScreenshotColorTransformRenderer.updateColorTransformUniforms(
                 config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness

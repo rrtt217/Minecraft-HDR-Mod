@@ -13,7 +13,7 @@ import xyz.rrtt217.HDRMod.debug.HDRModDebugEntry;
 @Mixin(DebugScreenEntries.class)
 public class MixinDebugScreenEntries {
     @Shadow
-    public static Identifier register(Identifier Identifier, DebugScreenEntry debugScreenEntry) {
+    private static Identifier register(Identifier Identifier, DebugScreenEntry debugScreenEntry) {
         return null;
     }
 
