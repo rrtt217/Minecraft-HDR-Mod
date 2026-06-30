@@ -64,11 +64,11 @@ public class ColorTransformRenderer implements AutoCloseable {
             throw new IllegalStateException("Cannot update color transform UBO when UBO is null");
         }
         this.colorTransformBuffer = colorTransformUbo.update(UIBrightness, EotfEmulate, Primaries, TransferFunction);
-        if(TransferFunction == Enums.TransferFunction.ST2084_PQ.getId() && this.colorTransformUbo.lastTransferFunction != Enums.TransferFunction.ST2084_PQ.getId()) {
+        if(TransferFunction == Enums.TransferFunction.ST2084_PQ.getId() && this.dstTextureFormat != GpuFormat.RGBA16_UNORM) {
             this.dstTextureFormat = GpuFormat.RGBA16_UNORM;
             this.recreateTexture();
         }
-        else if(TransferFunction != Enums.TransferFunction.ST2084_PQ.getId() && this.colorTransformUbo.lastTransferFunction == Enums.TransferFunction.ST2084_PQ.getId()) {
+        else if(TransferFunction != Enums.TransferFunction.ST2084_PQ.getId() && this.dstTextureFormat != GpuFormat.RGBA16_FLOAT) {
             this.dstTextureFormat = GpuFormat.RGBA16_FLOAT;
             this.recreateTexture();
         }
@@ -79,8 +79,8 @@ public class ColorTransformRenderer implements AutoCloseable {
         }
     }
     public void recreateTexture(){
-        this.dstTextureView.close();
-        this.dstTexture.close();
+        if(this.dstTextureView != null) this.dstTextureView.close();
+        if(this.dstTexture != null) this.dstTexture.close();
         this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, this.dstTextureFormat, srcTextureView.getWidth(0), srcTextureView.getHeight(0), 1, 1);
         this.dstTextureView = RenderSystem.getDevice().createTextureView(this.dstTexture);
     }

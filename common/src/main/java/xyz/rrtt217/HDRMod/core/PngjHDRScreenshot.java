@@ -102,7 +102,6 @@ public class PngjHDRScreenshot {
     // Unlike vanilla, we accept floating point scale and do not throw an error when image size is not divisible by downscale factor.
     public static void grab(File baseDirectory, @Nullable String string, RenderTarget renderTarget, float i, Consumer<Component> consumer){
             takeScreenshot(renderTarget,(imageBuffer -> {
-                LOGGER.info("Pixel[0]: R={} G={} B={}", imageBuffer.shortBuffer.get(0)&0xFFFF, imageBuffer.shortBuffer.get(1)&0xFFFF, imageBuffer.shortBuffer.get(2)&0xFFFF);
                 int origWidth = imageBuffer.width();
                 int origHeight = imageBuffer.height();
                 float iEffective = Math.max(i, 1);
@@ -156,9 +155,7 @@ public class PngjHDRScreenshot {
                             // RGBA16 UNORM.
                             for (int c = 0; c < png.imgInfo.channels; c++) {
                                 bits = imageBuffer.shortBuffer().get(basePos + c);
-                                int unsignedBits = bits & 0xFFFF;
-                                //if(basePos % 100 == 0) LOGGER.info("Unsigned Bits: {}", unsignedBits);
-                                scanline[x * png.imgInfo.channels + c] = unsignedBits;
+                                scanline[x * png.imgInfo.channels + c] = Short.toUnsignedInt(bits);
                             }
                         }
                         // Write to file.
@@ -204,9 +201,8 @@ public class PngjHDRScreenshot {
 
         RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(gpuTexture, gpuBuffer, 0L, () -> {
             try (GpuBufferSlice.MappedView mappedView = gpuBuffer.map(true,false)) {
-                LOGGER.info("Pixel[0]: R={} G={} B={}", mappedView.data().get(0)&0xFFFF, mappedView.data().get(1)&0xFFFF, mappedView.data().get(2)&0xFFFF);
                 ShortBuffer shortBuffer = ShortBuffer.allocate( width * height * 4);
-                shortBuffer.put(mappedView.data().order(ByteOrder.LITTLE_ENDIAN).asShortBuffer());
+                shortBuffer.put(mappedView.data().asShortBuffer());
                 shortBuffer.flip();
                 consumer.accept(new ImageBuffer(shortBuffer, width, height));
             } catch (Exception e) {
