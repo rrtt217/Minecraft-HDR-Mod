@@ -17,7 +17,7 @@ public class MixinMainTarget {
 
     // DO NOT WORK YET
     @PlatformOnly("neoforge")
-    @ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;<init>(Ljava/lang/String;ZZLcom/mojang/blaze3d/GpuFormat;)V"), index = 3)
+    @ModifyArg(method = "<init>(IIZ)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;<init>(Ljava/lang/String;ZZLcom/mojang/blaze3d/GpuFormat;)V"), index = 3)
     private static GpuFormat hdr_mod$upgradeOnCreateBuffersNeoForge(GpuFormat format) {
         return GpuFormat.RGBA16_FLOAT;
     }

@@ -106,7 +106,7 @@ shadowJar {
 unifiedPublishing {
     project {
         displayName = "[Fabric $project.minecraft_version] v$project.version"
-        releaseType = "release"
+        releaseType = "alpha"
         gameVersions = ["$project.minecraft_version"]
         gameLoaders = ["fabric"]
         changelog = file("$rootDir/changelog.md").text

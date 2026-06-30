@@ -100,7 +100,7 @@ shadowJar {
 unifiedPublishing {
     project {
         displayName = "[NeoForge $project.minecraft_version] v$project.version"
-        releaseType = "release"
+        releaseType = "alpha"
         gameVersions = ["$project.minecraft_version"]
         gameLoaders = ["neoforge"]
         changelog = file("$rootDir/changelog.md").text
