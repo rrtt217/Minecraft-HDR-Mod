@@ -19,14 +19,16 @@
     "gl.MixinGlBackend",
     "gl.MixinGlCommandEncoder",
     "gl.MixinGlStateManager",
-    "gl.MixinGLX"
+    "gl.MixinGLX",
+    "gl.MixinPostChain"
   ],
   "mixins": [
     "compat.iris.MixinIrisCompatibility",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",
-    "compat.ixeris.MixinGLFWColorManagementUtils"
+    "compat.ixeris.MixinGLFWColorManagementUtils",
+    "compat.sodium.MixinShaderChunkRenderer"
   ],
   "injectors": {
     "defaultRequire": 1

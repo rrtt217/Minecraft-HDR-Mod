@@ -198,7 +198,6 @@ public class PngjHDRScreenshot {
         // Get the buffer.
         GpuBuffer gpuBuffer = RenderSystem.getDevice().createBuffer(() -> "HDR Mod Screenshot buffer", 9, (long) width * (long) height * 8L);
 
-        TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_UNSIGNED_SHORT);
         RenderSystem.getDevice().createCommandEncoder().copyTextureToBuffer(gpuTexture, gpuBuffer, 0L, () -> {
             try (GpuBufferSlice.MappedView mappedView = gpuBuffer.map(true,false)) {
                 ShortBuffer shortBuffer = ShortBuffer.allocate( width * height * 4);

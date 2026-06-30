@@ -7,7 +7,6 @@ import com.replaymod.render.capturer.OpenGlFrameCapturer;
 import com.replaymod.render.frame.OpenGlFrame;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -18,7 +17,6 @@ import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
 
 import static xyz.rrtt217.HDRMod.HDRMod.ReplayColorTransformRenderer;
@@ -71,7 +69,6 @@ public class MixinOpenGlFrameCapturer {
     private void hdr_mod$copyTextureToBuffer(CommandEncoder instance, GpuTexture gpuTexture, GpuBuffer gpuBuffer, long l, Runnable runnable, int i){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport){
-            TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_UNSIGNED_SHORT);
             instance.copyTextureToBuffer(ReplayColorTransformRenderer.getDstTexture(), gpuBuffer, l, runnable, i);
         }
         else{

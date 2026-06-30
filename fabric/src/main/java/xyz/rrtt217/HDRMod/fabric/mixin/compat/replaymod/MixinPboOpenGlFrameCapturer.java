@@ -5,11 +5,9 @@ import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.textures.GpuTexture;
 import com.replaymod.render.capturer.PboOpenGlFrameCapturer;
 import me.shedaniel.autoconfig.AutoConfig;
-import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
 import static xyz.rrtt217.HDRMod.HDRMod.ReplayColorTransformRenderer;
 
@@ -37,7 +35,6 @@ public class MixinPboOpenGlFrameCapturer {
     private void hdr_mod$copyTextureToBufferPbo(CommandEncoder instance, GpuTexture gpuTexture, GpuBuffer gpuBuffer, long l, Runnable runnable, int i){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport){
-            TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_UNSIGNED_SHORT);
             instance.copyTextureToBuffer(ReplayColorTransformRenderer.getDstTexture(), gpuBuffer, l, runnable, i);
         }
         else{
