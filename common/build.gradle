@@ -10,6 +10,14 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+    maven {
+        name "maven.2b2t.vcRemote"
+        url "https://maven.2b2t.vc/remote"
+    }
+    maven {
+        name "ChocolateMinecraft Maven"
+        url "https://chocolateminecraft.com/maven/"
+    }
 }
 
 dependencies {
@@ -25,6 +33,10 @@ dependencies {
     implementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
     implementation "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
     implementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
+    implementation "maven.modrinth:xaeros-minimap:fabric-${minecraft_version}-${xaero_minimap_version}"
+    implementation "maven.modrinth:xaeros-world-map:fabric-${minecraft_version}-${xaero_worldmap_version}"
+    implementation "maven.modrinth:xaeroplus:${xaero_plus_version}+fabric-${minecraft_version}"
+    implementation "xaero.lib:xaerolib-common-$minecraft_version:${xaerolib_version}"
 
     implementation 'com.github.oshi:oshi-core:6.9.3'
     implementation 'ar.com.hjg:pngj:2.1.0'

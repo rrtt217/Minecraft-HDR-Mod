@@ -9,6 +9,7 @@
     "MixinDebugScreenEntries",
     "MixinDebugScreenEntryList",
     "MixinGpuSurface",
+    "MixinGpuTexture",
     "MixinGuiItemAtlas",
     "MixinLevelRenderer",
     "MixinMainTarget",
@@ -19,6 +20,8 @@
     "MixinRenderTarget",
     "MixinScreenshot",
     "MixinWindow",
+    "compat.xaero.MixinGuiMap",
+    "compat.xaero.MixinPictureInPictureRenderer",
     "gl.MixinGlBackend",
     "gl.MixinGlCommandEncoder",
     "gl.MixinGlStateManager",
@@ -30,7 +33,10 @@
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",
     "compat.ixeris.MixinGLFWColorManagementUtils",
-    "compat.sodium.MixinShaderChunkRenderer"
+    "compat.sodium.MixinShaderChunkRenderer",
+    "compat.xaero.MixinMinimapFBORenderer",
+    "compat.xaero.MixinRadarIconCreator",
+    "compat.xaero.MixinXaeroRenderType"
   ],
   "injectors": {
     "defaultRequire": 1

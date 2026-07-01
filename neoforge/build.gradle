@@ -49,6 +49,10 @@ repositories {
         name "caffeinemcRepositoryReleases"
         url "https://maven.caffeinemc.net/releases"
     }
+    maven {
+        name "maven.2b2t.vcXaero"
+        url "https://maven.2b2t.vc/xaero"
+    }
 }
 
 dependencies {
@@ -62,6 +66,10 @@ dependencies {
     // implementation "maven.modrinth:iris:${iris_version}-neoforge"
     implementation "maven.modrinth:imblocker-original:${imblocker_version}-neoforge,${minecraft_version}"
     compileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-neoforge"
+
+    implementation "maven.modrinth:xaeros-minimap:neoforge-${minecraft_version}-${xaero_minimap_version}"
+    implementation "maven.modrinth:xaeros-world-map:neoforge-${minecraft_version}-${xaero_worldmap_version}"
+    implementation "maven.modrinth:xaeroplus:${xaero_plus_version}+neoforge-${minecraft_version}"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"

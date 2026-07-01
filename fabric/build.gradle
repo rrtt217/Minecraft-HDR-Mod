@@ -16,6 +16,11 @@ repositories {
             includeGroup "maven.modrinth"
         }
     }
+    maven {
+        name "maven.2b2t.vcRemote"
+        url "https://maven.2b2t.vc/remote"
+    }
+
 }
 configurations {
     common {
@@ -61,6 +66,10 @@ dependencies {
     // Axiom refuse to start with modImplementation. Just use modCompileOnly, download one from modrinth and put it in run/mods.
     compileOnly "maven.modrinth:axiom:${axiom_version}-fabric,${minecraft_version}"
     implementation "maven.modrinth:flashback:${flashback_version}-fabric,${minecraft_version}"
+
+    implementation "maven.modrinth:xaeros-minimap:fabric-${minecraft_version}-${xaero_minimap_version}"
+    implementation "maven.modrinth:xaeros-world-map:fabric-${minecraft_version}-${xaero_worldmap_version}"
+    //implementation "maven.modrinth:xaeroplus:${xaero_plus_version}+fabric-${minecraft_version}"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"
