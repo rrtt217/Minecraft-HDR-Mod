@@ -109,7 +109,7 @@ unifiedPublishing {
     project {
         displayName = "[NeoForge $project.minecraft_version] v$project.version"
         releaseType = "alpha"
-        gameVersions = ["$project.minecraft_version"]
+        gameVersions = ["$project.minecraft_version"] as Iterable<? extends String>
         gameLoaders = ["neoforge"]
         changelog = file("$rootDir/changelog.md").text
 
@@ -135,7 +135,6 @@ unifiedPublishing {
                 token = project.hasProperty("CURSEFORGE_TOKEN") ? project.property("CURSEFORGE_TOKEN") : System.getenv("CURSEFORGE_TOKEN")
                 id = project.curseforge_id
                 gameVersions.addAll "Java 25"
-                gameVersions.addAll "26.1", "26.1.1"
             }
         }
 
@@ -143,7 +142,6 @@ unifiedPublishing {
             modrinth {
                 token = project.hasProperty("MODRINTH_TOKEN") ? project.property("MODRINTH_TOKEN") : System.getenv("MODRINTH_TOKEN")
                 id = project.modrinth_id
-                gameVersions.addAll "26.1", "26.1.1"
                 // gameVersions.addAll project.minecraft_version
             }
         }
