@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.upgrade;
 
 import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.pipeline.MainTarget;
