@@ -72,6 +72,9 @@ public class HDRModConfig implements ConfigData {
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")
     public boolean forceActivateGlDxInterop = false;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("advanced")
+    public boolean modifyDefaultColorTargetState = true;
 
     @ConfigEntry.Category("debug")
     public boolean debugRGBA8StackTrace = false;

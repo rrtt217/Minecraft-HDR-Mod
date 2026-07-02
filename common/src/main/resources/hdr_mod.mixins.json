@@ -31,7 +31,7 @@
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",
     "compat.ixeris.MixinGLFWColorManagementUtils",
-    "compat.sodium.MixinShaderChunkRenderer",
+    "compat.sodium.MixinShaderChunkRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
