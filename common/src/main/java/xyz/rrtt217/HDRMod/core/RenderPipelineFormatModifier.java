@@ -9,6 +9,7 @@ import com.mojang.blaze3d.platform.PolygonMode;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.ShaderDefines;
 import net.minecraft.resources.Identifier;
+import xyz.rrtt217.HDRMod.mixin.RenderPipelineAccessor;
 
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
@@ -55,7 +56,7 @@ public class RenderPipelineFormatModifier {
                     pipeline.getDepthStencilState(),
                     pipeline.getPolygonMode(),
                     pipeline.isCull(),
-                    pipeline.getVertexFormatBindings(),
+                    ((RenderPipelineAccessor) pipeline).getVertexFormatPerBuffer(),
                     pipeline.getPrimitiveTopology(),
                     pipeline.getSortKey());
 

@@ -23,7 +23,8 @@
     "gl.MixinGlCommandEncoder",
     "gl.MixinGlStateManager",
     "gl.MixinGLX",
-    "gl.MixinRenderPass"
+    "gl.MixinRenderPass",
+    "RenderPipelineAccessor"
   ],
   "mixins": [
     "compat.iris.MixinIrisCompatibility",
