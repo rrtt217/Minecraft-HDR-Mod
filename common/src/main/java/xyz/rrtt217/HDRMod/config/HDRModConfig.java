@@ -74,6 +74,8 @@ public class HDRModConfig implements ConfigData {
     public boolean forceActivateGlDxInterop = false;
 
     @ConfigEntry.Category("debug")
+    public boolean debugRGBA8StackTrace = false;
+    @ConfigEntry.Category("debug")
     public boolean autoSetPrimaries = true;
     @ConfigEntry.Category("debug")
     public Primaries customPrimaries = Primaries.SRGB;

@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 public class RenderPipelineFormatModifier {
-    private static Map<RenderPipeline,RenderPipeline> pipelineCache = new HashMap<RenderPipeline,RenderPipeline>();
+    private static final Map<RenderPipeline,RenderPipeline> pipelineCache = new HashMap<RenderPipeline,RenderPipeline>();
     private static Constructor<RenderPipeline> pipelineConstructor;
     public static RenderPipeline modifyRenderPipelineFormat(RenderPipeline pipeline, GpuFormat[] formats) {
         RenderPipeline cached = pipelineCache.get(pipeline);

@@ -10,7 +10,6 @@
     "MixinDebugScreenEntryList",
     "MixinGpuSurface",
     "MixinGpuTexture",
-    "MixinGuiItemAtlas",
     "MixinLevelRenderer",
     "MixinMainTarget",
     "MixinMinecraft",
