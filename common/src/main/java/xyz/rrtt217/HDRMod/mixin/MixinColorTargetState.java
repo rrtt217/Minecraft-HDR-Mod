@@ -22,4 +22,5 @@ public class MixinColorTargetState {
         }
         return format;
     }
+
 }

@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
+import xyz.rrtt217.HDRMod.util.ScreenshotStateListener;
 
 import java.io.File;
 import java.util.function.Consumer;
@@ -22,13 +22,13 @@ public class MixinScreenshot {
     @Inject(method = "grab(Ljava/io/File;Ljava/lang/String;Lcom/mojang/blaze3d/pipeline/RenderTarget;ILjava/util/function/Consumer;)V", at = @At("HEAD"), cancellable = true)
     private static void onVanillaScreenshotCalled(File file, @Nullable String string, RenderTarget renderTarget, int i, Consumer<Component> consumer, CallbackInfo ci){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(HDRModInjectHooks.getVanillaF2Screenshot()){
+        if(ScreenshotStateListener.getVanillaF2Screenshot()){
             if (config.behaviorOnVanillaF2 != Enums.BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA) {
                 PngjHDRScreenshot.grab(file, string, renderTarget, consumer);
                 if (config.behaviorOnVanillaF2 == Enums.BehaviorOnVanillaScreenshotCalled.ONLY_HDR)
                     ci.cancel();
             }
-            HDRModInjectHooks.unsetVanillaF2Screenshot();
+            ScreenshotStateListener.unsetVanillaF2Screenshot();
         }
         else {
             if (config.behaviorOnVanillaScreenshotCalled != Enums.BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA) {

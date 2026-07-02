@@ -1,6 +1,6 @@
 package xyz.rrtt217.HDRMod.util;
 
-public class HDRModInjectHooks {
+public class ScreenshotStateListener {
     private static final ThreadLocal<Boolean> vanillaF2Screenshot = ThreadLocal.withInitial(() -> false);
 
     public static void setVanillaF2Screenshot() { vanillaF2Screenshot.set(true); }

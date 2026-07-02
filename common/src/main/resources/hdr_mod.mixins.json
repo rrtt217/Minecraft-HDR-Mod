@@ -20,12 +20,11 @@
     "MixinRenderTarget",
     "MixinScreenshot",
     "MixinWindow",
-    "compat.xaero.MixinGuiMap",
-    "compat.xaero.MixinPictureInPictureRenderer",
     "gl.MixinGlBackend",
     "gl.MixinGlCommandEncoder",
     "gl.MixinGlStateManager",
-    "gl.MixinGLX"
+    "gl.MixinGLX",
+    "gl.MixinRenderPass"
   ],
   "mixins": [
     "compat.iris.MixinIrisCompatibility",
@@ -34,9 +33,6 @@
     "compat.ixeris.MixinDXGIStateManager",
     "compat.ixeris.MixinGLFWColorManagementUtils",
     "compat.sodium.MixinShaderChunkRenderer",
-    "compat.xaero.MixinMinimapFBORenderer",
-    "compat.xaero.MixinRadarIconCreator",
-    "compat.xaero.MixinXaeroRenderType"
   ],
   "injectors": {
     "defaultRequire": 1

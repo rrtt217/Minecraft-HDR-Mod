@@ -36,7 +36,7 @@ public class MixinRenderPipelines {
     // LIGHTMAP
     @Redirect(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderPipeline$Builder;build()Lcom/mojang/blaze3d/pipeline/RenderPipeline;", ordinal = 84))
     private static RenderPipeline builder(RenderPipeline.Builder builder) {
-        return 	RenderPipeline.builder(RenderPipeline.builder().withBindGroupLayout(BindGroupLayouts.GLOBALS).buildSnippet())
+        return RenderPipeline.builder(RenderPipeline.builder().withBindGroupLayout(BindGroupLayouts.GLOBALS).buildSnippet())
                 .withLocation("pipeline/lightmap")
                 .withVertexShader("core/screenquad")
                 .withFragmentShader("core/lightmap")
