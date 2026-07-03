@@ -115,7 +115,7 @@ shadowJar {
 unifiedPublishing {
     project {
         displayName = "[Fabric $project.minecraft_version] v$project.version"
-        releaseType = "alpha"
+        releaseType = "beta"
         gameVersions = ["$project.minecraft_version"] as Iterable<? extends String>
         gameLoaders = ["fabric"]
         changelog = file("$rootDir/changelog.md").text
