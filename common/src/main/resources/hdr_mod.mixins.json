@@ -24,7 +24,9 @@
     "upgrade.MixinLevelRenderer",
     "upgrade.MixinMainTarget",
     "upgrade.MixinPostChain",
-    "upgrade.MixinRenderPipelines"
+    "upgrade.MixinRenderPipelines",
+    "vk.MixinVulkanGpuSurface",
+    "vk.MixinVulkanInstance"
   ],
   "mixins": [
     "compat.iris.MixinIrisCompatibility",
