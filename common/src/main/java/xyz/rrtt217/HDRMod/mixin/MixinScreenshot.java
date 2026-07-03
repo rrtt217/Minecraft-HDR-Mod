@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.GpuFormat;
 import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderPass;
@@ -38,7 +39,7 @@ public class MixinScreenshot {
     @Unique
     private static GpuTextureView hdr_mod$vanillaScreenshotFlipTextureView;
     @Unique
-    private static final RenderPipeline hdr_mod$vanillaScreenshotConvertRenderPipeline = RenderPipeline.builder(new RenderPipeline.Snippet[0]).withBindGroupLayout(BindGroupLayouts.GLOBALS).withLocation("pipeline/screenshot_convert").withVertexShader("core/screenquad").withFragmentShader("core/blit_screen").withBindGroupLayout(BindGroupLayouts.IN_SAMPLER).withPrimitiveTopology(PrimitiveTopology.TRIANGLES).build();;
+    private static final RenderPipeline hdr_mod$vanillaScreenshotConvertRenderPipeline = RenderPipeline.builder(new RenderPipeline.Snippet[0]).withBindGroupLayout(BindGroupLayouts.GLOBALS).withLocation("pipeline/screenshot_convert").withVertexShader("core/screenquad").withFragmentShader("core/blit_screen").withBindGroupLayout(BindGroupLayouts.IN_SAMPLER).withPrimitiveTopology(PrimitiveTopology.TRIANGLES).withColorTargetState(new ColorTargetState(Optional.empty(), GpuFormat.RGBA8_UNORM, 15)).build();;
     @Inject(method = "grab(Ljava/io/File;Ljava/lang/String;Lcom/mojang/blaze3d/pipeline/RenderTarget;ILjava/util/function/Consumer;)V", at = @At("HEAD"), cancellable = true)
     private static void onVanillaScreenshotCalled(File file, @Nullable String string, RenderTarget renderTarget, int i, Consumer<Component> consumer, CallbackInfo ci){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
