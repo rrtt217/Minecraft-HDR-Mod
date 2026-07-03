@@ -19,13 +19,16 @@ public class VulkanColorManagementInfoProvider extends ColorManagementInfoProvid
     public Enums.Primaries getWindowPrimaries(long handle) {
         return this.primaries;
     }
+
     public void setWindowPrimaries(Enums.Primaries primaries) {
         this.primaries = primaries;
     }
+
     @Override
     public Enums.TransferFunction getWindowTransferFunction(long handle) {
         return this.transferFunction;
     }
+
     public void setWindowTransferFunction(Enums.TransferFunction transferFunction) {
         this.transferFunction = transferFunction;
     }

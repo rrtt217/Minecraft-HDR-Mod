@@ -25,6 +25,7 @@
     "upgrade.MixinMainTarget",
     "upgrade.MixinPostChain",
     "upgrade.MixinRenderPipelines",
+    "vk.MixinVulkanBackend",
     "vk.MixinVulkanGpuSurface",
     "vk.MixinVulkanInstance"
   ],

@@ -79,9 +79,9 @@ public class ColorManagementInfoProvider {
         return customValue < 0 ? queryValue : customValue;
     }
     public Enums.Primaries getCurrentPrimaries(long handle) {
-        return config.autoSetPrimaries ? Enums.Primaries.fromId(GLFWColorManagementUtils.glfwGetWindowPrimaries(handle)) : config.customPrimaries;
+        return config.autoSetPrimaries ? getWindowPrimaries(handle) : config.customPrimaries;
     }
     public Enums.TransferFunction getCurrentTransferFunction(long handle) {
-        return config.autoSetTransferFunction ? Enums.TransferFunction.fromId(GLFWColorManagementUtils.glfwGetWindowTransfer(handle)) : config.customTransferFunction;
+        return config.autoSetTransferFunction ? getWindowTransferFunction(handle) : config.customTransferFunction;
     }
 }
