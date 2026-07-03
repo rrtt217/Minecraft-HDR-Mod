@@ -21,15 +21,16 @@ public class MixinGpuSurface {
     @ModifyArg(method = "blitFromTexture", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/GpuSurfaceBackend;blitFromTexture(Lcom/mojang/blaze3d/systems/CommandEncoderBackend;Lcom/mojang/blaze3d/textures/GpuTextureView;)V"), index = 1)
     private GpuTextureView hdr_mod$beforePresentationColorTransform(GpuTextureView textureView) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        long handle = Minecraft.getInstance().getWindow().handle();
 
         if(HDRMod.PresentationColorTransformRenderer == null)
             HDRMod.PresentationColorTransformRenderer = new ColorTransformRenderer(textureView, "Presentation");
 
         HDRMod.PresentationColorTransformRenderer.updateColorTransformUniforms(
-                config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
-                config.customEotfEmulate < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate,
-                config.autoSetPrimaries ? GLFWColorManagementUtils.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle()) : config.customPrimaries.getId(),
-                config.autoSetTransferFunction ? GLFWColorManagementUtils.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle()) : config.customTransferFunction.getId()
+                HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
+                HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
+                HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle),
+                HDRMod.colorManagementInfoProvider.getCurrentTransferFunction(handle)
         );
         if (minecraft.gameRenderer.mainRenderTarget().getColorTextureView() != null && !textureView.equals(HDRMod.PresentationColorTransformRenderer.getSrcTextureView()))
             HDRMod.PresentationColorTransformRenderer.setSrcSrcTextureView(textureView);
