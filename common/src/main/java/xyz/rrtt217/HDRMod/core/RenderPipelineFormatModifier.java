@@ -12,28 +12,34 @@ import net.minecraft.resources.Identifier;
 import xyz.rrtt217.HDRMod.mixin.RenderPipelineAccessor;
 
 import java.lang.reflect.Constructor;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class RenderPipelineFormatModifier {
-    private static final Map<RenderPipeline,RenderPipeline> pipelineCache = new HashMap<RenderPipeline,RenderPipeline>();
+    public record PipelineCacheKey(RenderPipeline renderPipeline, List<GpuFormat> gpuFormats) {}
+    private static final Map<PipelineCacheKey,RenderPipeline> pipelineCache = new HashMap<PipelineCacheKey,RenderPipeline>();
     private static Constructor<RenderPipeline> pipelineConstructor;
     public static RenderPipeline modifyRenderPipelineFormat(RenderPipeline pipeline, GpuFormat[] formats) {
-        RenderPipeline cached = pipelineCache.get(pipeline);
+        return modifyRenderPipelineFormat(pipeline, Arrays.asList(formats));
+    }
+    public static RenderPipeline modifyRenderPipelineFormat(RenderPipeline pipeline, List<GpuFormat> formats) {
+        PipelineCacheKey cacheKey = new PipelineCacheKey(pipeline, formats);
+        RenderPipeline cached = pipelineCache.get(cacheKey);
         if (cached != null) {
             return cached;
         }
 
         ColorTargetState[] original = pipeline.getColorTargetStates();
-        if (original.length != formats.length) {
-            throw new IllegalArgumentException("Color target state count mismatch: pipeline has " + original.length + " but " + formats.length + " formats were provided");
+        if (original.length != formats.size()) {
+            throw new IllegalArgumentException("Color target state count mismatch: pipeline has " + original.length + " but " + formats.size() + " formats were provided");
         }
 
         ColorTargetState[] modified = new ColorTargetState[original.length];
         for (int i = 0; i < original.length; i++) {
             ColorTargetState state = original[i];
-            modified[i] = new ColorTargetState(state.blendFunction(), formats[i], state.writeMask());
+            modified[i] = new ColorTargetState(state.blendFunction(), formats.get(i), state.writeMask());
         }
 
         try {
@@ -60,7 +66,7 @@ public class RenderPipelineFormatModifier {
                     pipeline.getPrimitiveTopology(),
                     pipeline.getSortKey());
 
-            pipelineCache.put(pipeline, result);
+            pipelineCache.put(cacheKey, result);
             return result;
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Failed to create modified RenderPipeline for " + pipeline, e);
