@@ -19,20 +19,6 @@ abstract class CompileNativeTask extends DefaultTask {
     @Inject //@javax.inject.Inject
     abstract ExecOperations getExecOperations()
 
-    private static String getNormalizedArch(){
-        def arch = System.getProperty("os.arch").toLowerCase()
-        switch (arch) {
-            case ~/amd64|x86_64/:
-                return "x86-64"
-            case ~/aarch64|arm64/:
-                return "arm64"
-            case ~/x86|i[3-6]86/:
-                return "x86"
-            default:
-                return arch
-        }
-    }
-
     @TaskAction
     void compile() {
         def os = org.gradle.internal.os.OperatingSystem.current()
@@ -85,8 +71,9 @@ abstract class CompileNativeTask extends DefaultTask {
             project.copy {
                 from("$sourceDir/build-cocoa-shared/src")
                 include("libglfw.dylib")
-                into("$nativesDir/mac/arm64")
+                into("$nativesDir/mac/aarch64")
             }
+            // NO WAY IT'S aarch64 NOT arm64
         } else if (os.isWindows()) {
             // x64
             execOperations.exec {
