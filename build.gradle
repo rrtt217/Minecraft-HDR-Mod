@@ -76,6 +76,10 @@ subprojects {
         }
 }
 
+// Only configure publishing when the mod subprojects are included.
+// When running native-only tasks (e.g. `native:compile`), settings.gradle
+// excludes the fabric/neoforge projects, so publishMods must be skipped.
+if (findProject(':fabric') != null && findProject(':neoforge') != null) {
 publishMods {
     changelog = file("$rootDir/changelog.md").text
     type = STABLE
@@ -136,4 +140,5 @@ publishMods {
         requires("cloth-config")
         optional("iris")
     }
+}
 }
