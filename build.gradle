@@ -2,7 +2,7 @@ plugins {
     id 'dev.architectury.loom-no-remap' version '1.17.487' apply false
     id 'architectury-plugin' version '3.5.169'
     id 'com.gradleup.shadow' version '8.3.6' apply false
-    id "me.shedaniel.unified-publishing" version "0.1.+"
+    id "me.modmuss50.mod-publish-plugin" version "2.1.1"
 }
 
 architectury {
@@ -75,4 +75,65 @@ subprojects {
             }
         }
 }
-tasks.register('modPublish')
+
+publishMods {
+    changelog = file("$rootDir/changelog.md").text
+    type = STABLE
+
+    // CurseForge options used by both Fabric and Forge
+    def cfOptions = curseforgeOptions {
+        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+        projectId = "$project.curseforge_id"
+        minecraftVersions.add("$minecraft_version")
+        client = true
+        server = false
+        javaVersions.add(JavaVersion.VERSION_25)
+        changelogType = "markdown"
+    }
+
+    // Modrinth options used by both Fabric and Forge
+    def mrOptions = modrinthOptions {
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        projectId = "$project.modrinth_id"
+        minecraftVersions.add("$minecraft_version")
+        environment = CLIENT_ONLY
+    }
+
+    // Fabric specific options for CurseForge
+    curseforge("curseforgeFabric") {
+        from cfOptions
+        file project(":fabric")
+        modLoaders.add("fabric")
+        requires("fabric-api")
+        requires("cloth-config")
+        optional("irisshaders")
+    }
+
+    // Forge specific options for CurseForge
+    curseforge("curseforgeNeoForge") {
+        from cfOptions
+        file project(":neoforge")
+        modLoaders.add("neoforge")
+        requires("cloth-config")
+        optional("irisshaders")
+    }
+
+    // Fabric specific options for Modrinth
+    modrinth("modrinthFabric") {
+        from mrOptions
+        file project(":fabric")
+        modLoaders.add("fabric")
+        requires("fabric-api")
+        requires("cloth-config")
+        optional("iris")
+    }
+
+    // Forge specific options for Modrinth
+    modrinth("modrinthNeoForge") {
+        from mrOptions
+        file project(":neoforge")
+        modLoaders.add("neoforge")
+        requires("cloth-config")
+        optional("iris")
+    }
+}
