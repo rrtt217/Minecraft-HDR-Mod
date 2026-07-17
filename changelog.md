@@ -1,12 +1,12 @@
-# HDR Mod v3.0.0-beta1 Changelog
+# HDR Mod v3.0.0 Changelog
+HDR Mod v3.0.0 full release for 26.2 is here!
 
-## Bugs Fixed In Alpha2
-- Broken Vanilla Screenshot
-- Potential crash if a RenderPipeline is used in more than two format combinations
-## New Features
-- Basic Vulkan Support
-## Missing Features
-- ReplayMod Support (There's no ReplayMod yet for 26.2)
-## Warning
-- Iris hasn't uploaded NeoForge version to Modrinth, compatibility is not guaranteed.
-- This is an beta version. Here be dragons!
+Originally I considered for some shader API changes/additions, but no shader dev is currently interested in HDR mod, so I decided to keep current state.
+
+## The following features are tested and worked
+- Native HDR Output, including DXGI fallback for Windows Intel and Vulkan (not including Windows Intel);
+- Both HDR and Vanilla screenshot;
+- Replay Mod HDR Video Export (Only for fabric);
+- Wayland IME fix.
+
+And both Fabric and NeoForge are tested and work.
