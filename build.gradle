@@ -1,6 +1,6 @@
 plugins {
-    id 'dev.architectury.loom-no-remap' version '1.17-SNAPSHOT' apply false
-    id 'architectury-plugin' version '3.5-SNAPSHOT'
+    id 'dev.architectury.loom-no-remap' version '1.17.487' apply false
+    id 'architectury-plugin' version '3.5.169'
     id 'com.gradleup.shadow' version '8.3.6' apply false
     id "me.shedaniel.unified-publishing" version "0.1.+"
 }

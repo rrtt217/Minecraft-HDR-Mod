@@ -26,8 +26,8 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
         if (state != on) {
             if(hasBlazeSdl)
             {
-                if(on) SDLKeyboard.SDL_StartTextInput(Minecraft.getInstance().getWindow().handle());
-                else SDLKeyboard.SDL_StopTextInput(Minecraft.getInstance().getWindow().handle());
+                //if(on) SDLKeyboard.SDL_StartTextInput(Minecraft.getInstance().getWindow().handle());
+                //else SDLKeyboard.SDL_StopTextInput(Minecraft.getInstance().getWindow().handle());
             }
             else GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().handle(),GLFW.GLFW_IME, on ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
             state = on;
