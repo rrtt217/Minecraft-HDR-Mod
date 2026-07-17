@@ -17,8 +17,10 @@ import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.ColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.util.SDLColorManagementInfoProvider;
 
 import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
 
 public final class HDRMod {
     public static final String MOD_ID = "hdr_mod";
@@ -67,7 +69,8 @@ public final class HDRMod {
         configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         previousEnableHDR = config.enableHDR;
-        colorManagementInfoProvider = new ColorManagementInfoProvider();
+        if(hasBlazeSdl) colorManagementInfoProvider = new SDLColorManagementInfoProvider();
+        else colorManagementInfoProvider = new ColorManagementInfoProvider();
         LOGGER.debug("HDRMod Initialized!");
     }
 }

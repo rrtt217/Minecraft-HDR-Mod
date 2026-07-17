@@ -20,7 +20,7 @@ import java.util.Set;
 
 @Mixin(GlBackend.class)
 public class MixinGlBackend {
-    @Inject(method = "setWindowHints", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwWindowHint(II)V", shift = At.Shift.AFTER))
+    @Inject(method = "setWindowHints", at = @At("TAIL"))
     private void hdr_mod$16BitWindowHint(CallbackInfo ci) {
            // Get GLFW platform.
             int platform = GLFW.glfwGetPlatform();

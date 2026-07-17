@@ -10,6 +10,8 @@ import org.lwjgl.opengl.GL30;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
 
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
+
 public class DXGIStateManager {
     public static int fbo = 0;
     private static int currentTexture = 0;
@@ -17,6 +19,7 @@ public class DXGIStateManager {
     private static int currentHeight = 0;
     private static boolean currentIsMinimized = false;
     public static int replaceFbo(int originalFbo) {
+    if (hasBlazeSdl) return originalFbo;
     if (originalFbo != 0 || GLFW.glfwGetPlatform() != GLFW.GLFW_PLATFORM_WIN32)
         return originalFbo;
 
@@ -49,6 +52,7 @@ public class DXGIStateManager {
     }
     public static int replaceFboGLOnly(int newTexture, int width, int height,
                                        boolean isMinimized, int originalFbo) {
+        if (hasBlazeSdl) return originalFbo;
         if (newTexture == 0) return originalFbo;
 
         if (fbo == 0 || newTexture != currentTexture || width != currentWidth

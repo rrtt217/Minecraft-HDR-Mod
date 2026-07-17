@@ -5,10 +5,13 @@ import io.github.reserveword.imblocker.common.LinuxIMFramework;
 import io.github.reserveword.imblocker.common.gui.*;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.sdl.SDLKeyboard;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
 
 
 public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
@@ -21,7 +24,12 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
     @Override
     public void setState(boolean on) {
         if (state != on) {
-            GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().handle(),GLFW.GLFW_IME, on ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+            if(hasBlazeSdl)
+            {
+                if(on) SDLKeyboard.SDL_StartTextInput(Minecraft.getInstance().getWindow().handle());
+                else SDLKeyboard.SDL_StopTextInput(Minecraft.getInstance().getWindow().handle());
+            }
+            else GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().handle(),GLFW.GLFW_IME, on ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
             state = on;
         }
     }

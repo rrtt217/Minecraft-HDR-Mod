@@ -12,6 +12,7 @@
     "MixinScreenshot",
     "MixinWindow",
     "RenderPipelineAccessor",
+    "compat.blazesdl.MixinSDLGlBackend",
     "debug.MixinDebugScreenEntries",
     "debug.MixinDebugScreenEntryList",
     "debug.MixinGpuTexture",
