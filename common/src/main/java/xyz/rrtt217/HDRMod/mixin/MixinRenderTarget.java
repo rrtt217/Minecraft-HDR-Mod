@@ -31,15 +31,17 @@ public class MixinRenderTarget {
     @Inject(method = "blitToScreen", at = @At("HEAD"))
     private void hdr_mod$beforeBlitRenderer(CallbackInfo ci) {
         RenderSystem.assertOnRenderThread();
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+
+        long handle = Minecraft.getInstance().getWindow().handle();
 
         if(HDRMod.PresentationColorTransformRenderer == null)
             HDRMod.PresentationColorTransformRenderer = new ColorTransformRenderer((RenderTarget) (Object) this, "Presentation");
+
         HDRMod.PresentationColorTransformRenderer.updateColorTransformUniforms(
-                config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
-                config.customEotfEmulate < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate,
-                config.autoSetPrimaries ? GLFWColorManagementUtils.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle()) : config.customPrimaries.getId(),
-                config.autoSetTransferFunction ? GLFWColorManagementUtils.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle()) : config.customTransferFunction.getId()
+                HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
+                HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
+                HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle),
+                HDRMod.colorManagementInfoProvider.getCurrentTransferFunction(handle)
         );
         if (this.colorTexture != null && !this.colorTexture.equals(HDRMod.PresentationColorTransformRenderer.getSrcTarget().getColorTexture()))
             HDRMod.PresentationColorTransformRenderer.setSrcTarget((RenderTarget) (Object) this);

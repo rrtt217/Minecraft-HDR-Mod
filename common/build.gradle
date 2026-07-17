@@ -25,6 +25,9 @@ dependencies {
     implementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
     implementation "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
     implementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
+    implementation "maven.modrinth:blazesdl:0.0.17"
+
+    implementation "org.lwjgl:lwjgl-sdl:3.4.1"
 
     implementation 'com.github.oshi:oshi-core:6.9.3'
     implementation 'ar.com.hjg:pngj:2.1.0'

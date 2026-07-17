@@ -21,6 +21,7 @@
     "MixinWindow"
   ],
   "mixins": [
+    "compat.blazesdl.MixinSDLGlBackend",
     "compat.iris.MixinIrisCompatibility",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",

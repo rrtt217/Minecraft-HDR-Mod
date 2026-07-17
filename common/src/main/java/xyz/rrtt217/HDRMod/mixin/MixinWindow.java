@@ -28,7 +28,7 @@ import xyz.rrtt217.HDRMod.HDRMod;
     @Final
     private long handle;
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void hdr_mod$setupWindowData(WindowEventHandler windowEventHandler, ScreenManager screenManager, DisplayData displayData, String string, String string2, CallbackInfo ci)
+    private void hdr_mod$setupWindowData(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, String title, GpuBackend backend, CallbackInfo ci)
     {
         int bpc = HDRMod.colorManagementInfoProvider.getBitsPerChannel(this.handle);
         float SDRWhiteLevel = HDRMod.colorManagementInfoProvider.getWindowSdrWhiteLevel(handle);

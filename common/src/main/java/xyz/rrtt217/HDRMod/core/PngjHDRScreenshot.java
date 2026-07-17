@@ -6,10 +6,8 @@ import ar.com.hjg.pngj.PngWriter;
 import ar.com.hjg.pngj.chunks.ChunkRaw;
 import ar.com.hjg.pngj.chunks.PngChunkICCP;
 import ar.com.hjg.pngj.chunks.PngChunkSingle;
-import ar.com.hjg.pngj.chunks.PngChunkUNKNOWN;
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.textures.GpuTexture;
@@ -177,9 +175,12 @@ public class PngjHDRScreenshot {
         if(ScreenshotColorTransformRenderer.getSrcTarget() != renderTarget){
             ScreenshotColorTransformRenderer.setSrcTarget(renderTarget);
         }
+
+        long handle = Minecraft.getInstance().getWindow().handle();
+
         ScreenshotColorTransformRenderer.updateColorTransformUniforms(
-                config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
-                config.customEotfEmulate < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate,
+                HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
+                HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
                 Enums.Primaries.BT2020.getId(),
                 Enums.TransferFunction.ST2084_PQ.getId()
         );

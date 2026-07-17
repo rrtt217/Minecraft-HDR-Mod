@@ -1,9 +1,6 @@
 package xyz.rrtt217.HDRMod.mixin;
 
 import com.mojang.blaze3d.opengl.GlBackend;
-import com.mojang.blaze3d.platform.DisplayData;
-import com.mojang.blaze3d.platform.ScreenManager;
-import com.mojang.blaze3d.platform.WindowEventHandler;
 import me.shedaniel.autoconfig.AutoConfig;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
