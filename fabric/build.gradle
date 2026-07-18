@@ -90,51 +90,6 @@ remapJar {
     inputFile.set shadowJar.archiveFile
 }
 
-unifiedPublishing {
-    project {
-        displayName = "[Fabric $project.minecraft_version] v$project.version"
-        releaseType = "release"
-        gameVersions = ["$project.minecraft_version"]
-        gameLoaders = ["fabric"]
-        changelog = file("$rootDir/changelog.md").text
-
-        version = "$project.version+fabric"
-
-        mainPublication remapJar
-
-        relations {
-            depends {
-                curseforge = "architectury-api"
-                modrinth = "architectury-api"
-            }
-            depends {
-                curseforge = "cloth-config"
-                modrinth = "cloth-config"
-            }
-            includes {}
-            optional {
-                curseforge = "irisshaders"
-                modrinth = "iris"
-            }
-            conflicts {}
-        }
-
-        if (project.hasProperty("CURSEFORGE_TOKEN") || System.getenv("CURSEFORGE_TOKEN") != null) {
-            curseforge {
-                token = project.hasProperty("CURSEFORGE_TOKEN") ? project.property("CURSEFORGE_TOKEN") : System.getenv("CURSEFORGE_TOKEN")
-                id = project.curseforge_id
-                gameVersions.addAll "Java 21"
-            }
-        }
-
-        if (project.hasProperty("MODRINTH_TOKEN") || System.getenv("MODRINTH_TOKEN") != null) {
-            modrinth {
-                token = project.hasProperty("MODRINTH_TOKEN") ? project.property("MODRINTH_TOKEN") : System.getenv("MODRINTH_TOKEN")
-                id = project.modrinth_id
-                // gameVersions.addAll project.minecraft_version
-            }
-        }
-    }
+publishMods {
+    file = remapJar.archiveFile
 }
-
-rootProject.tasks.getByName("modPublish").dependsOn tasks.getByName("publishUnified")

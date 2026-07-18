@@ -18,6 +18,7 @@ import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.util.ColorManagementInfoProvider;
 
 import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
 
@@ -55,6 +56,8 @@ public final class HDRMod {
 
     public static ConfigHolder<HDRModConfig> configHolder;
 
+    public static ColorManagementInfoProvider colorManagementInfoProvider;
+
     public HDRMod() {
     }
 
@@ -89,6 +92,7 @@ public final class HDRMod {
         });
 
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        colorManagementInfoProvider = new ColorManagementInfoProvider(config);
         previousEnableHDR = config.enableHDR;
         LOGGER.debug("HDRMod Initialized!");
     }

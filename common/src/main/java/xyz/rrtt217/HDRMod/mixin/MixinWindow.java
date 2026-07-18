@@ -121,12 +121,12 @@ import java.util.Set;
         @Inject(method = "<init>", at = @At("RETURN"))
         private void hdr_mod$setupWindowData(WindowEventHandler windowEventHandler, ScreenManager screenManager, DisplayData displayData, String string, String string2, CallbackInfo ci)
         {
-            int bpc = GLFW.glfwGetWindowAttrib(this.handle,GLFW.GLFW_RED_BITS);
-            float SDRWhiteLevel = GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(this.handle);
-            float maxLuminance = GLFWColorManagementUtils.glfwGetWindowMaxLuminance(this.handle);
-            float minLuminance = GLFWColorManagementUtils.glfwGetWindowMinLuminance(this.handle);
-            Enums.Primaries primaries = Enums.Primaries.fromId(GLFWColorManagementUtils.glfwGetWindowPrimaries(this.handle));
-            Enums.TransferFunction tf = Enums.TransferFunction.fromId(GLFWColorManagementUtils.glfwGetWindowTransfer(this.handle));
+            int bpc = HDRMod.colorManagementInfoProvider.getBitsPerChannel(this.handle);
+            float SDRWhiteLevel = HDRMod.colorManagementInfoProvider.getWindowSdrWhiteLevel(handle);
+            float maxLuminance = HDRMod.colorManagementInfoProvider.getWindowMaxLuminance(handle);
+            float minLuminance = HDRMod.colorManagementInfoProvider.getWindowMinLuminance(handle);
+            Enums.Primaries primaries = HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle);
+            Enums.TransferFunction tf = HDRMod.colorManagementInfoProvider.getWindowTransferFunction(handle);
             int platform = GLFW.glfwGetPlatform();
             HDRMod.LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ", bpc, SDRWhiteLevel, maxLuminance, minLuminance, primaries, tf);
             if(platform == GLFW.GLFW_PLATFORM_WAYLAND) HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
