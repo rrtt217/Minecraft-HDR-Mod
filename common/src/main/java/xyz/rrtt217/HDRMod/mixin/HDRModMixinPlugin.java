@@ -21,7 +21,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     private final String IXERIS_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.ixeris.";
     private final String IMBLOCKER_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.imblocker.";
     private final String IRIS_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.iris.";
-    private final String LIBRARY_VERSION = "3.5.6";
+    private final String LIBRARY_VERSION = "3.5.7";
     public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_mixin_plugin");
     public static boolean hasGlfwLib = false;
     public static boolean enableHDR = true;
