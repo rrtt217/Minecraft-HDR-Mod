@@ -19,6 +19,7 @@ import oshi.hardware.GraphicsCard;
 import oshi.hardware.HardwareAbstractionLayer;
 import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
 import xyz.rrtt217.HDRMod.core.DXGIStateManager;
+import xyz.rrtt217.HDRMod.util.ColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.util.Enums;
 import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
 import xyz.rrtt217.HDRMod.HDRMod;
@@ -28,6 +29,8 @@ import java.util.List;
 import java.util.Set;
 
 import static xyz.rrtt217.HDRMod.HDRMod.configHolder;
+import static xyz.rrtt217.HDRMod.HDRMod.colorManagementInfoProvider;
+import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
 
 
 @Mixin(value = Window.class, priority = 1010)
@@ -45,6 +48,9 @@ import static xyz.rrtt217.HDRMod.HDRMod.configHolder;
         if(configHolder == null) {
             configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
             configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
+            HDRModConfig config = configHolder.getConfig();
+            previousEnableHDR = config.enableHDR;
+            colorManagementInfoProvider = new ColorManagementInfoProvider(config);
         }
 
         // Get config.

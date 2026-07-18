@@ -87,7 +87,7 @@ subprojects {
 // Only configure publishing when the mod subprojects are included.
 // When running native-only tasks (e.g. `native:compile`), settings.gradle
 // excludes the fabric/neoforge projects, so publishMods must be skipped.
-if (findProject(':fabric') != null && findProject(':neoforge') != null) {
+if (findProject(':fabric') != null && findProject(':forge') != null) {
     publishMods {
         changelog = file("$rootDir/changelog.md").text
         type = STABLE
@@ -124,12 +124,12 @@ if (findProject(':fabric') != null && findProject(':neoforge') != null) {
         }
 
         // Forge specific options for CurseForge
-        curseforge("curseforgeNeoForge") {
+        curseforge("curseforgeForge") {
             from cfOptions
-            file project(":neoforge")
+            file project(":forge")
             version = "$project.mod_version+neoforge"
-            displayName = "[NeoForge $project.minecraft_version] v$project.version"
-            modLoaders.add("neoforge")
+            displayName = "[Forge $project.minecraft_version] v$project.version"
+            modLoaders.add("forge")
             requires("cloth-config")
             optional("irisshaders")
         }
@@ -147,12 +147,12 @@ if (findProject(':fabric') != null && findProject(':neoforge') != null) {
         }
 
         // Forge specific options for Modrinth
-        modrinth("modrinthNeoForge") {
+        modrinth("modrinthForge") {
             from mrOptions
-            file project(":neoforge")
-            displayName = "[NeoForge $project.minecraft_version] v$project.version"
+            file project(":forge")
+            displayName = "[Forge $project.minecraft_version] v$project.version"
             version = "$project.mod_version+neoforge"
-            modLoaders.add("neoforge")
+            modLoaders.add("forge")
             requires("cloth-config")
             optional("iris")
         }

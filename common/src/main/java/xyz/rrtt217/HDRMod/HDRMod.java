@@ -62,6 +62,9 @@ public final class HDRMod {
         if(configHolder == null) {
             configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
             configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
+            HDRModConfig config = configHolder.getConfig();
+            previousEnableHDR = config.enableHDR;
+            colorManagementInfoProvider = new ColorManagementInfoProvider(config);
         }
         // Register Key Mapping.
         KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
@@ -89,9 +92,6 @@ public final class HDRMod {
             }
         });
 
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        colorManagementInfoProvider = new ColorManagementInfoProvider(config);
-        previousEnableHDR = config.enableHDR;
         LOGGER.debug("HDRMod Initialized!");
     }
 }
