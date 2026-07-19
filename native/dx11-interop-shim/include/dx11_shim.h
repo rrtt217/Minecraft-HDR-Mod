@@ -57,12 +57,6 @@ JNIEXPORT jboolean JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nSetColo
     JNIEnv *env, jclass cls, jlong context, jint colorPrimaries,
     jint colorTransfer);
 
-JNIEXPORT jfloat JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nGetMaxLuminance(
-    JNIEnv *env, jclass cls, jlong context);
-
-JNIEXPORT jfloat JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nGetMinLuminance(
-    JNIEnv *env, jclass cls, jlong context);
-
 JNIEXPORT void JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nDestroy(
     JNIEnv *env, jclass cls, jlong context);
 

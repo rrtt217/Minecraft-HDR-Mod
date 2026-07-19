@@ -4,7 +4,6 @@
 #include <d3dcompiler.h>
 #include <dxgi.h>
 #include <dxgi1_4.h>
-#include <dxgi1_6.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -309,31 +308,6 @@ static int renderFlipToBackBuffer(DX11ShimContext *ctx) {
     return 1;
 }
 
-static DXGI_OUTPUT_DESC1 getOutputDesc(DX11ShimContext *ctx) {
-    IDXGIOutput *output = NULL;
-    IDXGIOutput6 *output6 = NULL;
-    DXGI_OUTPUT_DESC1 desc;
-    HRESULT hr;
-
-    ZeroMemory(&desc, sizeof(desc));
-
-    if (!ctx->swapchain)
-        return desc;
-
-    hr = IDXGISwapChain_GetContainingOutput(ctx->swapchain, &output);
-    if (FAILED(hr))
-        return desc;
-
-    hr = IDXGIOutput_QueryInterface(output, &IID_IDXGIOutput6, (void **)&output6);
-    if (SUCCEEDED(hr)) {
-        IDXGIOutput6_GetDesc1(output6, &desc);
-        IDXGIOutput6_Release(output6);
-    }
-
-    IDXGIOutput_Release(output);
-    return desc;
-}
-
 JNIEXPORT jlong JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nCreate(
     JNIEnv *env, jclass cls, jlong hwnd, jint width, jint height,
     jint dxgiFormat, jboolean allowTearing) {
@@ -564,34 +538,6 @@ JNIEXPORT jboolean JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nSetColo
     configureSwapchainColorSpace(ctx);
 
     return JNI_TRUE;
-}
-
-JNIEXPORT jfloat JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nGetMaxLuminance(
-    JNIEnv *env, jclass cls, jlong context) {
-    DX11ShimContext *ctx = (DX11ShimContext *)(uintptr_t)context;
-    DXGI_OUTPUT_DESC1 desc;
-    (void)env;
-    (void)cls;
-
-    if (!ctx)
-        return 0.0f;
-
-    desc = getOutputDesc(ctx);
-    return (jfloat)desc.MaxLuminance;
-}
-
-JNIEXPORT jfloat JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nGetMinLuminance(
-    JNIEnv *env, jclass cls, jlong context) {
-    DX11ShimContext *ctx = (DX11ShimContext *)(uintptr_t)context;
-    DXGI_OUTPUT_DESC1 desc;
-    (void)env;
-    (void)cls;
-
-    if (!ctx)
-        return 0.0f;
-
-    desc = getOutputDesc(ctx);
-    return (jfloat)desc.MinLuminance;
 }
 
 JNIEXPORT void JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nDestroy(
