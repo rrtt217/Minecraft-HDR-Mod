@@ -165,30 +165,27 @@ public class DX11InteropShim {
      */
     public static native boolean nResize(long context, int width, int height);
 
-    /**
+/**
      * Renders the interop texture to the back buffer (Y-flip) and presents the
-     * swapchain.
+     * swapchain. The swap interval used is the one set by
+     * {@link #nSetSwapInterval} (defaults to 1).
      * <p>
      * The caller must {@code wglDXUnlockObjectsNV} <em>before</em> calling
      * this method and {@code wglDXLockObjectsNV} <em>after</em>.
      *
      * @param context native context handle
-     * @param interval sync interval (0 = tearing/unsynced, 1 = vsync)
      * @return {@code true} on success
      */
-    public static native boolean nPresent(long context, int interval);
+    public static native boolean nPresent(long context);
 
     /**
-     * Configures the swapchain color space from Wayland-style primaries and transfer
-     * function values.
+     * Sets the swap interval for subsequent {@link #nPresent} calls.
+     * Equivalent to the {@code interval} parameter in IDXGISwapChain::Present.
      *
-     * @param context        native context handle
-     * @param colorPrimaries e.g. {@link #COLOR_PRIMARIES_BT709} or {@link #COLOR_PRIMARIES_BT2020}
-     * @param colorTransfer  e.g. {@link #TRANSFER_LINEAR}, {@link #TRANSFER_SRGB}, or {@link #TRANSFER_PQ}
-     * @return {@code true} on success
+     * @param context  native context handle
+     * @param interval 0 for unsynced/tearing, n >= 1 for vsync every n frames
      */
-    public static native boolean nSetColorSpace(long context, int colorPrimaries,
-                                                 int colorTransfer);
+    public static native void nSetSwapInterval(long context, int interval);
 
     /**
      * Destroys the context and releases all native D3D11 / DXGI resources.

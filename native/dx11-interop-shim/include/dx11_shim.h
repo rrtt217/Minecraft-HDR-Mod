@@ -51,11 +51,10 @@ JNIEXPORT jboolean JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nResize(
     JNIEnv *env, jclass cls, jlong context, jint width, jint height);
 
 JNIEXPORT jboolean JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nPresent(
-    JNIEnv *env, jclass cls, jlong context, jint interval);
+    JNIEnv *env, jclass cls, jlong context);
 
-JNIEXPORT jboolean JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nSetColorSpace(
-    JNIEnv *env, jclass cls, jlong context, jint colorPrimaries,
-    jint colorTransfer);
+JNIEXPORT void JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nSetSwapInterval(
+    JNIEnv *env, jclass cls, jlong context, jint interval);
 
 JNIEXPORT void JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nDestroy(
     JNIEnv *env, jclass cls, jlong context);

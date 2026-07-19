@@ -495,9 +495,10 @@ JNIEXPORT jboolean JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nResize(
 }
 
 JNIEXPORT jboolean JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nPresent(
-    JNIEnv *env, jclass cls, jlong context, jint interval) {
+    JNIEnv *env, jclass cls, jlong context) {
     DX11ShimContext *ctx = (DX11ShimContext *)(uintptr_t)context;
     UINT presentFlags = 0;
+    int interval;
     HRESULT hr;
     (void)env;
     (void)cls;
@@ -505,7 +506,7 @@ JNIEXPORT jboolean JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nPresent
     if (!ctx || !ctx->swapchain || !ctx->deviceContext)
         return JNI_FALSE;
 
-    ctx->swapInterval = interval;
+    interval = ctx->swapInterval;
     if (interval < 0)
         interval = 0;
 
@@ -522,22 +523,16 @@ JNIEXPORT jboolean JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nPresent
     return JNI_TRUE;
 }
 
-JNIEXPORT jboolean JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nSetColorSpace(
-    JNIEnv *env, jclass cls, jlong context, jint colorPrimaries,
-    jint colorTransfer) {
+JNIEXPORT void JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nSetSwapInterval(
+    JNIEnv *env, jclass cls, jlong context, jint interval) {
     DX11ShimContext *ctx = (DX11ShimContext *)(uintptr_t)context;
     (void)env;
     (void)cls;
 
     if (!ctx)
-        return JNI_FALSE;
+        return;
 
-    ctx->colorPrimaries = colorPrimaries;
-    ctx->colorTransfer = colorTransfer;
-
-    configureSwapchainColorSpace(ctx);
-
-    return JNI_TRUE;
+    ctx->swapInterval = interval;
 }
 
 JNIEXPORT void JNICALL Java_xyz_rrtt217_HDRMod_util_DX11InteropShim_nDestroy(
