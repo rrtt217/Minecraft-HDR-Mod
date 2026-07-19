@@ -156,12 +156,6 @@ import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR
             }
         }
 
-    @Redirect(method = "setIcon", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwGetPlatform()I"))
-    private int hdr_mod$bypassWaylandCheckOnSetIcon(){
-        int i = GLFW.glfwGetPlatform();
-        if(i == GLFW.GLFW_PLATFORM_WAYLAND) return GLFW.GLFW_PLATFORM_X11;
-        return i;
-    }
     @WrapOperation(method = "setMode", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/VideoMode;getWidth()I"))
     private int hdr_mod$getWidth(VideoMode instance, Operation<Integer> original){
         FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
