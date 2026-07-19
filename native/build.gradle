@@ -117,6 +117,42 @@ abstract class CompileNativeTask extends DefaultTask {
                 include("glfw3.dll")
                 into("$nativesDir/windows/x86")
             }
+
+            // dx11-interop-shim (Windows only, requires JNI headers)
+            def shimDir = project.file("dx11-interop-shim")
+            def javaHome = System.getProperty('java.home')
+
+            // shim x64
+            execOperations.exec {
+                environment 'JAVA_HOME', javaHome
+                commandLine 'cmake', '-B', "$shimDir/build-win32-x64",
+                        '-S', shimDir,
+                        '-A', 'x64'
+            }
+            execOperations.exec {
+                commandLine 'cmake', '--build', "$shimDir/build-win32-x64", '--parallel', '--config', 'Release'
+            }
+            project.copy {
+                from("$shimDir/build-win32-x64/Release")
+                include("dx11-interop-shim.dll")
+                into("$nativesDir/windows/x86-64")
+            }
+
+            // shim x86
+            execOperations.exec {
+                environment 'JAVA_HOME', javaHome
+                commandLine 'cmake', '-B', "$shimDir/build-win32-x86",
+                        '-S', shimDir,
+                        '-A', 'Win32'
+            }
+            execOperations.exec {
+                commandLine 'cmake', '--build', "$shimDir/build-win32-x86", '--parallel', '--config', 'Release'
+            }
+            project.copy {
+                from("$shimDir/build-win32-x86/Release")
+                include("dx11-interop-shim.dll")
+                into("$nativesDir/windows/x86")
+            }
         } else {
             throw new GradleException("Unsupported operating system: ${os.name}")
         }
