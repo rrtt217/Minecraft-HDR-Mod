@@ -2,7 +2,7 @@ plugins {
     id 'dev.architectury.loom' version '1.9-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.gradleup.shadow' version '8.3.6' apply false
-    id "me.modmuss50.mod-publish-plugin" version "2.1.1"
+    id "me.modmuss50.mod-publish-plugin" version "2.1.1" apply false
 }
 
 architectury {
@@ -24,9 +24,12 @@ configurations.all {
 
 
 subprojects {
-    apply plugin: 'dev.architectury.loom'
-    apply plugin: 'architectury-plugin'
-    apply plugin: 'maven-publish'
+    subproj ->
+        if (subproj.name != 'native') {
+            apply plugin: 'dev.architectury.loom'
+            apply plugin: 'architectury-plugin'
+            apply plugin: 'maven-publish'
+            apply plugin: 'me.modmuss50.mod-publish-plugin'
 
     base {
         // Set up a suffixed format for the mod jar names, e.g. `example-fabric`.
@@ -73,88 +76,85 @@ subprojects {
             }
         }
 
-        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-        repositories {
-            // Add repositories to publish to here.
-            // Notice: This block does NOT have the same function as the block in the top level.
-            // The repositories here will be used for publishing your artifact, not for
-            // retrieving dependencies.
+                // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+                repositories {
+                    // Add repositories to publish to here.
+                    // Notice: This block does NOT have the same function as the block in the top level.
+                    // The repositories here will be used for publishing your artifact, not for
+                    // retrieving dependencies.
+                }
+            }
+
+            publishMods {
+                changelog = file("$rootDir/changelog.md").text
+                type = STABLE
+
+                // CurseForge options used by both Fabric and Forge
+                def cfOptions = curseforgeOptions {
+                    accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+                    projectId = "$project.curseforge_id"
+                    minecraftVersions.add("$minecraft_version")
+                    client = true
+                    server = false
+                    javaVersions.add(JavaVersion.VERSION_17)
+                    changelogType = "markdown"
+                }
+
+                // Modrinth options used by both Fabric and Forge
+                def mrOptions = modrinthOptions {
+                    accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+                    projectId = "$project.modrinth_id"
+                    minecraftVersions.add("$minecraft_version")
+                    environment = CLIENT_ONLY
+                }
+
+                // Fabric specific options for CurseForge
+                curseforge("curseforgeFabric") {
+                    from cfOptions
+                    file project(":fabric")
+                    modLoaders.add("fabric")
+                    version = "$project.mod_version+fabric"
+                    displayName = "[Fabric $project.minecraft_version] v$project.version"
+                    requires("architectury-api")
+                    requires("cloth-config")
+                    optional("irisshaders")
+                }
+
+                // Forge specific options for CurseForge
+                curseforge("curseforgeForge") {
+                    from cfOptions
+                    file project(":forge")
+                    version = "$project.mod_version+forge"
+                    displayName = "[Forge $project.minecraft_version] v$project.version"
+                    modLoaders.add("neoforge")
+                    requires("architectury-api")
+                    requires("cloth-config")
+                    optional("irisshaders")
+                }
+
+                // Fabric specific options for Modrinth
+                modrinth("modrinthFabric") {
+                    from mrOptions
+                    file project(":fabric")
+                    displayName = "[Fabric $project.minecraft_version] v$project.version"
+                    version = "$project.mod_version+fabric"
+                    modLoaders.add("fabric")
+                    requires("architectury-api")
+                    requires("cloth-config")
+                    optional("iris")
+                }
+
+                // Forge specific options for Modrinth
+                modrinth("modrinthForge") {
+                    from mrOptions
+                    file project(":forge")
+                    displayName = "[Forge $project.minecraft_version] v$project.version"
+                    version = "$project.mod_version+forge"
+                    modLoaders.add("forge")
+                    requires("architectury-api")
+                    requires("cloth-config")
+                    optional("iris")
+                }
+            }
         }
-    }
-}
-
-
-// Only configure publishing when the mod subprojects are included.
-// When running native-only tasks (e.g. `native:compile`), settings.gradle
-// excludes the fabric/neoforge projects, so publishMods must be skipped.
-if (findProject(':fabric') != null && findProject(':forge') != null) {
-    publishMods {
-        changelog = file("$rootDir/changelog.md").text
-        type = STABLE
-
-        // CurseForge options used by both Fabric and Forge
-        def cfOptions = curseforgeOptions {
-            accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
-            projectId = "$project.curseforge_id"
-            minecraftVersions.add("$minecraft_version")
-            client = true
-            server = false
-            javaVersions.add(JavaVersion.VERSION_25)
-            changelogType = "markdown"
-        }
-
-        // Modrinth options used by both Fabric and Forge
-        def mrOptions = modrinthOptions {
-            accessToken = providers.environmentVariable("MODRINTH_TOKEN")
-            projectId = "$project.modrinth_id"
-            minecraftVersions.add("$minecraft_version")
-            environment = CLIENT_ONLY
-        }
-
-        // Fabric specific options for CurseForge
-        curseforge("curseforgeFabric") {
-            from cfOptions
-            file project(":fabric")
-            modLoaders.add("fabric")
-            version = "$project.mod_version+fabric"
-            displayName = "[Fabric $project.minecraft_version] v$project.version"
-            requires("fabric-api")
-            requires("cloth-config")
-            optional("irisshaders")
-        }
-
-        // Forge specific options for CurseForge
-        curseforge("curseforgeForge") {
-            from cfOptions
-            file project(":forge")
-            version = "$project.mod_version+neoforge"
-            displayName = "[Forge $project.minecraft_version] v$project.version"
-            modLoaders.add("forge")
-            requires("cloth-config")
-            optional("irisshaders")
-        }
-
-        // Fabric specific options for Modrinth
-        modrinth("modrinthFabric") {
-            from mrOptions
-            file project(":fabric")
-            displayName = "[Fabric $project.minecraft_version] v$project.version"
-            version = "$project.mod_version+fabric"
-            modLoaders.add("fabric")
-            requires("fabric-api")
-            requires("cloth-config")
-            optional("iris")
-        }
-
-        // Forge specific options for Modrinth
-        modrinth("modrinthForge") {
-            from mrOptions
-            file project(":forge")
-            displayName = "[Forge $project.minecraft_version] v$project.version"
-            version = "$project.mod_version+neoforge"
-            modLoaders.add("forge")
-            requires("cloth-config")
-            optional("iris")
-        }
-    }
 }

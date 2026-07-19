@@ -1,11 +1,11 @@
 package xyz.rrtt217.HDRMod.mixin;
 
-import com.mojang.blaze3d.platform.DisplayData;
-import com.mojang.blaze3d.platform.ScreenManager;
-import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.platform.WindowEventHandler;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.blaze3d.platform.*;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -21,10 +21,10 @@ import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
 import xyz.rrtt217.HDRMod.core.DXGIStateManager;
 import xyz.rrtt217.HDRMod.util.ColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
+import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Set;
 
@@ -155,4 +155,35 @@ import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR
                 DXGIStateManager.setMinimized(newWidth == 0 || newHeight == 0);
             }
         }
+
+    @Redirect(method = "setIcon", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwGetPlatform()I"))
+    private int hdr_mod$bypassWaylandCheckOnSetIcon(){
+        int i = GLFW.glfwGetPlatform();
+        if(i == GLFW.GLFW_PLATFORM_WAYLAND) return GLFW.GLFW_PLATFORM_X11;
+        return i;
+    }
+    @WrapOperation(method = "setMode", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/VideoMode;getWidth()I"))
+    private int hdr_mod$getWidth(VideoMode instance, Operation<Integer> original){
+        FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
+        FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
+        GLFW.glfwGetWindowContentScale(getWindow(), xscale, yscale);
+        float xscaleValue = xscale.get();
+        if(GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND){
+            // HDRMod.LOGGER.info("Scaled width: {}", Math.round(instance.getWidth() / xscaleValue));
+            return Math.round(original.call(instance) / xscaleValue);
+        }
+        else return instance.getWidth();
+    }
+    @WrapOperation(method = "setMode", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/VideoMode;getHeight()I"))
+    private int hdr_mod$getHeight(VideoMode instance, Operation<Integer> original){
+        FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
+        FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
+        GLFW.glfwGetWindowContentScale(getWindow(), xscale, yscale);
+        float yscaleValue = yscale.get();
+        if(GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND){
+            // HDRMod.LOGGER.info("Scaled height: {}", Math.round(instance.getHeight() / yscaleValue));
+            return Math.round(original.call(instance) / yscaleValue);
+        }
+        else return instance.getHeight();
+    }
     }
