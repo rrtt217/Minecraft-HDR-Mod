@@ -3,6 +3,7 @@ package xyz.rrtt217.HDRMod.core;
 import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 
+import com.sun.jna.Platform;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -16,6 +17,10 @@ import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.WGLNVDXInterop.*;
+import static org.lwjgl.sdl.SDLProperties.SDL_GetPointerProperty;
+import static org.lwjgl.sdl.SDLVideo.SDL_GetWindowProperties;
+import static org.lwjgl.sdl.SDLVideo.SDL_PROP_WINDOW_WIN32_HWND_POINTER;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.LOGGER;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
 import static xyz.rrtt217.HDRMod.util.DX11InteropShim.DXGI_FORMAT_R16G16B16A16_FLOAT;
 
@@ -38,25 +43,39 @@ public class DXGIStateManager {
 
     // These functions are shared.
     public static int replaceFbo(int originalFbo) {
-    if (originalFbo != 0 || GLFW.glfwGetPlatform() != GLFW.GLFW_PLATFORM_WIN32)
+    if (originalFbo != 0 || !Platform.isWindows())
         return originalFbo;
+
+    if(interopShimContext == 0){
+        long pointer = SDL_GetPointerProperty(SDL_GetWindowProperties(Minecraft.getInstance().getWindow().handle()), SDL_PROP_WINDOW_WIN32_HWND_POINTER, 0);
+        HDRMod.LOGGER.info("HWND pointer property is {}", pointer);
+        createDxDevice(pointer, Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight());
+    }
 
     Window window = Minecraft.getInstance().getWindow();
     int newTexture;
-    if(hasBlazeSdl){
-        newTexture = glTexture;
-    }
+    if(hasBlazeSdl) newTexture = glTexture;
     else newTexture = GLFWDXGIUtils.glfwGetWindowSwapchainImageTexture(window.handle());
+
     int width = window.getWidth(), height = window.getHeight();
+
+    // HDRMod.LOGGER.info("Window: {}x{}", width, height);
+
     boolean isMinimized = window.isMinimized();
 
     // Check if we need to update the FBO
     if (fbo == 0 || newTexture != currentTexture || width != currentWidth || height != currentHeight || isMinimized != currentIsMinimized) {
+        HDRMod.LOGGER.info("Need to update FBO");
+
         if (newTexture == 0) return originalFbo;
 
         if (fbo == 0) fbo = GlStateManager.glGenFramebuffers();
 
         resizeDxSwapChain(width, height);
+
+        if(hasBlazeSdl){
+            newTexture = glTexture;
+        }
 
         // Rebind Color Texture To FBO
         bindFrameBufferTextures(fbo, newTexture, 0, 0, GL30.GL_FRAMEBUFFER, false);
@@ -189,7 +208,10 @@ public class DXGIStateManager {
      * @param interval 0 for unsynced/tearing, 1 for vsync
      */
     public static void presentDxSwapChain(int interval) {
-        if (interopShimContext == 0) return;
+        if (interopShimContext == 0) {
+            LOGGER.error("No interop shim context");
+            return;
+        }
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
             PointerBuffer objects = stack.mallocPointer(1);
@@ -197,7 +219,11 @@ public class DXGIStateManager {
             wglDXUnlockObjectsNV(interopDevice, objects);
         }
 
-        DX11InteropShim.nPresent(interopShimContext, interval);
+        boolean success = DX11InteropShim.nPresent(interopShimContext, interval);
+
+        if(!success) {
+            LOGGER.error("Failed to present DX11 interop device");
+        }
 
         try (MemoryStack stack = MemoryStack.stackPush()) {
             PointerBuffer objects = stack.mallocPointer(1);
@@ -215,6 +241,7 @@ public class DXGIStateManager {
      * @param height new height (must be >= 1)
      */
     public static void resizeDxSwapChain(int width, int height) {
+        HDRMod.LOGGER.info("Resizing to:{} x {}", width, height);
         if (interopShimContext == 0) return;
 
         if (interopObject != 0 && interopDevice != 0) {
