@@ -1,8 +1,15 @@
 package xyz.rrtt217.HDRMod.mixin;
 
+import com.mojang.blaze3d.platform.DisplayData;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.platform.WindowEventHandler;
+import com.mojang.blaze3d.systems.GpuBackend;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.platform.*;
 import com.mojang.blaze3d.systems.GpuBackend;
 import me.shedaniel.autoconfig.AutoConfig;
+import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,10 +19,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
+import xyz.rrtt217.HDRMod.core.DXGIStateManager;
 import xyz.rrtt217.HDRMod.util.Enums;
 import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
 
+import java.nio.FloatBuffer;
+
+import static org.lwjgl.sdl.SDLProperties.SDL_GetFloatProperty;
+import static org.lwjgl.sdl.SDLProperties.SDL_GetPointerProperty;
+import static org.lwjgl.sdl.SDLVideo.*;
 import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
+
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
 
 
@@ -27,6 +42,13 @@ import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
     @Shadow
     @Final
     private long handle;
+
+    @Shadow
+    public abstract int getWidth();
+
+    @Shadow
+    public abstract int getHeight();
+
     @Inject(method = "<init>", at = @At("RETURN"))
     private void hdr_mod$setupWindowData(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, boolean exclusiveFullscreen, String title, MonitorManager monitorManager, GpuBackend backend, CallbackInfo ci)    {
         int bpc = HDRMod.colorManagementInfoProvider.getBitsPerChannel(this.handle);
@@ -35,19 +57,47 @@ import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
         float minLuminance = HDRMod.colorManagementInfoProvider.getWindowMinLuminance(handle);
         Enums.Primaries primaries = HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle);
         Enums.TransferFunction tf = HDRMod.colorManagementInfoProvider.getWindowTransferFunction(handle);
-        LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ", bpc, SDRWhiteLevel, maxLuminance, minLuminance, primaries, tf);
         if(!hasBlazeSdl) {
             int platform = GLFW.glfwGetPlatform();
+            HDRMod.LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ", bpc, SDRWhiteLevel, maxLuminance, minLuminance, primaries, tf);
             if (platform == GLFW.GLFW_PLATFORM_WAYLAND)
-                LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
-            if ((platform == GLFW.GLFW_PLATFORM_WIN32) && (tf == Enums.TransferFunction.GAMMA22 || tf == Enums.TransferFunction.SRGB))
-                LOGGER.warn("Detected sRGB or Gamma2.2 EOTF, which probably means HDR isn't supported under current configuration.");
-            }
+                HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
+            if ((platform == GLFW.GLFW_PLATFORM_WIN32 || platform == GLFW.GLFW_PLATFORM_WAYLAND) && (tf == Enums.TransferFunction.GAMMA22 || tf == Enums.TransferFunction.SRGB))
+                HDRMod.LOGGER.warn("Detected sRGB or Gamma2.2 EOTF, which probably means HDR isn't supported under current configuration.");
         }
+        else {
+        }
+    }
     @Redirect(method = "setIcon", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GLX;getGlfwPlatform()I"))
     private int hdr_mod$bypassWaylandCheckOnSetIcon(){
         int i = GLX.getGlfwPlatform();
         if(i == GLFW.GLFW_PLATFORM_WAYLAND) return GLFW.GLFW_PLATFORM_X11;
         return i;
     }
+
+    @WrapOperation(method = "setMode", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/VideoMode;getWidth()I"))
+    private int hdr_mod$getWidth(VideoMode instance, Operation<Integer> original){
+        FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
+        FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
+        GLFW.glfwGetWindowContentScale(handle, xscale, yscale);
+        float xscaleValue = xscale.get();
+        if(GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND){
+            // HDRMod.LOGGER.info("Scaled width: {}", Math.round(instance.getWidth() / xscaleValue));
+            return Math.round(original.call(instance) / xscaleValue);
+        }
+        else return instance.getWidth();
+    }
+    @WrapOperation(method = "setMode", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/VideoMode;getHeight()I"))
+    private int hdr_mod$getHeight(VideoMode instance, Operation<Integer> original){
+        FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
+        FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
+        GLFW.glfwGetWindowContentScale(handle, xscale, yscale);
+        float yscaleValue = yscale.get();
+        if(GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND){
+            // HDRMod.LOGGER.info("Scaled height: {}", Math.round(instance.getHeight() / yscaleValue));
+            return Math.round(original.call(instance) / yscaleValue);
+        }
+        else return instance.getHeight();
+    }
 }
+
