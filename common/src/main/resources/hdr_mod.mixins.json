@@ -26,7 +26,10 @@
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",
     "compat.ixeris.MixinGLFWColorManagementUtils",
-    "compat.ixeris.MixinGLFWIMEUtils"
+    "compat.ixeris.MixinGLFWIMEUtils",
+    "compat.replaymod.MixinOpenGlFrameCapturer",
+    "compat.replaymod.MixinPboOpenGlFrameCapturer",
+    "compat.replaymod.MixinRenderSettingsEncodingPreset"
   ],
   "injectors": {
     "defaultRequire": 1

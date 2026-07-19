@@ -1,6 +1,5 @@
-# HDR Mod v2.3.2 Changelog
-## New Features
-- Keybind to toggle HDR ingame (default unbind)
-- Screenshot can use PNG3 cICP instead of iCCP(aka. ICC profile)
+# HDR Mod v2.3.3 Changelog
 ## Fixes
-- Fixed virtual display card breaking workaround apply condition
+- Fixed MacOS lib path (#69)
+- https://github.com/rrtt217/glfw/pull/3
+- Partially fixed Cursor doesn't align with UI in fullscreen mode (#65)
