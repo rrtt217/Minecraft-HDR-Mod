@@ -20,7 +20,6 @@
     "MixinScreenshot",
     "MixinWindow",
     "compat.blazesdl.MixinSDLGlBackend",
-    "compat.blazesdl.MixinSDLGlSurface"
   ],
   "mixins": [
     "compat.blazesdl.MixinSDLGlBackend",
