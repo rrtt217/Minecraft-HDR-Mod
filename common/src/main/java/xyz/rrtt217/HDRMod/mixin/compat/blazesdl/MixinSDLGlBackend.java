@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.lwjgl.sdl.SDLVideo.*;
+import static xyz.rrtt217.HDRMod.core.DXGIStateManager.actuallyUseInteropSDL;
 
 @Mixin(SDLGlBackend.class)
 public class MixinSDLGlBackend {
@@ -54,8 +55,11 @@ public class MixinSDLGlBackend {
             SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 16);
             SDL_GL_SetAttribute(SDL_GL_FLOATBUFFERS, 1);
         }
-        else if(applyWindowsWorkaround) {
-            HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
+        else{
+            actuallyUseInteropSDL = true;
+            if(applyWindowsWorkaround) {
+                HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
+            }
         }
     }
     @Unique

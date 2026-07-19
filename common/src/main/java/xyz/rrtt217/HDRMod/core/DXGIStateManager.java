@@ -36,6 +36,7 @@ public class DXGIStateManager {
     private static boolean currentIsMinimized = false;
 
     // These members are only used in SDL path.
+    public static boolean actuallyUseInteropSDL = false;
     public static long interopShimContext = 0;
     private static long dxDevice = 0;
     private static long interopDevice = 0;
@@ -46,10 +47,10 @@ public class DXGIStateManager {
 
     // These functions are shared.
     public static int replaceFbo(int originalFbo) {
-    if (originalFbo != 0 || !Platform.isWindows())
+    if (originalFbo != 0 || !Platform.isWindows() || (hasBlazeSdl && !actuallyUseInteropSDL))
         return originalFbo;
 
-    if(interopShimContext == 0){
+    if(hasBlazeSdl && interopShimContext == 0){
         long pointer = SDL_GetPointerProperty(SDL_GetWindowProperties(Minecraft.getInstance().getWindow().handle()), SDL_PROP_WINDOW_WIN32_HWND_POINTER, 0);
         HDRMod.LOGGER.info("HWND pointer property is {}", pointer);
         createDxDevice(pointer, Minecraft.getInstance().getWindow().getWidth(), Minecraft.getInstance().getWindow().getHeight());
@@ -68,7 +69,6 @@ public class DXGIStateManager {
 
     // Check if we need to update the FBO
     if (fbo == 0 || newTexture != currentTexture || width != currentWidth || height != currentHeight || isMinimized != currentIsMinimized) {
-        HDRMod.LOGGER.info("Need to update FBO");
 
         if (newTexture == 0) return originalFbo;
 
@@ -96,6 +96,25 @@ public class DXGIStateManager {
     }
     return fbo;
     }
+
+    private static void bindFrameBufferTextures(int k, int l, int m, int n, int o, boolean useStencil) {
+        int i = o == 0 ? GL30.GL_DRAW_FRAMEBUFFER : o;
+        int j = GlStateManager.getFrameBuffer(i);
+        GlStateManager._glBindFramebuffer(i, k);
+        GlStateManager._glFramebufferTexture2D(i, GL30.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, l, n);
+        GlStateManager._glFramebufferTexture2D(i, GL30.GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m, n);
+        if (useStencil) {
+            GlStateManager._glFramebufferTexture2D(i, GL30.GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m, n);
+        } else {
+            GlStateManager._glFramebufferTexture2D(i, GL30.GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
+        }
+        if (o == 0) {
+            GlStateManager._glBindFramebuffer(i, j);
+        }
+    }
+
+
+    // This function is only used in GLFW.
     public static int replaceFboGLOnly(int newTexture, int width, int height,
                                        boolean isMinimized, int originalFbo) {
         if (newTexture == 0) return originalFbo;
@@ -117,21 +136,6 @@ public class DXGIStateManager {
             currentIsMinimized = isMinimized;
         }
         return fbo;
-    }
-    private static void bindFrameBufferTextures(int k, int l, int m, int n, int o, boolean useStencil) {
-        int i = o == 0 ? GL30.GL_DRAW_FRAMEBUFFER : o;
-        int j = GlStateManager.getFrameBuffer(i);
-        GlStateManager._glBindFramebuffer(i, k);
-        GlStateManager._glFramebufferTexture2D(i, GL30.GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, l, n);
-        GlStateManager._glFramebufferTexture2D(i, GL30.GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m, n);
-        if (useStencil) {
-            GlStateManager._glFramebufferTexture2D(i, GL30.GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, m, n);
-        } else {
-            GlStateManager._glFramebufferTexture2D(i, GL30.GL_STENCIL_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
-        }
-        if (o == 0) {
-            GlStateManager._glBindFramebuffer(i, j);
-        }
     }
 
     // These functions are only used in SDL path.
@@ -169,7 +173,8 @@ public class DXGIStateManager {
         HDRMod.LOGGER.info("DX11 interop device created: glTexture={}", glTexture);
     }
 
-    public static void destroyDxDevice(long hwnd) {
+    public static void destroyDxDevice() {
+        if(!actuallyUseInteropSDL) return;
         if (interopObject != 0 && interopDevice != 0) {
             try (MemoryStack stack = MemoryStack.stackPush()) {
                 PointerBuffer objects = stack.mallocPointer(1);
@@ -205,13 +210,14 @@ public class DXGIStateManager {
     }
 
     /**
-     * Presents the DXGI swapchain. The caller must ensure the GL context
-     * is current on the calling thread and that the interop object was
-     * locked (registered and in GL-access mode) before the call.
-     *
-     * @param interval 0 for unsynced/tearing, 1 for vsync
+     * Presents the DXGI swapchain. The swap interval is determined by the
+     * last call to {@link DX11InteropShim#nSetSwapInterval}.
+     * The caller must ensure the GL context is current on the calling thread
+     * and that the interop object was locked (registered and in GL-access
+     * mode) before the call.
      */
-    public static void presentDxSwapChain(int interval) {
+    public static void presentDxSwapChain() {
+        if(!actuallyUseInteropSDL) return;
         if (interopShimContext == 0) {
             LOGGER.error("No interop shim context");
             return;
@@ -223,7 +229,7 @@ public class DXGIStateManager {
             wglDXUnlockObjectsNV(interopDevice, objects);
         }
 
-        boolean success = DX11InteropShim.nPresent(interopShimContext, interval);
+        boolean success = DX11InteropShim.nPresent(interopShimContext);
 
         if(!success) {
             LOGGER.error("Failed to present DX11 interop device");
@@ -245,7 +251,8 @@ public class DXGIStateManager {
      * @param height new height (must be >= 1)
      */
     public static void resizeDxSwapChain(int width, int height) {
-        HDRMod.LOGGER.info("Resizing to:{} x {}", width, height);
+        if(!actuallyUseInteropSDL) return;
+
         if (interopShimContext == 0) return;
 
         if (interopObject != 0 && interopDevice != 0) {
