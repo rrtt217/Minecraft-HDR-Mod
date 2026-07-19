@@ -16,10 +16,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import xyz.rrtt217.HDRMod.util.Enums;
 import xyz.rrtt217.HDRMod.HDRMod;
+import xyz.rrtt217.HDRMod.util.Enums;
 
 import java.nio.FloatBuffer;
+
+import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
 
 
 @Mixin(value = Window.class, priority = 1010)
@@ -39,11 +42,15 @@ import java.nio.FloatBuffer;
         float minLuminance = HDRMod.colorManagementInfoProvider.getWindowMinLuminance(handle);
         Enums.Primaries primaries = HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle);
         Enums.TransferFunction tf = HDRMod.colorManagementInfoProvider.getWindowTransferFunction(handle);
-        int platform = GLFW.glfwGetPlatform();
-        HDRMod.LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ", bpc, SDRWhiteLevel, maxLuminance, minLuminance, primaries, tf);
-        if(platform == GLFW.GLFW_PLATFORM_WAYLAND) HDRMod.LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
-        if((platform == GLFW.GLFW_PLATFORM_WIN32 || platform == GLFW.GLFW_PLATFORM_WAYLAND) && (tf == Enums.TransferFunction.GAMMA22 || tf == Enums.TransferFunction.SRGB)) HDRMod.LOGGER.warn("Detected sRGB or Gamma2.2 EOTF, which probably means HDR isn't supported under current configuration.");
-    }
+        LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ", bpc, SDRWhiteLevel, maxLuminance, minLuminance, primaries, tf);
+        if(!hasBlazeSdl) {
+            int platform = GLFW.glfwGetPlatform();
+            if (platform == GLFW.GLFW_PLATFORM_WAYLAND)
+                LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
+            if ((platform == GLFW.GLFW_PLATFORM_WIN32) && (tf == Enums.TransferFunction.GAMMA22 || tf == Enums.TransferFunction.SRGB))
+                LOGGER.warn("Detected sRGB or Gamma2.2 EOTF, which probably means HDR isn't supported under current configuration.");
+            }
+        }
     @Redirect(method = "setIcon", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwGetPlatform()I"))
     private int hdr_mod$bypassWaylandCheckOnSetIcon(){
         int i = GLFW.glfwGetPlatform();
