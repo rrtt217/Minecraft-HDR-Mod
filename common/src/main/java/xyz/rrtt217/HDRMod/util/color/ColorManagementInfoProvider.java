@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.util;
+package xyz.rrtt217.HDRMod.util.color;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import org.lwjgl.glfw.GLFW;

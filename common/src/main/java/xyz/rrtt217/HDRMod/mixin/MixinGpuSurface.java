@@ -7,11 +7,9 @@ import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
 
 import static xyz.rrtt217.HDRMod.HDRMod.PresentationColorTransformRenderer;
 import static xyz.rrtt217.HDRMod.HDRMod.minecraft;

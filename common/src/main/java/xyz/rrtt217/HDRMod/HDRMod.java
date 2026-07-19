@@ -2,22 +2,18 @@ package xyz.rrtt217.HDRMod;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.InteractionResult;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.LoggerFactory;
 import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
 import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
-import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.ColorManagementInfoProvider;
-import xyz.rrtt217.HDRMod.util.SDLColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.util.color.SDLColorManagementInfoProvider;
 
 import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;

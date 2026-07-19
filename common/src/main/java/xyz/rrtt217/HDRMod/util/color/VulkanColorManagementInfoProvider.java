@@ -1,6 +1,4 @@
-package xyz.rrtt217.HDRMod.util;
-
-import org.lwjgl.glfw.GLFW;
+package xyz.rrtt217.HDRMod.util.color;
 
 public class VulkanColorManagementInfoProvider extends ColorManagementInfoProvider {
     // We will set these members in MixinVulkanGpuSurface, if not on Wayland.

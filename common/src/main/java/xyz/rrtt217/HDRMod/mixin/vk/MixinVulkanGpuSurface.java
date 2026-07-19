@@ -11,12 +11,14 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.VulkanColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.util.color.Enums;
+import xyz.rrtt217.HDRMod.util.color.VulkanColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.util.color.VulkanSDLColorManagementInfoProvider;
 
 import static org.lwjgl.vulkan.EXTSwapchainColorspace.*;
 import static org.lwjgl.vulkan.VK10.*;
 import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
 
 @Mixin(VulkanGpuSurface.class)
 public class MixinVulkanGpuSurface {
@@ -37,7 +39,8 @@ public class MixinVulkanGpuSurface {
         for (VkSurfaceFormatKHR format : formats) {
             // If VK_EXT_SWAPCHAIN_COLOR_SPACE is not available, choose format and colorspace like vanilla.
             if(!this.device.instance().getEnabledExtensions().contains(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME) && format.colorSpace() == 0 && (format.format() == 37 || format.format() == 44)) {
-                HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(8, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
+                if(hasBlazeSdl) HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(8, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
+                else HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(8, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
                 hdr_mod$chosenColorspace = format.colorSpace();
                 return format;
             }
@@ -53,11 +56,13 @@ public class MixinVulkanGpuSurface {
             // On platforms other than Wayland, we choose both format and colorspace according to setting.
             if (!(GLX.getGlfwPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) && (((format.format() == VK_FORMAT_A2R10G10B10_UNORM_PACK32 || format.format() == VK_FORMAT_A2B10G10R10_UNORM_PACK32 || format.format() == VK_FORMAT_R16G16B16A16_UNORM) && config.useUNORMWindowPixelFormat && format.colorSpace() == VK_COLOR_SPACE_HDR10_ST2084_EXT) || (format.format() == VK_FORMAT_R16G16B16A16_SFLOAT && !config.useUNORMWindowPixelFormat && format.colorSpace() == VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT))){
                 if(format.colorSpace() == VK_COLOR_SPACE_HDR10_ST2084_EXT) {
-                    HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(format.format() == VK_FORMAT_R16G16B16A16_UNORM ? 16 : 10, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
+                    if(hasBlazeSdl) HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(format.format() == VK_FORMAT_R16G16B16A16_UNORM ? 16 : 10, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
+                    else HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(format.format() == VK_FORMAT_R16G16B16A16_UNORM ? 16 : 10, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
                     LOGGER.info("Got HDR10 on Vulkan!");
                 }
                 else {
-                    HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
+                    if(hasBlazeSdl) HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
+                    else HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
                     LOGGER.info("Got scRGB on Vulkan!");
                 }
                 hdr_mod$chosenColorspace = format.colorSpace();
@@ -81,11 +86,13 @@ public class MixinVulkanGpuSurface {
             // On platforms other than Wayland, we choose both format and colorspace according to setting.
             if (!(GLX.getGlfwPlatform() == GLFW.GLFW_PLATFORM_WAYLAND) && (((format.format() == VK_FORMAT_A2R10G10B10_UNORM_PACK32 || format.format() == VK_FORMAT_A2B10G10R10_UNORM_PACK32 || format.format() == VK_FORMAT_R16G16B16A16_UNORM) && format.colorSpace() == VK_COLOR_SPACE_HDR10_ST2084_EXT) || (format.format() == VK_FORMAT_R16G16B16A16_SFLOAT && format.colorSpace() == VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT))){
                 if(format.colorSpace() == VK_COLOR_SPACE_HDR10_ST2084_EXT) {
-                    HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(format.format() == VK_FORMAT_R16G16B16A16_UNORM ? 16 : 10, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
+                    if(hasBlazeSdl) HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(format.format() == VK_FORMAT_R16G16B16A16_UNORM ? 16 : 10, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
+                    else HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(format.format() == VK_FORMAT_R16G16B16A16_UNORM ? 16 : 10, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
                     LOGGER.info("Got HDR10 on Vulkan!");
                 }
                 else {
-                    HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
+                    if(hasBlazeSdl) HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
+                    else HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
                     LOGGER.info("Got scRGB on Vulkan!");
                 }
                 hdr_mod$chosenColorspace = format.colorSpace();

@@ -2,7 +2,6 @@ package xyz.rrtt217.HDRMod.mixin;
 
 import com.mojang.blaze3d.platform.*;
 import com.mojang.blaze3d.systems.GpuBackend;
-import me.shedaniel.autoconfig.AutoConfig;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,8 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
+import xyz.rrtt217.HDRMod.util.color.Enums;
 
 import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;

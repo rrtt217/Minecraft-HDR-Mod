@@ -3,18 +3,11 @@ package xyz.rrtt217.HDRMod.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.GpuFormat;
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.textures.GpuTexture;
-import com.mojang.blaze3d.textures.GpuTextureView;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Screenshot;
-import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -25,11 +18,10 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
-import xyz.rrtt217.HDRMod.util.Enums;
+import xyz.rrtt217.HDRMod.util.color.Enums;
 import xyz.rrtt217.HDRMod.util.ScreenshotStateListener;
 
 import java.io.File;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 @Mixin(Screenshot.class)

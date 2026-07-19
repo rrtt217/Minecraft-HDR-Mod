@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.util;
+package xyz.rrtt217.HDRMod.util.color;
 
 public class Enums {
     // These enums are the same as Wayland color-management-v1 protocol.
