@@ -96,11 +96,11 @@ public class DX11InteropShim {
     public static final int DXGI_FORMAT_R10G10B10A2_UNORM    = 24;
     public static final int DXGI_FORMAT_R16G16B16A16_FLOAT   = 10;
 
-    /* Color primaries (CICP) */
+    /* Color primaries (Wayland) */
     public static final int COLOR_PRIMARIES_BT709  = 1;
     public static final int COLOR_PRIMARIES_BT2020 = 6;
 
-    /* Transfer functions (CICP) */
+    /* Transfer functions (Wayland) */
     public static final int TRANSFER_LINEAR = 5;
     public static final int TRANSFER_SRGB   = 10;
     public static final int TRANSFER_PQ     = 11;
@@ -179,7 +179,7 @@ public class DX11InteropShim {
     public static native boolean nPresent(long context, int interval);
 
     /**
-     * Configures the swapchain color space from CICP primaries and transfer
+     * Configures the swapchain color space from Wayland-style primaries and transfer
      * function values.
      *
      * @param context        native context handle
@@ -189,22 +189,6 @@ public class DX11InteropShim {
      */
     public static native boolean nSetColorSpace(long context, int colorPrimaries,
                                                  int colorTransfer);
-
-    /**
-     * Queries the maximum luminance of the output attached to the swapchain.
-     *
-     * @param context native context handle
-     * @return max luminance in nits, or {@code 0} on failure
-     */
-    public static native float nGetMaxLuminance(long context);
-
-    /**
-     * Queries the minimum luminance of the output attached to the swapchain.
-     *
-     * @param context native context handle
-     * @return min luminance in nits, or {@code 0} on failure
-     */
-    public static native float nGetMinLuminance(long context);
 
     /**
      * Destroys the context and releases all native D3D11 / DXGI resources.

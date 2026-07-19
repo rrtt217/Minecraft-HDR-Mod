@@ -4,6 +4,7 @@ import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 
 import com.sun.jna.Platform;
+import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.glfw.GLFW;
@@ -12,6 +13,7 @@ import org.lwjgl.system.MemoryStack;
 
 import org.lwjgl.opengl.WGLNVDXInterop;
 import xyz.rrtt217.HDRMod.HDRMod;
+import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.DX11InteropShim;
 import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
 
@@ -22,6 +24,7 @@ import static org.lwjgl.sdl.SDLVideo.SDL_GetWindowProperties;
 import static org.lwjgl.sdl.SDLVideo.SDL_PROP_WINDOW_WIN32_HWND_POINTER;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.LOGGER;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
+import static xyz.rrtt217.HDRMod.util.DX11InteropShim.DXGI_FORMAT_R10G10B10A2_UNORM;
 import static xyz.rrtt217.HDRMod.util.DX11InteropShim.DXGI_FORMAT_R16G16B16A16_FLOAT;
 
 public class DXGIStateManager {
@@ -133,7 +136,8 @@ public class DXGIStateManager {
 
     // These functions are only used in SDL path.
     public static void createDxDevice(long hwnd, int width, int height) {
-        interopShimContext = DX11InteropShim.nCreate(hwnd, width, height, DXGI_FORMAT_R16G16B16A16_FLOAT, true);
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        interopShimContext = DX11InteropShim.nCreate(hwnd, width, height, config.useUNORMWindowPixelFormat ? DXGI_FORMAT_R10G10B10A2_UNORM : DXGI_FORMAT_R16G16B16A16_FLOAT, true);
         if (interopShimContext == 0) {
             HDRMod.LOGGER.error("Failed to create DX11 device context: {}",
                     DX11InteropShim.nGetLastError());

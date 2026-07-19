@@ -2,7 +2,6 @@ package xyz.rrtt217.HDRMod.mixin.compat.blazesdl;
 
 import com.sun.jna.Platform;
 import me.shedaniel.autoconfig.AutoConfig;
-import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -49,13 +48,15 @@ public class MixinSDLGlBackend {
         //boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
         boolean applyWindowsWorkaround = (hasOnlyIntelCard && Platform.isWindows()) && !config.forceDisableGlfwWorkaround;
 
-        if(!applyWindowsWorkaround) {
-            //SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 16);
-            //SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 16);
-            //SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 16);
-            //SDL_GL_SetAttribute(SDL_GL_FLOATBUFFERS, 1);
+        if(!applyWindowsWorkaround && !config.forceActivateGlDxInterop) {
+            SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 16);
+            SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 16);
+            SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 16);
+            SDL_GL_SetAttribute(SDL_GL_FLOATBUFFERS, 1);
         }
-        HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
+        else if(applyWindowsWorkaround) {
+            HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
+        }
     }
     @Unique
     private static final Set<String> VIRTUAL_KEYWORDS = Set.of(

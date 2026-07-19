@@ -30,11 +30,13 @@ public class SDLColorManagementInfoProvider extends ColorManagementInfoProvider{
 
     @Override
     public Enums.Primaries getWindowPrimaries(long handle) {
+        if(Platform.isWindows() && config.useUNORMWindowPixelFormat) return Enums.Primaries.BT2020;
         return Enums.Primaries.SRGB;
     }
 
     @Override
     public Enums.TransferFunction getWindowTransferFunction(long handle) {
+        if(Platform.isWindows() && config.useUNORMWindowPixelFormat) return Enums.TransferFunction.ST2084_PQ;
         if(Platform.isWindows()) return Enums.TransferFunction.EXT_LINEAR;
         else return Enums.TransferFunction.EXT_SRGB;
     }
