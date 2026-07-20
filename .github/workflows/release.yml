@@ -120,7 +120,7 @@ jobs:
 
       # Build the mod
       - name: Build and Auto Release with Gradle
-        run: ./gradlew modPublish
+        run: ./gradlew publishMods
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
           MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
