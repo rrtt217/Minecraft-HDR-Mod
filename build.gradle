@@ -87,7 +87,7 @@ subprojects {
                     minecraftVersions.add("$minecraft_version")
                     client = true
                     server = false
-                    javaVersions.add(JavaVersion.VERSION_25)
+                    javaVersions.add(JavaVersion.VERSION_21)
                     changelogType = "markdown"
                 }
 
