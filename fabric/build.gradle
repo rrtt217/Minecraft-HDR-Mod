@@ -100,4 +100,5 @@ remapJar {
 
 publishMods {
     file = remapJar.archiveFile
+    modLoaders.add("fabric")
 }

@@ -29,7 +29,6 @@ subprojects {
             apply plugin: 'dev.architectury.loom'
             apply plugin: 'architectury-plugin'
             apply plugin: 'maven-publish'
-            apply plugin: 'me.modmuss50.mod-publish-plugin'
 
     base {
         // Set up a suffixed format for the mod jar names, e.g. `example-fabric`.
@@ -85,9 +84,18 @@ subprojects {
                 }
             }
 
-            publishMods {
-                changelog = file("$rootDir/changelog.md").text
-                type = STABLE
+
+        }
+}
+
+// Only configure publishing when the mod subprojects are included.
+// When running native-only tasks (e.g. `native:compile`), settings.gradle
+// excludes the fabric/neoforge projects, so publishMods must be skipped.
+if (findProject(':fabric') != null && findProject(':neoforge') != null) {
+    apply plugin: 'me.modmuss50.mod-publish-plugin'
+    publishMods {
+        changelog = file("$rootDir/changelog.md").text
+        type = STABLE
 
                 // CurseForge options used by both Fabric and Forge
                 def cfOptions = curseforgeOptions {
