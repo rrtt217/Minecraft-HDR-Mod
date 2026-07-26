@@ -61,9 +61,9 @@ public final class HDRMod {
 
     public static void init() {
         // Register config.
-        configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        if(configHolder == null) configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
         configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        HDRModConfig config = configHolder.getConfig();
         previousEnableHDR = config.enableHDR;
         if(hasBlazeSdl) colorManagementInfoProvider = new SDLColorManagementInfoProvider();
         else colorManagementInfoProvider = new ColorManagementInfoProvider();
