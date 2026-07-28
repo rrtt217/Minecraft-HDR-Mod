@@ -36,7 +36,9 @@ public class MixinRenderTarget {
         if(HDRMod.PresentationColorTransformRenderer == null)
             HDRMod.PresentationColorTransformRenderer = new ColorTransformRenderer((RenderTarget) (Object) this, "Presentation");
         HDRMod.PresentationColorTransformRenderer.updateColorTransformUniforms(
-                config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness, // For UI Brightness
+                Minecraft.getInstance().screen != null ?
+                    config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.uiBrightness :
+                    config.hudBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) :config.hudBrightness,
                 config.customEotfEmulate < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().handle()) : config.customEotfEmulate,
                 config.autoSetPrimaries ? GLFWColorManagementUtils.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().handle()) : config.customPrimaries.getId(),
                 config.autoSetTransferFunction ? GLFWColorManagementUtils.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().handle()) : config.customTransferFunction.getId()
