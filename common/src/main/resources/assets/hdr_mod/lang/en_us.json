@@ -1,6 +1,7 @@
 {
   "text.autoconfig.hdr_mod.option.enableHDR": "Enable HDR",
   "text.autoconfig.hdr_mod.option.uiBrightness": "UI Brightness",
+  "text.autoconfig.hdr_mod.option.hudBrightness": "HUD Brightness",
   "text.autoconfig.hdr_mod.option.customGamePaperWhiteBrightness": "Game Paper White Brightness",
   "text.autoconfig.hdr_mod.option.customGameMinimumBrightness": "Game Minimum Brightness",
   "text.autoconfig.hdr_mod.option.customGamePeakBrightness": "Game Peak Brightness",
