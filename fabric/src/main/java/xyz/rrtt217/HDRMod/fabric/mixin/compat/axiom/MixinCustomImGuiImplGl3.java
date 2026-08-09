@@ -51,7 +51,7 @@ public class MixinCustomImGuiImplGl3 {
 
     @Inject(method = "bind", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glUniform1i(II)V"))
     private void hdr_mod$setHDRModUniforms(CallbackInfo ci){
-        long handle = Minecraft.getInstance().getWindow().handle();
+        long handle = Minecraft.getInstance().getWindow().getWindow();
         GL32.glUniform1f(attribLocationUIBrightness, HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle));
         GL32.glUniform1f(attribLocationEotfEmulate, HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle));
         GL32.glUniform1i(attribLocationPrimaries, HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle).getId());

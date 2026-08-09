@@ -1,60 +1,75 @@
 package xyz.rrtt217.HDRMod.mixin;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTexture;
-import com.mojang.blaze3d.textures.GpuTextureView;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.client.MouseHandler;
 import org.lwjgl.opengl.GL30;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
+import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
+import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
+
+import java.io.IOException;
+
+import static xyz.rrtt217.HDRMod.HDRMod.*;
+import static xyz.rrtt217.HDRMod.HDRMod.PresentationColorTransformRenderer;
 
 @Mixin(RenderTarget.class)
 public class MixinRenderTarget {
-
     @Shadow
-    @Nullable
-    protected GpuTexture colorTexture;
+    protected int colorTextureId;
 
-    @Inject(method = "blitToScreen", at = @At("HEAD"))
-    private void hdr_mod$beforeBlitRenderer(CallbackInfo ci) {
-        RenderSystem.assertOnRenderThread();
-
-        long handle = Minecraft.getInstance().getWindow().getWindow();
-
-        if(HDRMod.PresentationColorTransformRenderer == null)
-            HDRMod.PresentationColorTransformRenderer = new ColorTransformRenderer((RenderTarget) (Object) this, "Presentation");
-        HDRMod.PresentationColorTransformRenderer.updateColorTransformUniforms(
-                HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
-                HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
-                HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle),
-                HDRMod.colorManagementInfoProvider.getCurrentTransferFunction(handle)
-        );
-        if (this.colorTexture != null && !this.colorTexture.equals(HDRMod.PresentationColorTransformRenderer.getSrcTarget().getColorTexture()))
-            HDRMod.PresentationColorTransformRenderer.setSrcTarget((RenderTarget) (Object) this);
-        HDRMod.PresentationColorTransformRenderer.render();
+    @ModifyArgs(method = "createBuffers", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;_texImage2D(IIIIIIIILjava/nio/IntBuffer;)V"))
+    private void createBuffers(Args args) {
+        if (args.get(2).equals(GL30.GL_RGBA8)) {
+            args.set(2, GL30.GL_RGBA16F);
+            args.set(7, GL30.GL_HALF_FLOAT);
+        }
     }
-@ModifyArg(method = "blitToScreen", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;presentTexture(Lcom/mojang/blaze3d/textures/GpuTextureView;)V"), index = 0)
-    private GpuTextureView hdr_mod$modifyTextureToBePresented(GpuTextureView gpuTextureView){
+
+    @Inject(method = "_blitToScreen", at = @At("HEAD"))
+    private void hdr_mod$doPresentationTransform(int i, int j, boolean bl, CallbackInfo ci) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(config.forceDisableBeforeBlitPipeline) return gpuTextureView;
-        return HDRMod.PresentationColorTransformRenderer.getDstTextureView();
+        if (bl) {
+            long handle = Minecraft.getInstance().getWindow().getWindow();
+            HDRModInjectHooks.setTargetDisableBlend();
+            // Create PresentationColorTransformRenderer if there's not one.
+            if (PresentationColorTransformRenderer == null) {
+                try {
+                    PresentationColorTransformRenderer = new ColorTransformRenderer(Minecraft.getInstance().getMainRenderTarget(), "Present");
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            // Update PresentationColorTransformRenderer.srcTarget.
+            if (colorTextureId != PresentationColorTransformRenderer.getSrcTarget().getColorTextureId()) {
+                PresentationColorTransformRenderer.setSrcTarget((RenderTarget) (Object) this);
+            }
+            PresentationColorTransformRenderer.updateColorTransformUniforms(
+                    HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
+                    HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
+                    HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle),
+                    HDRMod.colorManagementInfoProvider.getCurrentTransferFunction(handle)
+            );
+            PresentationColorTransformRenderer.render();
+        }
     }
-    @Inject(method = "createBuffers", at = @At("HEAD"))
-    private void hdr_mod$setShouldUpgradeOnCreateBuffers(CallbackInfo ci) {
-        TextureUpgradeUtils.setTargetTextureFormat(GL30.GL_RGBA16F);
-        TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_HALF_FLOAT);
+
+    @Redirect(method = "_blitToScreen", at = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;colorTextureId:I", opcode = Opcodes.GETFIELD))
+    private int hdr_mod$replaceBlitTarget(RenderTarget instance) {
+        if (HDRModInjectHooks.getTargetDisableBlend()) {
+            HDRModInjectHooks.unsetTargetDisableBlend();
+            return PresentationColorTransformRenderer.getDstTextureId();
+        }
+        return colorTextureId;
     }
 }
