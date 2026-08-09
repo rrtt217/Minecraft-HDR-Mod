@@ -1,5 +1,6 @@
-# HDR Mod v2.3.3 Changelog
+# HDR Mod v2.3.4 Changelog
+## New Features
+- Separate GUI/HUD brightness by detecting if there's a screen
 ## Fixes
-- Fixed MacOS lib path (#69)
-- https://github.com/rrtt217/glfw/pull/3
-- Partially fixed Cursor doesn't align with UI in fullscreen mode (#65)
+- Incorrect FP32 buffer on Windows (from upstream tom94/glfw)
+- Several other minor bugs
