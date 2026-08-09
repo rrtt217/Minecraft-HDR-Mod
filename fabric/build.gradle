@@ -57,7 +57,7 @@ dependencies {
 
     implementation "me.shedaniel.cloth:cloth-config-fabric:${cloth_config_api_version}"
     implementation "maven.modrinth:modmenu:${mod_menu_version}"
-    //localRuntime "maven.modrinth:iris:${iris_version}-fabric"
+    localRuntime "maven.modrinth:iris:${iris_version}-fabric"
     implementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
     implementation "maven.modrinth:replaymod:26.2-2.6.27"
     compileOnly "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
@@ -68,7 +68,7 @@ dependencies {
 
     implementation "maven.modrinth:xaeros-minimap:fabric-${minecraft_version}-${xaero_minimap_version}"
     implementation "maven.modrinth:xaeros-world-map:fabric-${minecraft_version}-${xaero_worldmap_version}"
-    implementation "maven.modrinth:blazesdl:0.1.10"
+    compileOnly "maven.modrinth:blazesdl:0.1.10"
     //implementation "maven.modrinth:xaeroplus:${xaero_plus_version}+fabric-${minecraft_version}"
 
     implementation "org.anarres:jcpp:1.4.14"
