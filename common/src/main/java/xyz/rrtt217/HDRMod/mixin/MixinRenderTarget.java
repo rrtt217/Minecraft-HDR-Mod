@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
 
@@ -48,11 +49,12 @@ public class MixinRenderTarget {
     private void hdr_mod$doPresentationTransform(int i, int j, boolean bl, CallbackInfo ci) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if (bl) {
+            long handle = Minecraft.getInstance().getWindow().getWindow();
             HDRModInjectHooks.setTargetDisableBlend();
             // Create PresentationColorTransformRenderer if there's not one.
             if (PresentationColorTransformRenderer == null) {
                 try {
-                    PresentationColorTransformRenderer = new ColorTransformRenderer(Minecraft.getInstance().getMainRenderTarget(), "Screenshot");
+                    PresentationColorTransformRenderer = new ColorTransformRenderer(Minecraft.getInstance().getMainRenderTarget(), "Present");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -62,10 +64,10 @@ public class MixinRenderTarget {
                 PresentationColorTransformRenderer.setSrcTarget((RenderTarget) (Object) this);
             }
             PresentationColorTransformRenderer.updateColorTransformUniforms(
-                    config.uiBrightness < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.uiBrightness, // For UI Brightness
-                    config.customEotfEmulate < 0 ? GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(Minecraft.getInstance().getWindow().getWindow()) : config.customEotfEmulate,
-                    config.autoSetPrimaries ? GLFWColorManagementUtils.glfwGetWindowPrimaries(Minecraft.getInstance().getWindow().getWindow()) : config.customPrimaries.getId(),
-                    config.autoSetTransferFunction ? GLFWColorManagementUtils.glfwGetWindowTransfer(Minecraft.getInstance().getWindow().getWindow()) : config.customTransferFunction.getId()
+                    HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
+                    HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
+                    HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle),
+                    HDRMod.colorManagementInfoProvider.getCurrentTransferFunction(handle)
             );
             PresentationColorTransformRenderer.render();
         }

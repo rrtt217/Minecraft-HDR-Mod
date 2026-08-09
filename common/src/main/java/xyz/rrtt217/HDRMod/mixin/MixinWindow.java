@@ -27,6 +27,8 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import java.nio.FloatBuffer;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static xyz.rrtt217.HDRMod.HDRMod.configHolder;
 import static xyz.rrtt217.HDRMod.HDRMod.colorManagementInfoProvider;
@@ -61,11 +63,15 @@ import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR
             HardwareAbstractionLayer hardware = systemInfo.getHardware();
             List<GraphicsCard> graphicsCards = hardware.getGraphicsCards();
             boolean hasNvidiaCard = false;
+            boolean nvidiaNeedsWaylandWorkaround = false;
             boolean hasIntelCard = false;
             boolean hasOnlyIntelCard = true;
             for (GraphicsCard card : graphicsCards) {
                 if (card.getVendor().toLowerCase().contains("nvidia") && !hasNvidiaCard) {
                     hasNvidiaCard = true;
+                    if (!hdr_mod$nvidiaWaylandFp16Supported(card)) {
+                        nvidiaNeedsWaylandWorkaround = true;
+                    }
                 }
                 if (card.getVendor().toLowerCase().contains("intel") && !hasIntelCard) {
                     hasIntelCard = true;
@@ -75,11 +81,11 @@ import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR
                 }
             }
             hasOnlyIntelCard = hasOnlyIntelCard && hasIntelCard;
-            boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
+            boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (nvidiaNeedsWaylandWorkaround && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
             boolean applyWindowsWorkaround = (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32) && !config.forceDisableGlfwWorkaround;
-            if(platform != GLFW.GLFW_PLATFORM_X11 && HDRModMixinPlugin.hasGlfwLib) {
+            if(platform != GLFW.GLFW_PLATFORM_X11 || HDRModMixinPlugin.hasGlfwLib) {
                 // 10 bpc for int
-                if(applyWindowsWorkaround && config.useUNORMWindowPixelFormat) {
+                if(applyWindowsWorkaround || config.useUNORMWindowPixelFormat) {
                     GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 10);
                     GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 10);
                     GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 10);
@@ -101,7 +107,7 @@ import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR
                     GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
                 }
                 else if(applyLinuxWorkaround) {
-                    HDRMod.LOGGER.warn("A workaround (LinuxNvidiaMissingSupportForEGLFloatBuffer) has been applied for your platform and hardware. HDR Mod may or may not work.");
+                    HDRMod.LOGGER.warn("A workaround (LinuxNvidiaMissingSupportForEGLFloatBuffer) has been applied for your platform and hardware. HDR Mod may or may not work. This is expected for Nvidia drivers older than R610 or when running under X11.");
                 }
                 else if(applyWindowsWorkaround) {
                     if(!config.useUNORMWindowPixelFormat) GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
@@ -112,6 +118,21 @@ import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR
                     HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
                 }
             }
+        }
+
+        // Still we can't ensure that it works. Need more test. GLFW side has made correct preparation though.
+
+        @Unique
+        private static final int NVIDIA_WAYLAND_FP16_MIN_DRIVER = 610;
+
+        @Unique
+        private boolean hdr_mod$nvidiaWaylandFp16Supported(GraphicsCard card) {
+            if (!card.getVendor().toLowerCase().contains("nvidia")) return false;
+            String version = card.getVersionInfo();
+            if (version == null) return false;
+            Matcher m = Pattern.compile("^(\\d+)").matcher(version.trim());
+            if (!m.find()) return false;
+            return Integer.parseInt(m.group(1)) >= NVIDIA_WAYLAND_FP16_MIN_DRIVER;
         }
 
         @Unique
