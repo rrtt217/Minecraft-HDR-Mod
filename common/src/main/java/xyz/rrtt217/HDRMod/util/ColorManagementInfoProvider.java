@@ -53,7 +53,7 @@ public class ColorManagementInfoProvider {
     }
     public float getCurrentUIBrightness(long handle) {
         if(HDRMod.isReplayRendering) return config.replayUIBrightness;
-        float customValue = (Minecraft.getInstance().screen != null || !IrisCompatibility.isShaderPackInUse() || config.hudBrightness < 0) ? config.uiBrightness : config.hudBrightness;
+        float customValue = (Minecraft.getInstance().screen != null || !IrisCompatibility.isShaderPackInUse() || config.hudBrightness < 0 || !config.enableHDR) ? config.uiBrightness : config.hudBrightness;
         float queryValue = getWindowSdrWhiteLevel(handle);
         if(queryValue <= 0) queryValue = 203.0F; // Default paper white.
         return customValue < 0 ? queryValue : customValue;
