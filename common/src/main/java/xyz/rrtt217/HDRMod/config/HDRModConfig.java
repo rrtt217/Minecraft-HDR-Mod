@@ -51,7 +51,7 @@ public class HDRModConfig implements ConfigData {
     public boolean enableReplayHDRVideoExport = true;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("replay")
-    public String replayRecommendedCommandline = "-color_primaries bt2020 -color_trc smpte2084 -color_range pc -y -f rawvideo -pix_fmt rgba64 -s %WIDTH%x%HEIGHT% -r %FPS% -i - %FILTERS%-an -colorspace bt2020nc -color_primaries bt2020 -color_trc smpte2084 -color_range pc -c:v libx265 -b:v %BITRATE% -pix_fmt yuv420p10le \\\"%FILENAME%\\\"";
+    public String replayRecommendedCommandline = "-color_primaries bt2020 -color_trc smpte2084 -color_range pc -y -f rawvideo -pix_fmt rgba64 -s %WIDTH%x%HEIGHT% -r %FPS% -i - %FILTERS%-an -colorspace bt2020nc -color_primaries bt2020 -color_trc smpte2084 -color_range pc -c:v libx265 -b:v %BITRATE% -pix_fmt yuv420p10le \"%FILENAME%\"";
     @ConfigEntry.Category("replay")
     public float replayUIBrightness = 203.0f;
     @ConfigEntry.Category("replay")

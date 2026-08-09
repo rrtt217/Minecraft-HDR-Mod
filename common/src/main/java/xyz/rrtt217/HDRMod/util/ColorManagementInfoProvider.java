@@ -77,7 +77,7 @@ public class ColorManagementInfoProvider {
         if(HDRMod.isReplayRendering) return 0.0F;
         float customValue = config.customEotfEmulate;
         float queryValue = getWindowSdrWhiteLevel(handle);
-        if(queryValue <= 0) queryValue = 0.0F; // Default maximum.
+        if(queryValue <= 0) queryValue = 0.0F; // Default eotf emulate.
         return customValue < 0 ? queryValue : customValue;
     }
     public Enums.Primaries getCurrentPrimaries(long handle) {
