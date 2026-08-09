@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.fabric.mixin.compat.replaymod;
+package xyz.rrtt217.HDRMod.mixin.compat.replaymod;
 
 import com.replaymod.render.RenderSettings;
 import me.shedaniel.autoconfig.AutoConfig;

@@ -14,7 +14,6 @@ import xyz.rrtt217.HDRMod.util.color.GLFWColorManagementUtils;
 
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
 
-
 @Mixin(IrisExclusiveUniforms.class)
 public class MixinIrisExclusiveUniforms {
     @Inject(method = "addIrisExclusiveUniforms", at = @At("RETURN"))

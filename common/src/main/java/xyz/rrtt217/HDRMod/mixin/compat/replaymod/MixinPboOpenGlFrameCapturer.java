@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.fabric.mixin.compat.replaymod;
+package xyz.rrtt217.HDRMod.mixin.compat.replaymod;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.systems.CommandEncoder;

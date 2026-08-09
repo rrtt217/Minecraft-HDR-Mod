@@ -7,10 +7,7 @@
   ],
   "mixins": [
     "compat.axiom.MixinFramebufferUtils",
-    "compat.flashback.MixinFramebufferUtils",
-    "compat.replaymod.MixinOpenGlFrameCapturer",
-    "compat.replaymod.MixinPboOpenGlFrameCapturer",
-    "compat.replaymod.MixinRenderSettingsEncodingPreset"
+    "compat.flashback.MixinFramebufferUtils"
   ],
   "injectors": {
     "defaultRequire": 1

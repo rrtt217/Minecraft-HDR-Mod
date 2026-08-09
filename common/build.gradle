@@ -34,6 +34,7 @@ dependencies {
     implementation "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
 
     implementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
+    implementation "maven.modrinth:replaymod:26.2-2.6.27"
     implementation "maven.modrinth:xaeros-minimap:fabric-${minecraft_version}-${xaero_minimap_version}"
     implementation "maven.modrinth:xaeros-world-map:fabric-${minecraft_version}-${xaero_worldmap_version}"
     implementation "maven.modrinth:xaeroplus:${xaero_plus_version}+fabric-${minecraft_version}"

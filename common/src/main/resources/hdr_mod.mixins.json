@@ -38,6 +38,9 @@
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",
     "compat.ixeris.MixinGLFWColorManagementUtils",
+    "compat.replaymod.MixinOpenGlFrameCapturer",
+    "compat.replaymod.MixinPboOpenGlFrameCapturer",
+    "compat.replaymod.MixinRenderSettingsEncodingPreset",
     "compat.sodium.MixinShaderChunkRenderer"
   ],
   "injectors": {

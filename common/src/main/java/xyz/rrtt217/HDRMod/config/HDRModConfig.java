@@ -17,6 +17,9 @@ public class HDRModConfig implements ConfigData {
     public float uiBrightness = -1.0f;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("general")
+    public float hudBrightness = -1.0f;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("general")
     public float customGamePaperWhiteBrightness = -1.0f;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("general")
