@@ -1,8 +1,10 @@
 package xyz.rrtt217.HDRMod.util;
 
 import me.shedaniel.autoconfig.AutoConfig;
+import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 import xyz.rrtt217.HDRMod.HDRMod;
+import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 
 public class ColorManagementInfoProvider {
@@ -51,7 +53,7 @@ public class ColorManagementInfoProvider {
     }
     public float getCurrentUIBrightness(long handle) {
         if(HDRMod.isReplayRendering) return config.replayUIBrightness;
-        float customValue = config.uiBrightness;
+        float customValue = (Minecraft.getInstance().screen != null || !IrisCompatibility.isShaderPackInUse() || config.hudBrightness < 0 || !config.enableHDR) ? config.uiBrightness : config.hudBrightness;
         float queryValue = getWindowSdrWhiteLevel(handle);
         if(queryValue <= 0) queryValue = 203.0F; // Default paper white.
         return customValue < 0 ? queryValue : customValue;
@@ -75,7 +77,7 @@ public class ColorManagementInfoProvider {
         if(HDRMod.isReplayRendering) return 0.0F;
         float customValue = config.customEotfEmulate;
         float queryValue = getWindowSdrWhiteLevel(handle);
-        if(queryValue <= 0) queryValue = 0.0F; // Default maximum.
+        if(queryValue <= 0) queryValue = 0.0F; // Default eotf emulate.
         return customValue < 0 ? queryValue : customValue;
     }
     public Enums.Primaries getCurrentPrimaries(long handle) {
