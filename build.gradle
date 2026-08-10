@@ -3,6 +3,7 @@ plugins {
     id 'architectury-plugin' version '3.5-SNAPSHOT'
     id 'com.gradleup.shadow' version '8.3.6' apply false
     id "me.modmuss50.mod-publish-plugin" version "2.1.1" apply false
+    // id 'net.codecrete.windows-api' version "0.8.3"
 }
 
 architectury {
@@ -77,6 +78,91 @@ subprojects {
 
         }
 }
+
+// Copied from https://github.com/sidit77/perfect_presentation.
+/*
+    The MIT License (MIT)
+
+    Copyright (c) 2025 sidit77
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+            in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+*/
+
+//import java.util.regex.Pattern
+//
+//generateWindowsApi {
+//    functions = [
+//            "D3D11CreateDevice",
+//            "CreateDXGIFactory1",
+//            "FormatMessageW",
+//            "GetModuleHandleW",
+//            "LocalFree",
+//            "D3DCompile",
+//            "CloseHandle",
+//            "WaitForSingleObject"
+//    ]
+//    comInterfaces = [
+//            "ID3D11Device",
+//            "ID3D11DeviceContext",
+//            "IDXGIFactory2",
+//            "ID3D11RenderTargetView",
+//            "IDXGISwapChain2"
+//    ]
+//    constants = [
+//            "D3D11_SDK_VERSION"
+//    ]
+//    enumerations = [
+//            "D3D11_BIND_FLAG",
+//            "D3D_PRIMITIVE_TOPOLOGY"
+//    ]
+//
+//
+//    doLast {
+//        //Minecraft launchers tend to mess with java.library.path to we can't load libraries via System.loadLibrary
+//        //Also we need to wide the access on internal pointer of a wrapped COM object because we can't use it otherwise
+//        def libPattern = Pattern.compile('System\\.loadLibrary\\(\\"(.+)\\"\\);', Pattern.MULTILINE)
+//        def emptyStaticPattern = Pattern.compile('static \\{\\s+\\}', Pattern.MULTILINE)
+//        outputDirectory.getAsFileTree().matching {
+//            include '**/*.java'
+//        }.each { file ->
+//            def text = file.text
+//            def libName = libPattern
+//                    .matcher(text)
+//                    .results()
+//                    .map { it.group(1) }
+//                    .reduce { throw RuntimeException("More than one library") }
+//                    .orElse(null)
+//            if(libName != null) {
+//                text = text
+//                        .replace("System.loadLibrary(\"${libName}\");", "")
+//                        .replace(
+//                                "SymbolLookup.loaderLookup();",
+//                                "SymbolLookup.libraryLookup(\"${libName}.dll\", Arena.global());"
+//                        )
+//                        .replaceAll(emptyStaticPattern, "")
+//            }
+//            file.text = text
+//                    .replaceAll("protected final MemorySegment comObject;", "public final MemorySegment comObject;")
+//        }
+//    }
+//}
+
 
 // Only configure publishing when the mod subprojects are included.
 // When running native-only tasks (e.g. `native:compile`), settings.gradle
