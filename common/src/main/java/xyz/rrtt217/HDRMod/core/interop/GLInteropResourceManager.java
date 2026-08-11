@@ -30,15 +30,13 @@ public abstract class GLInteropResourceManager {
         lazyResourceInit(window);
 
         int newTexture = getNewTexture(window.handle(), currentGlTexture);
-
+        
         // Check if we need to update the FBO (aka. resize)
-        if (currentGlFbo == 0 || newTexture != currentGlTexture || width != currentGlTextureWidth || height != currentGlTextureHeight || isMinimized != currentIsMinimized) {
+        if (currentGlFbo == 0 || newTexture != currentGlTexture) {
 
             if (newTexture == 0) return originalFbo;
 
             if (currentGlFbo == 0) currentGlFbo = GlStateManager.glGenFramebuffers();
-
-            resizeDxSwapchain(width, height);
 
             // Rebind Color Texture To FBO
             bindFrameBufferTextures(currentGlFbo, newTexture, 0, 0, GL30.GL_FRAMEBUFFER, false);
@@ -48,14 +46,11 @@ public abstract class GLInteropResourceManager {
             if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
                 HDRMod.LOGGER.error("FBO incomplete after resize: {}", status);
             }
-
             currentGlTexture = newTexture;
-            currentGlTextureWidth = width;
-            currentGlTextureHeight = height;
-            currentIsMinimized = isMinimized;
         }
         return currentGlFbo;
     }
+
 
     void bindFrameBufferTextures(int k, int l, int m, int n, int o, boolean useStencil) {
         int i = o == 0 ? GL30.GL_DRAW_FRAMEBUFFER : o;
@@ -81,7 +76,8 @@ public abstract class GLInteropResourceManager {
         return currentTexture;
     }
 
-    void resizeDxSwapchain(int width, int height) {
+    public void resize(int width, int height) {
+
     }
 
     void lazyResourceInit(Window window) {}

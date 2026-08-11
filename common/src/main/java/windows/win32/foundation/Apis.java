@@ -18,51 +18,6 @@ public class Apis {
     private static final Linker LINKER = Linker.nativeLinker();
     private static final Linker.Option LAST_ERROR_STATE = Linker.Option.captureCallState("GetLastError");
 
-    private static class LocalFree$IMPL {
-        private static final FunctionDescriptor DESC = FunctionDescriptor.of(ADDRESS, ADDRESS);
-        private static final MethodHandle HANDLE = LINKER.downcallHandle(SYMBOL_LOOKUP.findOrThrow("LocalFree"), DESC, LAST_ERROR_STATE);
-    }
-
-    /**
-     * Gets the function descriptor for {@code LocalFree}
-     * <p>
-     * The additional first parameter takes a memory segment to capture the call state (replacement for {@code GetLastError()}).
-     * </p>
-     */
-    public static FunctionDescriptor LocalFree$descriptor() {
-        return LocalFree$IMPL.DESC;
-    }
-
-    /**
-     * Gets the method handle for {@code LocalFree}
-     */
-    public static MethodHandle LocalFree$handle() {
-        return LocalFree$IMPL.HANDLE;
-    }
-
-    /**
-     * {@code LocalFree} function
-     * <p>
-     * {@snippet lang=c :
-     * HLOCAL LocalFree(
-     *     HLOCAL hMem
-     * );
-     * }
-     * </p>
-     * <p>
-     * The additional first parameter takes a memory segment to capture the call state (replacement for {@code GetLastError()}).
-     * </p>
-     *
-     * @see <a href="https://learn.microsoft.com/windows/win32/api/winbase/nf-winbase-localfree">LocalFree (Microsoft)</a>
-     */
-    public static MemorySegment LocalFree(MemorySegment lastErrorState, MemorySegment hMem) {
-        try {
-            return (MemorySegment) LocalFree$IMPL.HANDLE.invokeExact(lastErrorState, hMem);
-        } catch (Throwable ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
     private static class CloseHandle$IMPL {
         private static final FunctionDescriptor DESC = FunctionDescriptor.of(JAVA_INT, ADDRESS);
         private static final MethodHandle HANDLE = LINKER.downcallHandle(SYMBOL_LOOKUP.findOrThrow("CloseHandle"), DESC, LAST_ERROR_STATE);
@@ -103,6 +58,51 @@ public class Apis {
     public static int CloseHandle(MemorySegment lastErrorState, MemorySegment hObject) {
         try {
             return (int) CloseHandle$IMPL.HANDLE.invokeExact(lastErrorState, hObject);
+        } catch (Throwable ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private static class LocalFree$IMPL {
+        private static final FunctionDescriptor DESC = FunctionDescriptor.of(ADDRESS, ADDRESS);
+        private static final MethodHandle HANDLE = LINKER.downcallHandle(SYMBOL_LOOKUP.findOrThrow("LocalFree"), DESC, LAST_ERROR_STATE);
+    }
+
+    /**
+     * Gets the function descriptor for {@code LocalFree}
+     * <p>
+     * The additional first parameter takes a memory segment to capture the call state (replacement for {@code GetLastError()}).
+     * </p>
+     */
+    public static FunctionDescriptor LocalFree$descriptor() {
+        return LocalFree$IMPL.DESC;
+    }
+
+    /**
+     * Gets the method handle for {@code LocalFree}
+     */
+    public static MethodHandle LocalFree$handle() {
+        return LocalFree$IMPL.HANDLE;
+    }
+
+    /**
+     * {@code LocalFree} function
+     * <p>
+     * {@snippet lang=c :
+     * HLOCAL LocalFree(
+     *     HLOCAL hMem
+     * );
+     * }
+     * </p>
+     * <p>
+     * The additional first parameter takes a memory segment to capture the call state (replacement for {@code GetLastError()}).
+     * </p>
+     *
+     * @see <a href="https://learn.microsoft.com/windows/win32/api/winbase/nf-winbase-localfree">LocalFree (Microsoft)</a>
+     */
+    public static MemorySegment LocalFree(MemorySegment lastErrorState, MemorySegment hMem) {
+        try {
+            return (MemorySegment) LocalFree$IMPL.HANDLE.invokeExact(lastErrorState, hMem);
         } catch (Throwable ex) {
             throw new RuntimeException(ex);
         }

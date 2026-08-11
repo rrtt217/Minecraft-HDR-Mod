@@ -36,6 +36,7 @@ import windows.win32.graphics.direct3d.ID3DBlob;
 import windows.win32.graphics.direct3d11.*;
 import windows.win32.graphics.dxgi.*;
 import windows.win32.graphics.dxgi.common.DXGI_ALPHA_MODE;
+import windows.win32.graphics.dxgi.common.DXGI_COLOR_SPACE_TYPE;
 import windows.win32.graphics.dxgi.common.DXGI_FORMAT;
 import windows.win32.graphics.dxgi.common.DXGI_SAMPLE_DESC;
 import windows.win32.system.com.IUnknown;
@@ -53,8 +54,6 @@ import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.lwjgl.opengl.GL11C.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL12.*;
-import static org.lwjgl.opengl.WGLNVDXInterop.WGL_ACCESS_WRITE_DISCARD_NV;
-import static org.lwjgl.opengl.WGLNVDXInterop.wglDXRegisterObjectNV;
 import static windows.win32.foundation.Apis.CloseHandle;
 import static windows.win32.graphics.direct3d.fxc.Apis.D3DCompile;
 import static windows.win32.graphics.direct3d11.Apis.D3D11CreateDevice;
@@ -133,6 +132,10 @@ public class InteropDXDevice implements AutoCloseable {
 
             swapChain = comCast(arena, swapChain1, IDXGISwapChain2.class);
 
+            checkSuccessful(factory.MakeWindowAssociation(
+                    MemorySegment.ofAddress(hwnd),
+                    DXGI_MWA_FLAGS.DXGI_MWA_NO_ALT_ENTER | DXGI_MWA_FLAGS.DXGI_MWA_NO_WINDOW_CHANGES));
+
             checkSuccessful(swapChain.SetMaximumFrameLatency(1));
             waitHandle = new WaitHandle(swapChain.GetFrameLatencyWaitableObject());
 
@@ -172,6 +175,8 @@ public class InteropDXDevice implements AutoCloseable {
             rasterizerState.Release();
             samplerState.Release();
         }
+
+        configureSwapchainColorSpace();
     }
 
     static MemorySegment asRaw(IUnknown obj) {
@@ -250,6 +255,31 @@ public class InteropDXDevice implements AutoCloseable {
             renderTargetView = null;
         }
         checkSuccessful(swapChain.ResizeBuffers(0, width, height, DXGI_FORMAT.UNKNOWN, SWAP_CHAIN_FLAGS));
+        configureSwapchainColorSpace();
+    }
+
+    private void configureSwapchainColorSpace() {
+        int colorSpace;
+        if (swapchainFormat == DXGI_FORMAT.R16G16B16A16_FLOAT) {
+            colorSpace = DXGI_COLOR_SPACE_TYPE.DXGI_COLOR_SPACE_RGB_FULL_G10_NONE_P709;
+        } else if (swapchainFormat == DXGI_FORMAT.R10G10B10A2_UNORM) {
+            colorSpace = DXGI_COLOR_SPACE_TYPE.DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020;
+        } else {
+            colorSpace = DXGI_COLOR_SPACE_TYPE.DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709;
+        }
+
+        try (var arena = Arena.ofConfined()) {
+            var swapchain3 = comCast(arena, swapChain, IDXGISwapChain3.class);
+            try {
+                var supportPtr = arena.allocate(ValueLayout.JAVA_INT);
+                var hr = swapchain3.CheckColorSpaceSupport(colorSpace, supportPtr);
+                if (hr >= 0 && (supportPtr.get(ValueLayout.JAVA_INT, 0) & DXGI_SWAP_CHAIN_COLOR_SPACE_SUPPORT_FLAG.PRESENT) != 0) {
+                    checkSuccessful(swapchain3.SetColorSpace1(colorSpace));
+                }
+            } finally {
+                swapchain3.Release();
+            }
+        }
     }
 
     public void blitSharedTextureToSwapChain(SharedTexture texture) {

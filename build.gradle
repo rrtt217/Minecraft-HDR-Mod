@@ -3,7 +3,7 @@ plugins {
     id 'architectury-plugin' version '3.5-SNAPSHOT'
     id 'com.gradleup.shadow' version '8.3.6' apply false
     id "me.modmuss50.mod-publish-plugin" version "2.1.1" apply false
-    // id 'net.codecrete.windows-api' version "0.8.3"
+    //id 'net.codecrete.windows-api' version "0.8.3"
 }
 
 architectury {
@@ -122,7 +122,8 @@ subprojects {
 //            "ID3D11DeviceContext",
 //            "IDXGIFactory2",
 //            "ID3D11RenderTargetView",
-//            "IDXGISwapChain2"
+//            "IDXGISwapChain2",
+//            "IDXGISwapChain3"
 //    ]
 //    constants = [
 //            "D3D11_SDK_VERSION"

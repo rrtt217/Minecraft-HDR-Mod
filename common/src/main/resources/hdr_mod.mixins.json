@@ -7,6 +7,7 @@
   "client": [
     "MixinDebugScreenEntries",
     "MixinDebugScreenEntryList",
+    "MixinGameRenderer",
     "MixinGlBackend",
     "MixinGlCommandEncoder",
     "MixinGlDevice",
@@ -19,7 +20,7 @@
     "MixinRenderTarget",
     "MixinScreenshot",
     "MixinWindow",
-    "compat.blazesdl.MixinSDLGlBackend",
+    "compat.blazesdl.MixinSDLGlBackend"
   ],
   "mixins": [
     "compat.blazesdl.MixinSDLGlBackend",

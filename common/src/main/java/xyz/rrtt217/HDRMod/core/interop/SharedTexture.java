@@ -1,8 +1,12 @@
 package xyz.rrtt217.HDRMod.core.interop;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.windows.WindowsUtil;
+import windows.win32.graphics.direct3d11.ID3D11ShaderResourceView;
+import windows.win32.graphics.direct3d11.ID3D11Texture2D;
 
+import java.lang.foreign.MemorySegment;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.opengl.GL11C.GL_TEXTURE_2D;
@@ -99,8 +103,20 @@ public class SharedTexture implements AutoCloseable{
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         unlock();
         unregister();
+        if (dxTextureViewHandle != 0) {
+            ID3D11ShaderResourceView.wrap(MemorySegment.ofAddress(dxTextureViewHandle)).Release();
+            dxTextureViewHandle = 0;
+        }
+        if (dxTextureHandle != 0) {
+            ID3D11Texture2D.wrap(MemorySegment.ofAddress(dxTextureHandle)).Release();
+            dxTextureHandle = 0;
+        }
+        if (glTexture != 0) {
+            GlStateManager._deleteTexture(glTexture);
+            glTexture = 0;
+        }
     }
 }
