@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.util.fabric;
+package xyz.rrtt217.HDRMod.util.platform.fabric;
 
 import net.fabricmc.loader.api.FabricLoader;
 
