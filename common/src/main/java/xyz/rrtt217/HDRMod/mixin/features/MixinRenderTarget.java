@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.features;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -16,9 +16,8 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
+import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
+import xyz.rrtt217.HDRMod.util.state.TextureUpgradeUtils;
 
 
 @Mixin(RenderTarget.class)

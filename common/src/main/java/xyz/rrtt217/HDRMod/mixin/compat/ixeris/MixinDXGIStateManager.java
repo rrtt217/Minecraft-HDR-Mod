@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
 import xyz.rrtt217.HDRMod.core.interop.DXGISwapchainCache;
-import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
+import xyz.rrtt217.HDRMod.util.glfw.GLFWDXGIUtils;
 
 @Mixin(value = GLFWGLInteropResourceManager.class, remap = false)
 public class MixinDXGIStateManager {

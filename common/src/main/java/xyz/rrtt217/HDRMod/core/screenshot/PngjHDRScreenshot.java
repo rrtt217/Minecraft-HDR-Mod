@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.core;
+package xyz.rrtt217.HDRMod.core.screenshot;
 
 import ar.com.hjg.pngj.ImageInfo;
 import ar.com.hjg.pngj.ImageLineInt;
@@ -21,13 +21,16 @@ import org.jspecify.annotations.Nullable;
 import org.lwjgl.opengl.GL30;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.*;
+import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
+import xyz.rrtt217.HDRMod.util.color.Enums;
+import xyz.rrtt217.HDRMod.util.glfw.GLFWColorManagementUtils;
+import xyz.rrtt217.HDRMod.util.platform.LibraryExtractor;
+import xyz.rrtt217.HDRMod.util.state.TextureUpgradeUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 import java.nio.file.Files;
 import java.util.function.Consumer;

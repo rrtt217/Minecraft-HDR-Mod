@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.util;
+package xyz.rrtt217.HDRMod.util.platform;
 
 import com.sun.jna.Platform;
 import org.slf4j.Logger;

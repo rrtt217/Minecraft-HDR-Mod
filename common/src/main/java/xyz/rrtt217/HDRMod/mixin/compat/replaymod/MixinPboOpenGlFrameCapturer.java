@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
+import xyz.rrtt217.HDRMod.util.state.TextureUpgradeUtils;
 
 import static xyz.rrtt217.HDRMod.HDRMod.ReplayColorTransformRenderer;
 

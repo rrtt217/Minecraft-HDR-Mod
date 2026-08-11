@@ -1,11 +1,11 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.upgrade;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
+import xyz.rrtt217.HDRMod.util.state.TextureUpgradeUtils;
 
 @Mixin(targets = "com.mojang.blaze3d.opengl.GlCommandEncoder")
 public class MixinGlCommandEncoder {

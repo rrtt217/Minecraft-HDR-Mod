@@ -4,7 +4,7 @@ import com.sun.jna.Platform;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import xyz.rrtt217.HDRMod.util.Enums.*;
+import xyz.rrtt217.HDRMod.util.color.Enums.*;
 
 @Config(name = "hdr_mod")
 public class HDRModConfig implements ConfigData {
