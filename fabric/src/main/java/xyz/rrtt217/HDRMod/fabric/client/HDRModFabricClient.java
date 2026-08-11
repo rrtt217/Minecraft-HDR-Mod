@@ -5,7 +5,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
+import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
 
 import static xyz.rrtt217.HDRMod.HDRMod.*;
 

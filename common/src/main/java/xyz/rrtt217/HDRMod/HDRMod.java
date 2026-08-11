@@ -16,8 +16,8 @@ import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.interop.GLInteropResourceManager;
 import xyz.rrtt217.HDRMod.core.interop.StubGLInteropResourceManager;
-import xyz.rrtt217.HDRMod.util.SDLColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.util.color.SDLColorManagementInfoProvider;
 
 import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;

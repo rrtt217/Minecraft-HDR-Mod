@@ -3,7 +3,7 @@ package xyz.rrtt217.HDRMod.core.interop;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL30;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
+import xyz.rrtt217.HDRMod.util.glfw.GLFWDXGIUtils;
 
 public class GLFWGLInteropResourceManager extends GLInteropResourceManager {
     @Override

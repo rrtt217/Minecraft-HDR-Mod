@@ -12,7 +12,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
+import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
 import xyz.rrtt217.HDRMod.neoforge.client.KeyBindingListener;
 
 import static xyz.rrtt217.HDRMod.HDRMod.*;

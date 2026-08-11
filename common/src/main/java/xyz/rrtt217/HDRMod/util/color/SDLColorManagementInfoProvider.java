@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.util;
+package xyz.rrtt217.HDRMod.util.color;
 
 import com.sun.jna.Platform;
 

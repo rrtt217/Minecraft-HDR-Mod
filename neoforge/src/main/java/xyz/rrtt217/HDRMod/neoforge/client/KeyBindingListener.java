@@ -7,7 +7,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
+import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
 
 import static xyz.rrtt217.HDRMod.HDRMod.*;
 import static xyz.rrtt217.HDRMod.HDRMod.minecraft;
