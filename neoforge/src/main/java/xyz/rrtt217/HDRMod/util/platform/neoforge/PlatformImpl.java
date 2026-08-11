@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.util.neoforge;
+package xyz.rrtt217.HDRMod.util.platform.neoforge;
 
 import net.neoforged.fml.loading.FMLLoader;
 
