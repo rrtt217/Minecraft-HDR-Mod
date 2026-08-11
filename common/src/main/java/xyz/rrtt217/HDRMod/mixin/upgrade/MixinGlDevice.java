@@ -1,11 +1,11 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.upgrade;
 
 import com.mojang.blaze3d.opengl.GlDevice;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
+import xyz.rrtt217.HDRMod.util.state.TextureUpgradeUtils;
 
 @Mixin(GlDevice.class)
 public class MixinGlDevice {

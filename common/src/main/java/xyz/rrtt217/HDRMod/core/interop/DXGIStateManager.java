@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.core;
+package xyz.rrtt217.HDRMod.core.interop;
 
 import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
@@ -8,7 +8,7 @@ import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL30;
 
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
+import xyz.rrtt217.HDRMod.util.glfw.GLFWDXGIUtils;
 
 public class DXGIStateManager {
     public static int fbo = 0;

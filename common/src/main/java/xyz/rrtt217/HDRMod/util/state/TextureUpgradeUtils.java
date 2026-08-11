@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.util;
+package xyz.rrtt217.HDRMod.util.state;
 
 import org.lwjgl.opengl.GL30;
 

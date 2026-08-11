@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.init;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.sun.jna.Platform;
@@ -8,7 +8,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import xyz.rrtt217.HDRMod.util.SetupBeforeGLFWInit;
+import xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin;
+import xyz.rrtt217.HDRMod.util.platform.SetupBeforeGLFWInit;
 
 
 @Mixin(value = RenderSystem.class, priority = 1010)

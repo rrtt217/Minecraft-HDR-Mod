@@ -1,10 +1,10 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.features;
 
 import com.mojang.blaze3d.opengl.GlStateManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import xyz.rrtt217.HDRMod.core.DXGIStateManager;
+import xyz.rrtt217.HDRMod.core.interop.DXGIStateManager;
 
 @Mixin(GlStateManager.class)
 public class MixinGlStateManager {

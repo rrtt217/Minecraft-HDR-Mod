@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.core;
+package xyz.rrtt217.HDRMod.core.color;
 
 import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.Std140Builder;

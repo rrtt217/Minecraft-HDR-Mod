@@ -5,7 +5,7 @@ import net.irisshaders.iris.Iris;
 import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.world.InteractionResult;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.Platform;
+import xyz.rrtt217.HDRMod.util.platform.Platform;
 
 @SuppressWarnings("unused")
 public class IrisCompatibility {

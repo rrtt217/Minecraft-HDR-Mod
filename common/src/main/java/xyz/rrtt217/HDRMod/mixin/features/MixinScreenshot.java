@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.features;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -10,9 +10,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
-import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
+import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
+import xyz.rrtt217.HDRMod.util.color.Enums;
+import xyz.rrtt217.HDRMod.util.state.HDRModInjectHooks;
 
 import java.io.File;
 import java.util.function.Consumer;

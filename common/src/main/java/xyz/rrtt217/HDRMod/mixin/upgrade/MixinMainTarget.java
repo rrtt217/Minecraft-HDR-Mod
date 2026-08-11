@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.upgrade;
 
 import com.mojang.blaze3d.pipeline.MainTarget;
 import com.mojang.blaze3d.textures.GpuTexture;
@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
+import xyz.rrtt217.HDRMod.util.state.TextureUpgradeUtils;
 
 @Mixin(MainTarget.class)
 public class MixinMainTarget {
