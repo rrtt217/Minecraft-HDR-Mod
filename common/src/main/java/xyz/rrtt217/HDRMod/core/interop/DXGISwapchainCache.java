@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.core;
+package xyz.rrtt217.HDRMod.core.interop;
 
 public final class DXGISwapchainCache {
     public static volatile int texture    = 0;

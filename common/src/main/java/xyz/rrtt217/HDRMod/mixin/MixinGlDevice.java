@@ -6,12 +6,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
-import xyz.rrtt217.HDRMod.core.DXGIStateManager;
+import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
 import xyz.rrtt217.HDRMod.util.DX11InteropShim;
 import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
-import static xyz.rrtt217.HDRMod.core.DXGIStateManager.actuallyUseInteropSDL;
-import static xyz.rrtt217.HDRMod.core.DXGIStateManager.interopShimContext;
+import static xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager.actuallyUseInteropSDL;
+import static xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager.interopShimContext;
 
 @Mixin(targets = "com.mojang.blaze3d.opengl.GlDevice")
 public class MixinGlDevice {
@@ -31,7 +31,7 @@ public class MixinGlDevice {
     @Inject(method = "presentFrame", at = @At("HEAD"), cancellable = true)
     private void present(CallbackInfo ci) {
         if(!actuallyUseInteropSDL) return;
-        DXGIStateManager.presentDxSwapChain();
+        GLFWGLInteropResourceManager.presentDxSwapChain();
         ci.cancel();
     }
 
@@ -44,6 +44,6 @@ public class MixinGlDevice {
     }
     @Inject(method = "close", at = @At("HEAD"))
     private void close(CallbackInfo ci) {
-        DXGIStateManager.destroyDxDevice();
+        GLFWGLInteropResourceManager.destroyDxDevice();
     }
 }

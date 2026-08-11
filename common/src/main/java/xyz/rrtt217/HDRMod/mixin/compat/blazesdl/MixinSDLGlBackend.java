@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.lwjgl.sdl.SDLVideo.*;
-import static xyz.rrtt217.HDRMod.core.DXGIStateManager.actuallyUseInteropSDL;
+import static xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager.actuallyUseInteropSDL;
 
 @Mixin(SDLGlBackend.class)
 public class MixinSDLGlBackend {

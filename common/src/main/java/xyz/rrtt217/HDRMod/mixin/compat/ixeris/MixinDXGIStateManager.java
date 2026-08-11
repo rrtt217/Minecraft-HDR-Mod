@@ -6,11 +6,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import xyz.rrtt217.HDRMod.core.DXGIStateManager;
-import xyz.rrtt217.HDRMod.core.DXGISwapchainCache;
+import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
+import xyz.rrtt217.HDRMod.core.interop.DXGISwapchainCache;
 import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
 
-@Mixin(value = DXGIStateManager.class, remap = false)
+@Mixin(value = GLFWGLInteropResourceManager.class, remap = false)
 public class MixinDXGIStateManager {
 
     @Inject(method = "replaceFbo", at = @At("HEAD"), cancellable = true, remap = false)
@@ -47,7 +47,7 @@ public class MixinDXGIStateManager {
             DXGISwapchainCache.lastHeight = 0;
         }
 
-        cir.setReturnValue(DXGIStateManager.replaceFboGLOnly(
+        cir.setReturnValue(GLFWGLInteropResourceManager.replaceFboGLOnly(
                 DXGISwapchainCache.texture,
                 window.getWidth(), window.getHeight(),
                 window.isMinimized(), originalFbo));

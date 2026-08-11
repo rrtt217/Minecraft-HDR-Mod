@@ -1,7 +1,6 @@
 package xyz.rrtt217.HDRMod.fabric.mixin.compat.axiom;
 
 import com.moulberry.axiom.editor.CustomImGuiImplGl3;
-import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL32;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,9 +12,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.core.DXGIStateManager;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
+import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
 
 
 @Mixin(CustomImGuiImplGl3.class)
@@ -38,7 +35,7 @@ public class MixinCustomImGuiImplGl3 {
 
     @ModifyArg(method = "bind", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glBindFramebuffer(II)V", ordinal = -1), index = 1)
     private int hdr_mod$useDxPboForImgui(int target){
-        return DXGIStateManager.replaceFbo(target);
+        return GLFWGLInteropResourceManager.replaceFbo(target);
     }
 
     @Inject(method = "createDeviceObjects", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glGetUniformLocation(ILjava/lang/CharSequence;)I"))

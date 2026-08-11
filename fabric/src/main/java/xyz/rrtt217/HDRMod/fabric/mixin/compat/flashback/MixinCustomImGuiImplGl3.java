@@ -1,7 +1,6 @@
 package xyz.rrtt217.HDRMod.fabric.mixin.compat.flashback;
 
 import com.moulberry.flashback.editor.ui.CustomImGuiImplGl3;
-import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL32;
@@ -14,9 +13,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.core.DXGIStateManager;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
+import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
 
 import java.lang.reflect.Field;
 
@@ -34,7 +31,7 @@ public class MixinCustomImGuiImplGl3 {
 
     @ModifyArg(method = "setupRenderState", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL30;glBindFramebuffer(II)V", ordinal = -1), index = 1)
     private int hdr_mod$useDxPboForImgui(int target){
-        return DXGIStateManager.replaceFbo(target);
+        return GLFWGLInteropResourceManager.replaceFbo(target);
     }
 
     @Inject(method = "createDeviceObjects", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL20;glGetUniformLocation(ILjava/lang/CharSequence;)I"))
