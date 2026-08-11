@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.init;
 
 import com.mojang.blaze3d.platform.GLX;
 import org.objectweb.asm.Opcodes;

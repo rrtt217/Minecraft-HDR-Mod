@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.init;
 
 import com.mojang.blaze3d.opengl.GlBackend;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -14,6 +14,7 @@ import oshi.hardware.HardwareAbstractionLayer;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
+import xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin;
 
 import java.util.List;
 import java.util.Set;
