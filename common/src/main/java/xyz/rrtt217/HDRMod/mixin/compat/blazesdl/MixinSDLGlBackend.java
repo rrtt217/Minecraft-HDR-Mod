@@ -56,10 +56,12 @@ public class MixinSDLGlBackend {
             SDL_GL_SetAttribute(SDL_GL_FLOATBUFFERS, 1);
         }
         else{
-            if(applyWindowsWorkaround) {
-                HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
+            if(Platform.isWindows()) {
+                if (applyWindowsWorkaround) {
+                    HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
+                }
+                HDRMod.glInteropResourceManager = new NewGLInteropResourceManager();
             }
-            HDRMod.glInteropResourceManager = new NewGLInteropResourceManager();
         }
     }
     @Unique
