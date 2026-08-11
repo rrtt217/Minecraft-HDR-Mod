@@ -82,6 +82,8 @@ public class InteropDXDevice implements AutoCloseable {
 
     private int syncInterval = 1;
 
+    private int swapchainFormat;
+
     public InteropDXDevice(long hwnd, int dxgiFormat) {
         try (var arena = Arena.ofConfined()) {
             {
@@ -117,6 +119,7 @@ public class InteropDXDevice implements AutoCloseable {
             DXGI_SWAP_CHAIN_DESC1.SwapEffect(swapChainDesc, DXGI_SWAP_EFFECT.FLIP_DISCARD);
             DXGI_SWAP_CHAIN_DESC1.AlphaMode(swapChainDesc, DXGI_ALPHA_MODE.UNSPECIFIED);
             DXGI_SWAP_CHAIN_DESC1.Flags(swapChainDesc, SWAP_CHAIN_FLAGS);
+            this.swapchainFormat = dxgiFormat;
 
             var swapChain1 = makeResource(arena,
                     ptr -> factory.CreateSwapChainForHwnd(
@@ -249,9 +252,9 @@ public class InteropDXDevice implements AutoCloseable {
         checkSuccessful(swapChain.ResizeBuffers(0, width, height, DXGI_FORMAT.UNKNOWN, SWAP_CHAIN_FLAGS));
     }
 
-    public void blitSharedTextureToSwapChain(int glFbo, Runnable lock, Runnable unlock) {
+    public void blitSharedTextureToSwapChain(SharedTexture texture) {
         try (var arena = Arena.ofConfined()) {
-            lock.run();
+            texture.lock();
             if(renderTargetView == null) {
                 var backBuffer = makeResource(arena, ptr -> swapChain.GetBuffer(0, ID3D11Texture2D.iid(), ptr), ID3D11Texture2D::wrap);
 
@@ -270,23 +273,23 @@ public class InteropDXDevice implements AutoCloseable {
                 backBuffer.Release();
             }
 
-            context.PSSetShaderResources(0, 1, arena.allocateFrom(ADDRESS, MemorySegment.ofAddress(glFbo)));
+            context.PSSetShaderResources(0, 1, arena.allocateFrom(ADDRESS, MemorySegment.ofAddress(texture.getDxTextureViewHandle())));
             context.OMSetRenderTargets(1, arena.allocateFrom(ADDRESS, asRaw(renderTargetView)), NULL);
             context.Draw(3, 0);
 
         } finally {
-            unlock.run();
+            texture.unlock();
         }
     }
 
-    public SharedTexture createSharedTexture(@Nullable String debugName, int dxUsage, int dxTextureFormat, int width, int height) {
+    public SharedTexture createSharedTexture(@Nullable String debugName, int dxUsage, int width, int height, long interopDeviceHandle) {
         try (var arena = Arena.ofConfined()) {
             var textureDesc = D3D11_TEXTURE2D_DESC.allocate(arena);
             D3D11_TEXTURE2D_DESC.Width(textureDesc, width);
             D3D11_TEXTURE2D_DESC.Height(textureDesc, height);
             D3D11_TEXTURE2D_DESC.MipLevels(textureDesc, 1);
             D3D11_TEXTURE2D_DESC.ArraySize(textureDesc, 1);
-            D3D11_TEXTURE2D_DESC.Format(textureDesc, dxTextureFormat);
+            D3D11_TEXTURE2D_DESC.Format(textureDesc, this.swapchainFormat);
             DXGI_SAMPLE_DESC.Count(D3D11_TEXTURE2D_DESC.SampleDesc(textureDesc), 1);
             DXGI_SAMPLE_DESC.Quality(D3D11_TEXTURE2D_DESC.SampleDesc(textureDesc), 0);
             D3D11_TEXTURE2D_DESC.Usage(textureDesc, D3D11_USAGE.DEFAULT);
@@ -297,6 +300,24 @@ public class InteropDXDevice implements AutoCloseable {
             var texture = makeResource(arena, ptr -> device.CreateTexture2D(textureDesc, NULL, ptr), ID3D11Texture2D::wrap);
             var textureView = makeResource(arena, ptr -> device.CreateShaderResourceView(asRaw(texture), NULL, ptr), ID3D11ShaderResourceView::wrap);
 
+            GlStateManager.clearGlErrors();
+            int texId = GlStateManager._genTexture();
+            if (debugName == null) {
+                debugName = String.valueOf(texId);
+            }
+
+            GlStateManager._bindTexture(texId);
+            GlStateManager._texParameter(GL_TEXTURE_2D, GL_TEXTURE_MAX_LEVEL, 0);
+            GlStateManager._texParameter(GL_TEXTURE_2D, GL_TEXTURE_MIN_LOD, 0);
+            GlStateManager._texParameter(GL_TEXTURE_2D, GL_TEXTURE_MAX_LOD, 0);
+
+            int m = GlStateManager._getError();
+            if (m != 0)
+                throw new IllegalStateException("OpenGL error " + m);
+
+            texture.Release();
+
+            return new SharedTexture(interopDeviceHandle, texId, asRaw(texture).address(), asRaw(textureView).address());
         }
     }
 

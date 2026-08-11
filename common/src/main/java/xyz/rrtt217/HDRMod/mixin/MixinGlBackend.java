@@ -13,6 +13,7 @@ import oshi.hardware.GraphicsCard;
 import oshi.hardware.HardwareAbstractionLayer;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
 
 import java.util.List;
 import java.util.Set;
@@ -54,6 +55,9 @@ public class MixinGlBackend {
             hasOnlyIntelCard = hasOnlyIntelCard && hasIntelCard;
             boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (nvidiaNeedsWaylandWorkaround && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
             boolean applyWindowsWorkaround = (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32) && !config.forceDisableGlfwWorkaround;
+            if(applyWindowsWorkaround || config.forceDisableGlfwWorkaround) {
+                HDRMod.glInteropResourceManager = new GLFWGLInteropResourceManager();
+            }
             if(platform != GLFW.GLFW_PLATFORM_X11 || HDRModMixinPlugin.hasGlfwLib) {
                 // 10 bpc for int
                 if(applyWindowsWorkaround || config.useUNORMWindowPixelFormat) {

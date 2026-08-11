@@ -3,11 +3,11 @@ package xyz.rrtt217.HDRMod.core.interop;
 import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 
+import com.sun.jna.Platform;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL30;
 
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
 
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 
@@ -74,7 +74,7 @@ public abstract class GLInteropResourceManager {
     }
 
     boolean shouldReplaceFbo(int originalFbo) {
-        return false;
+        return originalFbo == 0 && Platform.isWindows();
     }
 
     int getNewTexture(long handle, int currentTexture) {
@@ -85,4 +85,11 @@ public abstract class GLInteropResourceManager {
     }
 
     void lazyResourceInit(Window window) {}
+
+    public boolean presentSwapchain() {
+        return false;
+    }
+    public boolean setSwapInterval(int swapInterval) {
+        return false;
+    }
 }

@@ -4,12 +4,13 @@ import com.mojang.blaze3d.opengl.GlStateManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
 
 @Mixin(GlStateManager.class)
 public class MixinGlStateManager {
     @ModifyVariable(method = "_glBindFramebuffer", at = @At("HEAD"), argsOnly = true, index = 1)
     private static int hdr_mod$useDxgiPbo(int value){
-        return GLFWGLInteropResourceManager.replaceFbo(value);
+        return HDRMod.glInteropResourceManager.replaceFbo(value);
     }
 }

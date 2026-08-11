@@ -14,10 +14,18 @@ public class SharedTexture implements AutoCloseable{
     private int glTexture;
 
     private long interopDeviceHandle;
-    private long interopSharedHandle;
     private long interopObjectHandle;
-    private long interopTextureHandle;
+    private long dxTextureHandle;
+    private long dxTextureViewHandle;
     private boolean textureLocked = false;
+
+    public SharedTexture(long interopDeviceHandle, int glTexture, long dxTextureHandle, long dxTextureViewHandle) {
+        this.glTexture = glTexture;
+        this.interopDeviceHandle = interopDeviceHandle;
+        this.dxTextureHandle = dxTextureHandle;
+        this.dxTextureViewHandle = dxTextureViewHandle;
+        register();
+    }
 
     void lock(){
         if(textureLocked){
@@ -57,7 +65,7 @@ public class SharedTexture implements AutoCloseable{
             return;
         }
         if (interopDeviceHandle != 0 && glTexture != 0) {
-            interopObjectHandle = wglDXRegisterObjectNV(interopDeviceHandle, interopTextureHandle, glTexture, GL_TEXTURE_2D, WGL_ACCESS_WRITE_DISCARD_NV);
+            interopObjectHandle = wglDXRegisterObjectNV(interopDeviceHandle, dxTextureHandle, glTexture, GL_TEXTURE_2D, WGL_ACCESS_WRITE_DISCARD_NV);
             if(interopObjectHandle == 0) {
                 try(var memStack = MemoryStack.stackPush()) {
                     IntBuffer pi = memStack.ints(GetLastError());
@@ -82,8 +90,17 @@ public class SharedTexture implements AutoCloseable{
         }
     }
 
+    int getHandle(){
+        return glTexture;
+    }
+
+    long getDxTextureViewHandle(){
+        return dxTextureViewHandle;
+    }
+
     @Override
     public void close() throws Exception {
-
+        unlock();
+        unregister();
     }
 }

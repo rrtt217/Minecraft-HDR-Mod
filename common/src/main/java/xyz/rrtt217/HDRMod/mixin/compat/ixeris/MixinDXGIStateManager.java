@@ -1,20 +1,41 @@
 package xyz.rrtt217.HDRMod.mixin.compat.ixeris;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import me.decce.ixeris.api.IxerisApi;
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.opengl.GL30;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.Overwrite;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
 import xyz.rrtt217.HDRMod.core.interop.DXGISwapchainCache;
 import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
 
 @Mixin(value = GLFWGLInteropResourceManager.class, remap = false)
 public class MixinDXGIStateManager {
+    @Shadow
+    public static int currentGlFbo;
+    @Shadow
+    static int currentGlTexture;
+    @Shadow
+    static int currentGlTextureWidth;
+    @Shadow
+    static int currentGlTextureHeight;
+    @Shadow
+    static boolean currentIsMinimized;
+    @Shadow
+    static void bindFrameBufferTextures(int currentGlFbo, int newTexture, int i, int i1, int glFramebuffer, boolean b) {
+    }
 
-    @Inject(method = "replaceFbo", at = @At("HEAD"), cancellable = true, remap = false)
-    private static void hdr_mod$replaceFboIxerisCompat(int originalFbo,
+    /**
+     * @author rrtt217. CommandGenius
+     * @reason Ixeris compat
+     */
+    @Overwrite
+    private static void replaceFbo(int originalFbo,
                                                        CallbackInfoReturnable<Integer> cir) {
         IxerisApi api = IxerisApi.getInstance();
         if (!api.isEnabled() || api.isOnMainThreadOrInit()) return;
@@ -47,9 +68,33 @@ public class MixinDXGIStateManager {
             DXGISwapchainCache.lastHeight = 0;
         }
 
-        cir.setReturnValue(GLFWGLInteropResourceManager.replaceFboGLOnly(
+        cir.setReturnValue(hdr_mod$replaceFboGLOnly(
                 DXGISwapchainCache.texture,
                 window.getWidth(), window.getHeight(),
                 window.isMinimized(), originalFbo));
+    }
+
+    @Unique
+    private static int hdr_mod$replaceFboGLOnly(int newTexture, int width, int height,
+                                                boolean isMinimized, int originalFbo) {
+        if (newTexture == 0) return originalFbo;
+
+        if (currentGlFbo == 0 || newTexture != currentGlTexture || width != currentGlTextureWidth
+                || height != currentGlTextureHeight || isMinimized != currentIsMinimized) {
+            if (currentGlFbo == 0) currentGlFbo = GlStateManager.glGenFramebuffers();
+
+            bindFrameBufferTextures(currentGlFbo, newTexture, 0, 0, GL30.GL_FRAMEBUFFER, false);
+
+            int status = GL30.glCheckFramebufferStatus(GL30.GL_FRAMEBUFFER);
+            if (status != GL30.GL_FRAMEBUFFER_COMPLETE) {
+                HDRMod.LOGGER.error("FBO incomplete after resize: {}", status);
+            }
+
+            currentGlTexture = newTexture;
+            currentGlTextureWidth = width;
+            currentGlTextureHeight = height;
+            currentIsMinimized = isMinimized;
+        }
+        return currentGlFbo;
     }
 }

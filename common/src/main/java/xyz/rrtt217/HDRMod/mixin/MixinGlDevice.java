@@ -6,12 +6,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
-import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
-import xyz.rrtt217.HDRMod.util.DX11InteropShim;
+import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
-
-import static xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager.actuallyUseInteropSDL;
-import static xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager.interopShimContext;
 
 @Mixin(targets = "com.mojang.blaze3d.opengl.GlDevice")
 public class MixinGlDevice {
@@ -30,20 +26,11 @@ public class MixinGlDevice {
     }
     @Inject(method = "presentFrame", at = @At("HEAD"), cancellable = true)
     private void present(CallbackInfo ci) {
-        if(!actuallyUseInteropSDL) return;
-        GLFWGLInteropResourceManager.presentDxSwapChain();
-        ci.cancel();
+        if(HDRMod.glInteropResourceManager.presentSwapchain()) ci.cancel();
     }
 
     @Inject(method = "setVsync", at = @At("HEAD"), cancellable = true)
     private void configure(boolean enabled, CallbackInfo ci) {
-        if (interopShimContext != 0 && actuallyUseInteropSDL) {
-            DX11InteropShim.nSetSwapInterval(interopShimContext, enabled ? 1 : 0);
-            ci.cancel();
-        }
-    }
-    @Inject(method = "close", at = @At("HEAD"))
-    private void close(CallbackInfo ci) {
-        GLFWGLInteropResourceManager.destroyDxDevice();
+        if(HDRMod.glInteropResourceManager.setSwapInterval(enabled ? 1 : 0)) ci.cancel();
     }
 }

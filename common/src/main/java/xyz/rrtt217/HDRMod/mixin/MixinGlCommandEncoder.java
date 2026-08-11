@@ -3,6 +3,7 @@ package xyz.rrtt217.HDRMod.mixin;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
 import xyz.rrtt217.HDRMod.util.TextureUpgradeUtils;
 
@@ -17,6 +18,6 @@ public class MixinGlCommandEncoder {
     }
     @ModifyArg(method = "presentTexture", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/DirectStateAccess;blitFrameBuffers(IIIIIIIIIIII)V"), index = 1)
     private int hdr_mod$modifyPresentTexture(int i){
-        return GLFWGLInteropResourceManager.replaceFbo(i);
+        return HDRMod.glInteropResourceManager.replaceFbo(i);
     }
 }

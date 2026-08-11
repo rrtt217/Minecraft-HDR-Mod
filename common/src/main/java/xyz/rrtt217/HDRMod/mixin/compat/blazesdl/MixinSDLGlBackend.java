@@ -13,12 +13,12 @@ import oshi.hardware.HardwareAbstractionLayer;
 import top.fifthlight.blazesdl.SDLGlBackend;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.core.interop.NewGLInteropResourceManager;
 
 import java.util.List;
 import java.util.Set;
 
 import static org.lwjgl.sdl.SDLVideo.*;
-import static xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager.actuallyUseInteropSDL;
 
 @Mixin(SDLGlBackend.class)
 public class MixinSDLGlBackend {
@@ -56,10 +56,10 @@ public class MixinSDLGlBackend {
             SDL_GL_SetAttribute(SDL_GL_FLOATBUFFERS, 1);
         }
         else{
-            actuallyUseInteropSDL = true;
             if(applyWindowsWorkaround) {
                 HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
             }
+            HDRMod.glInteropResourceManager = new NewGLInteropResourceManager();
         }
     }
     @Unique

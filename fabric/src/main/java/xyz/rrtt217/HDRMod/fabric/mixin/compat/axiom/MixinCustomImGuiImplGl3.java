@@ -35,7 +35,7 @@ public class MixinCustomImGuiImplGl3 {
 
     @ModifyArg(method = "bind", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glBindFramebuffer(II)V", ordinal = -1), index = 1)
     private int hdr_mod$useDxPboForImgui(int target){
-        return GLFWGLInteropResourceManager.replaceFbo(target);
+        return HDRMod.glInteropResourceManager.replaceFbo(target);
     }
 
     @Inject(method = "createDeviceObjects", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glGetUniformLocation(ILjava/lang/CharSequence;)I"))
