@@ -5,7 +5,9 @@ package windows.win32.foundation;
 
 import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
-import static java.lang.foreign.ValueLayout.*;
+
+import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_INT;
 
 /**
  * Functions of namespace {@code Windows.Win32.Foundation}
@@ -17,51 +19,6 @@ public class Apis {
     private static final SymbolLookup SYMBOL_LOOKUP = SymbolLookup.libraryLookup("KERNEL32.dll", Arena.global());
     private static final Linker LINKER = Linker.nativeLinker();
     private static final Linker.Option LAST_ERROR_STATE = Linker.Option.captureCallState("GetLastError");
-
-    private static class CloseHandle$IMPL {
-        private static final FunctionDescriptor DESC = FunctionDescriptor.of(JAVA_INT, ADDRESS);
-        private static final MethodHandle HANDLE = LINKER.downcallHandle(SYMBOL_LOOKUP.findOrThrow("CloseHandle"), DESC, LAST_ERROR_STATE);
-    }
-
-    /**
-     * Gets the function descriptor for {@code CloseHandle}
-     * <p>
-     * The additional first parameter takes a memory segment to capture the call state (replacement for {@code GetLastError()}).
-     * </p>
-     */
-    public static FunctionDescriptor CloseHandle$descriptor() {
-        return CloseHandle$IMPL.DESC;
-    }
-
-    /**
-     * Gets the method handle for {@code CloseHandle}
-     */
-    public static MethodHandle CloseHandle$handle() {
-        return CloseHandle$IMPL.HANDLE;
-    }
-
-    /**
-     * {@code CloseHandle} function
-     * <p>
-     * {@snippet lang=c :
-     * BOOL CloseHandle(
-     *     HANDLE hObject
-     * );
-     * }
-     * </p>
-     * <p>
-     * The additional first parameter takes a memory segment to capture the call state (replacement for {@code GetLastError()}).
-     * </p>
-     *
-     * @see <a href="https://learn.microsoft.com/windows/win32/api/handleapi/nf-handleapi-closehandle">CloseHandle (Microsoft)</a>
-     */
-    public static int CloseHandle(MemorySegment lastErrorState, MemorySegment hObject) {
-        try {
-            return (int) CloseHandle$IMPL.HANDLE.invokeExact(lastErrorState, hObject);
-        } catch (Throwable ex) {
-            throw new RuntimeException(ex);
-        }
-    }
 
     private static class LocalFree$IMPL {
         private static final FunctionDescriptor DESC = FunctionDescriptor.of(ADDRESS, ADDRESS);
@@ -103,6 +60,51 @@ public class Apis {
     public static MemorySegment LocalFree(MemorySegment lastErrorState, MemorySegment hMem) {
         try {
             return (MemorySegment) LocalFree$IMPL.HANDLE.invokeExact(lastErrorState, hMem);
+        } catch (Throwable ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private static class CloseHandle$IMPL {
+        private static final FunctionDescriptor DESC = FunctionDescriptor.of(JAVA_INT, ADDRESS);
+        private static final MethodHandle HANDLE = LINKER.downcallHandle(SYMBOL_LOOKUP.findOrThrow("CloseHandle"), DESC, LAST_ERROR_STATE);
+    }
+
+    /**
+     * Gets the function descriptor for {@code CloseHandle}
+     * <p>
+     * The additional first parameter takes a memory segment to capture the call state (replacement for {@code GetLastError()}).
+     * </p>
+     */
+    public static FunctionDescriptor CloseHandle$descriptor() {
+        return CloseHandle$IMPL.DESC;
+    }
+
+    /**
+     * Gets the method handle for {@code CloseHandle}
+     */
+    public static MethodHandle CloseHandle$handle() {
+        return CloseHandle$IMPL.HANDLE;
+    }
+
+    /**
+     * {@code CloseHandle} function
+     * <p>
+     * {@snippet lang=c :
+     * BOOL CloseHandle(
+     *     HANDLE hObject
+     * );
+     * }
+     * </p>
+     * <p>
+     * The additional first parameter takes a memory segment to capture the call state (replacement for {@code GetLastError()}).
+     * </p>
+     *
+     * @see <a href="https://learn.microsoft.com/windows/win32/api/handleapi/nf-handleapi-closehandle">CloseHandle (Microsoft)</a>
+     */
+    public static int CloseHandle(MemorySegment lastErrorState, MemorySegment hObject) {
+        try {
+            return (int) CloseHandle$IMPL.HANDLE.invokeExact(lastErrorState, hObject);
         } catch (Throwable ex) {
             throw new RuntimeException(ex);
         }

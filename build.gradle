@@ -104,8 +104,9 @@ subprojects {
     THE SOFTWARE.
 */
 
-//import java.util.regex.Pattern
-//
+import java.util.regex.Pattern
+
+// <editor-fold desc="generateWindowsApi (disabled for cross-platform builds)">
 //generateWindowsApi {
 //    functions = [
 //            "D3D11CreateDevice",
@@ -115,7 +116,12 @@ subprojects {
 //            "LocalFree",
 //            "D3DCompile",
 //            "CloseHandle",
-//            "WaitForSingleObject"
+//            "WaitForSingleObject",
+//            "MonitorFromWindow",
+//            "GetMonitorInfoW",
+//            "GetDisplayConfigBufferSizes",
+//            "QueryDisplayConfig",
+//            "DisplayConfigGetDeviceInfo"
 //    ]
 //    comInterfaces = [
 //            "ID3D11Device",
@@ -123,14 +129,25 @@ subprojects {
 //            "IDXGIFactory2",
 //            "ID3D11RenderTargetView",
 //            "IDXGISwapChain2",
-//            "IDXGISwapChain3"
+//            "IDXGISwapChain3",
+//            "IDXGIOutput6"
+//    ]
+//    structs = [
+//            "DISPLAYCONFIG_SDR_WHITE_LEVEL",
+//            "DISPLAYCONFIG_GET_ADVANCED_COLOR_INFO",
+//            "DISPLAYCONFIG_SOURCE_DEVICE_NAME",
+//            "MONITORINFOEXW"
 //    ]
 //    constants = [
-//            "D3D11_SDK_VERSION"
+//            "D3D11_SDK_VERSION",
+//            "DISPLAYCONFIG_PATH_ACTIVE"
 //    ]
 //    enumerations = [
 //            "D3D11_BIND_FLAG",
-//            "D3D_PRIMITIVE_TOPOLOGY"
+//            "D3D_PRIMITIVE_TOPOLOGY",
+//            "DISPLAYCONFIG_DEVICE_INFO_TYPE",
+//            "QUERY_DISPLAY_CONFIG_FLAGS",
+//            "MONITOR_FROM_FLAGS"
 //    ]
 //
 //

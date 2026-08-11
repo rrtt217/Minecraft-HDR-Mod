@@ -5,7 +5,9 @@ package windows.win32.system.threading;
 
 import java.lang.foreign.*;
 import java.lang.invoke.MethodHandle;
-import static java.lang.foreign.ValueLayout.*;
+
+import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_INT;
 
 /**
  * Functions of namespace {@code Windows.Win32.System.Threading}

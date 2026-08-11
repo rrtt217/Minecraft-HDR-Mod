@@ -6,7 +6,9 @@ import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFWNativeWin32;
 import windows.win32.graphics.direct3d11.D3D11_BIND_FLAG;
 import windows.win32.graphics.dxgi.common.DXGI_FORMAT;
+import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.util.color.GLFWDXColorManagementInfoProvider;
 
 import static org.lwjgl.opengl.WGLNVDXInterop.*;
 import static org.lwjgl.sdl.SDLProperties.SDL_GetPointerProperty;
@@ -34,6 +36,9 @@ public class NewGLInteropResourceManager extends GLInteropResourceManager {
             interopDeviceHandle = check(wglDXOpenDeviceNV(asRaw(dxDevice.device).address()));
             glTexture = dxDevice.createSharedTexture(null, D3D11_BIND_FLAG.D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG.D3D11_BIND_SHADER_RESOURCE, window.getWidth(), window.getHeight(), interopDeviceHandle);
             dxDevice.makeCurrent();
+            if(HDRMod.colorManagementInfoProvider instanceof GLFWDXColorManagementInfoProvider) {
+                ((GLFWDXColorManagementInfoProvider) HDRMod.colorManagementInfoProvider).setDxDevice(dxDevice);
+            }
         }
     }
 
@@ -74,5 +79,9 @@ public class NewGLInteropResourceManager extends GLInteropResourceManager {
     public boolean setSwapInterval(int swapInterval) {
         dxDevice.setSyncInterval(swapInterval);
         return true;
+    }
+
+    public InteropDXDevice getDXDevice() {
+        return dxDevice;
     }
 }

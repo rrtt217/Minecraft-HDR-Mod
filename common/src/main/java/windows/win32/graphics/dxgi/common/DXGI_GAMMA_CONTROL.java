@@ -3,8 +3,10 @@
 
 package windows.win32.graphics.dxgi.common;
 
-import java.lang.foreign.*;
-import static java.lang.foreign.ValueLayout.*;
+import java.lang.foreign.GroupLayout;
+import java.lang.foreign.MemoryLayout;
+import java.lang.foreign.MemorySegment;
+import java.lang.foreign.SegmentAllocator;
 
 /**
  * {@code DXGI_GAMMA_CONTROL} structure

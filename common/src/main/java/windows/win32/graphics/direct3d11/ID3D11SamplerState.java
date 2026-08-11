@@ -4,7 +4,10 @@
 package windows.win32.graphics.direct3d11;
 
 import java.lang.foreign.*;
-import java.lang.invoke.*;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
+
 import static java.lang.foreign.ValueLayout.*;
 
 /**

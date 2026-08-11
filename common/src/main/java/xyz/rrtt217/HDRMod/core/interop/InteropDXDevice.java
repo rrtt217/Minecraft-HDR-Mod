@@ -233,6 +233,10 @@ public class InteropDXDevice implements AutoCloseable {
         CURRENT_CONTEXT.set(this);
     }
 
+    public IDXGISwapChain2 getSwapChain() {
+        return swapChain;
+    }
+
     public void setSyncInterval(int syncInterval) {
         if(syncInterval < 0) {
             LOGGER.warn("Sync interval cannot be negative, clamping to 0");

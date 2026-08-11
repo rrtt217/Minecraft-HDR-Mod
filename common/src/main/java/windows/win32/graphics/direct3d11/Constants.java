@@ -3,8 +3,6 @@
 
 package windows.win32.graphics.direct3d11;
 
-import java.lang.foreign.*;
-
 /**
  * Constants of namespace Windows.Win32.Graphics.Direct3D11.
  */

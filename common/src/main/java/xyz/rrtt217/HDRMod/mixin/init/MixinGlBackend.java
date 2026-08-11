@@ -14,7 +14,9 @@ import oshi.hardware.HardwareAbstractionLayer;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
+import xyz.rrtt217.HDRMod.core.interop.NewGLInteropResourceManager;
 import xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin;
+import xyz.rrtt217.HDRMod.util.color.GLFWDXColorManagementInfoProvider;
 
 import java.util.List;
 import java.util.Set;
@@ -57,41 +59,49 @@ public class MixinGlBackend {
             boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (nvidiaNeedsWaylandWorkaround && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
             boolean applyWindowsWorkaround = (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32) && !config.forceDisableGlfwWorkaround;
             if(applyWindowsWorkaround || config.forceDisableGlfwWorkaround) {
-                HDRMod.glInteropResourceManager = new GLFWGLInteropResourceManager();
+                if(config.useNewGlDxInteropInGLFW) {
+                    HDRMod.glInteropResourceManager = new NewGLInteropResourceManager();
+                    HDRMod.colorManagementInfoProvider = new GLFWDXColorManagementInfoProvider(((NewGLInteropResourceManager) HDRMod.glInteropResourceManager).getDXDevice());
+                    HDRMod.colorManagementInfoProvider.setBitsPerChannel(config.useUNORMWindowPixelFormat ? 10 : 16);
+                }
+                else HDRMod.glInteropResourceManager = new GLFWGLInteropResourceManager();
             }
             if(platform != GLFW.GLFW_PLATFORM_X11 || HDRModMixinPlugin.hasGlfwLib) {
-                // 10 bpc for int
-                if(applyWindowsWorkaround || config.useUNORMWindowPixelFormat) {
-                    GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 10);
-                    GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 10);
-                    GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 10);
-                    GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, 2);
-                }
-                // 16 bpc for float
-                else {
-                    GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 16);
-                    GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
-                    GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);
-                }
-                if(platform == GLFW.GLFW_PLATFORM_WIN32 && config.forceActivateGlDxInterop)
-                {
-                    GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
-                    GLFW.glfwWindowHint(0x00025004,GLFW.GLFW_TRUE);
-                }
-                // For float buffer.
-                if(!applyLinuxWorkaround && !applyWindowsWorkaround && !config.useUNORMWindowPixelFormat) {
-                    GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
-                }
-                else if(applyLinuxWorkaround) {
-                    HDRMod.LOGGER.warn("A workaround (LinuxNvidiaMissingSupportForEGLFloatBuffer) has been applied for your platform and hardware. HDR Mod may or may not work. This is expected for Nvidia drivers older than R610 or when running under X11.");
-                }
-                else if(applyWindowsWorkaround) {
-                    if(!config.useUNORMWindowPixelFormat) GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
-                    if(!config.forceActivateGlDxInterop){
-                        GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
-                        if(config.useUNORMWindowPixelFormat) GLFW.glfwWindowHint(0x00025004,GLFW.GLFW_TRUE);
+                if(!config.useNewGlDxInteropInGLFW) {
+                    // 10 bpc for int
+                    if (applyWindowsWorkaround || config.useUNORMWindowPixelFormat) {
+                        GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 10);
+                        GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 10);
+                        GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 10);
+                        GLFW.glfwWindowHint(GLFW.GLFW_ALPHA_BITS, 2);
                     }
-                    HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
+                    // 16 bpc for float
+                    else {
+                        GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 16);
+                        GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
+                        GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);
+                    }
+
+                    if(platform == GLFW.GLFW_PLATFORM_WIN32 && config.forceActivateGlDxInterop)
+                    {
+                        GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
+                        GLFW.glfwWindowHint(0x00025004,GLFW.GLFW_TRUE);
+                    }
+                    // For float buffer.
+                    if(!applyLinuxWorkaround && !applyWindowsWorkaround && !config.useUNORMWindowPixelFormat) {
+                        GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
+                    }
+                    else if(applyLinuxWorkaround) {
+                        HDRMod.LOGGER.warn("A workaround (LinuxNvidiaMissingSupportForEGLFloatBuffer) has been applied for your platform and hardware. HDR Mod may or may not work. This is expected for Nvidia drivers older than R610 or when running under X11.");
+                    }
+                    else if(applyWindowsWorkaround) {
+                        if(!config.useUNORMWindowPixelFormat) GLFW.glfwWindowHint(0x00021011,GLFW.GLFW_TRUE);
+                        if(!config.forceActivateGlDxInterop){
+                            GLFW.glfwWindowHint(0x00025003,GLFW.GLFW_TRUE);
+                            if(config.useUNORMWindowPixelFormat) GLFW.glfwWindowHint(0x00025004,GLFW.GLFW_TRUE);
+                        }
+                        HDRMod.LOGGER.warn("A workaround (WindowsIntelRequireGlDxInterop) has been applied for your platform and hardware. HDR Mod may or may not work.");
+                    }
                 }
             }
     }

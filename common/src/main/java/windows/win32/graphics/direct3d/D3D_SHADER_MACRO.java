@@ -4,7 +4,9 @@
 package windows.win32.graphics.direct3d;
 
 import java.lang.foreign.*;
-import static java.lang.foreign.ValueLayout.*;
+
+import static java.lang.foreign.ValueLayout.ADDRESS;
+import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 
 /**
  * {@code D3D_SHADER_MACRO} structure
