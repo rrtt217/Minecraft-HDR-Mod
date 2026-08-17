@@ -7,7 +7,6 @@
   "client": [
     "debug.MixinDebugScreenEntries",
     "debug.MixinDebugScreenEntryList",
-    "features.MixinGameRenderer",
     "init.MixinGlBackend",
     "upgrade.MixinGlCommandEncoder",
     "upgrade.MixinGlDevice",
