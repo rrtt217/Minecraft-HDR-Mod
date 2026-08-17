@@ -286,7 +286,7 @@ public class InteropDXDevice implements AutoCloseable {
 
     public void blitSharedTextureToSwapChain(SharedTexture texture) {
         try (var arena = Arena.ofConfined()) {
-            texture.lock();
+            texture.unlock();
             if(renderTargetView == null) {
                 var backBuffer = makeResource(arena, ptr -> swapChain.GetBuffer(0, ID3D11Texture2D.iid(), ptr), ID3D11Texture2D::wrap);
 
@@ -310,7 +310,7 @@ public class InteropDXDevice implements AutoCloseable {
             context.Draw(3, 0);
 
         } finally {
-            texture.unlock();
+            texture.lock();
         }
     }
 

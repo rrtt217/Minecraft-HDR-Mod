@@ -65,11 +65,16 @@ public class NewGLInteropResourceManager extends GLInteropResourceManager {
         glTexture = dxDevice.createSharedTexture(null,
                 D3D11_BIND_FLAG.D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG.D3D11_BIND_SHADER_RESOURCE,
                 width, height, interopDeviceHandle);
+
+        currentGlTextureWidth = width;
+        currentGlTextureHeight = height;
+        currentIsMinimized = Minecraft.getInstance().getWindow().isMinimized();
     }
 
     @Override
     public boolean presentSwapchain() {
         if (glTexture == null) return false;
+        dxDevice.waitForSwapChainSignal();
         dxDevice.blitSharedTextureToSwapChain(glTexture);
         dxDevice.swapChainPresent();
         return true;

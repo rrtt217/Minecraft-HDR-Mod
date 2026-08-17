@@ -29,6 +29,8 @@ public abstract class GLInteropResourceManager {
 
         lazyResourceInit(window);
 
+        resize(width, height);
+
         int newTexture = getNewTexture(window.handle(), currentGlTexture);
         
         // Check if we need to update the FBO (aka. resize)

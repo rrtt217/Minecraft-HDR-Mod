@@ -6,22 +6,9 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.core.interop.NewGLInteropResourceManager;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
-
-    @Inject(
-            method = "resize(II)V",
-            at = @At("TAIL")
-    )
-    void resizeSwapChain(int width, int height, CallbackInfo ci) {
-        HDRMod.glInteropResourceManager.resize(width, height);
-    }
-
     @WrapOperation(
             method = "render(Lnet/minecraft/client/DeltaTracker;Z)V",
             at = @At(
@@ -31,11 +18,6 @@ public class MixinGameRenderer {
             )
     )
     void waitForSwapChain(ProfilerFiller instance, String s, Operation<Void> original) {
-        if(HDRMod.glInteropResourceManager instanceof NewGLInteropResourceManager) {
-            instance.push("vsync");
-            ((NewGLInteropResourceManager) HDRMod.glInteropResourceManager).getDXDevice().waitForSwapChainSignal();
-            instance.pop();
-        }
         original.call(instance, s);
     }
 }
