@@ -11,7 +11,6 @@
     "debug.MixinDebugScreenEntryList",
     "debug.MixinGpuTexture",
     "debug.MixinRenderTarget",
-    "features.MixinGameRenderer",
     "features.MixinGpuSurface",
     "features.MixinRenderPass",
     "features.MixinScreenshot",
