@@ -11,7 +11,7 @@ import org.jspecify.annotations.Nullable;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.color.Enums;
-import xyz.rrtt217.HDRMod.util.Platform;
+import xyz.rrtt217.HDRMod.util.platform.Platform;
 
 public class HDRModDebugEntry implements DebugScreenEntry {
     @Override

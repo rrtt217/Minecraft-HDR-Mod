@@ -9,9 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.slf4j.LoggerFactory;
 import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
-import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
+import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
+import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.core.interop.GLInteropResourceManager;
+import xyz.rrtt217.HDRMod.core.interop.StubGLInteropResourceManager;
 import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.util.color.SDLColorManagementInfoProvider;
 
@@ -56,6 +59,8 @@ public final class HDRMod {
 
     public static ColorManagementInfoProvider colorManagementInfoProvider;
 
+    public static GLInteropResourceManager glInteropResourceManager;
+
     public HDRMod() {
     }
 
@@ -64,9 +69,12 @@ public final class HDRMod {
         if(configHolder == null) configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
         configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
         HDRModConfig config = configHolder.getConfig();
+        if(colorManagementInfoProvider == null) {
+            if (hasBlazeSdl) colorManagementInfoProvider = new SDLColorManagementInfoProvider();
+            else colorManagementInfoProvider = new ColorManagementInfoProvider(config);
+        }
         previousEnableHDR = config.enableHDR;
-        if(hasBlazeSdl) colorManagementInfoProvider = new SDLColorManagementInfoProvider();
-        else colorManagementInfoProvider = new ColorManagementInfoProvider();
+        glInteropResourceManager = new StubGLInteropResourceManager();
         LOGGER.debug("HDRMod Initialized!");
     }
 }

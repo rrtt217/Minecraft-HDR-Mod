@@ -1,0 +1,80 @@
+package xyz.rrtt217.HDRMod.mixin.init;
+
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.mojang.blaze3d.platform.*;
+import com.mojang.blaze3d.systems.GpuBackend;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFW;
+import org.spongepowered.asm.mixin.Final;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.rrtt217.HDRMod.HDRMod;
+import xyz.rrtt217.HDRMod.util.color.Enums;
+
+import java.nio.FloatBuffer;
+
+import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
+
+
+@Mixin(value = Window.class, priority = 1010)
+    public abstract class MixinWindow {
+    @Shadow
+    public abstract long handle();
+
+    @Shadow
+    @Final
+    private long handle;
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void hdr_mod$setupWindowData(WindowEventHandler eventHandler, DisplayData displayData, String fullscreenVideoModeString, boolean exclusiveFullscreen, String title, MonitorManager monitorManager, GpuBackend backend, CallbackInfo ci)    {
+        int bpc = HDRMod.colorManagementInfoProvider.getBitsPerChannel(this.handle);
+        float SDRWhiteLevel = HDRMod.colorManagementInfoProvider.getWindowSdrWhiteLevel(handle);
+        float maxLuminance = HDRMod.colorManagementInfoProvider.getWindowMaxLuminance(handle);
+        float minLuminance = HDRMod.colorManagementInfoProvider.getWindowMinLuminance(handle);
+        Enums.Primaries primaries = HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle);
+        Enums.TransferFunction tf = HDRMod.colorManagementInfoProvider.getWindowTransferFunction(handle);
+        LOGGER.info("Get {} bit buffer window with {} nit SDR white level, {} nit max luminance, {} nit min luminance, {} Primaries, {} Transfer function ", bpc, SDRWhiteLevel, maxLuminance, minLuminance, primaries, tf);
+        if(!hasBlazeSdl) {
+            int platform = GLFW.glfwGetPlatform();
+            if (platform == GLFW.GLFW_PLATFORM_WAYLAND)
+                LOGGER.info("SDR white level and luminances logged here may not be accurate at this time for Linux users.");
+            if ((platform == GLFW.GLFW_PLATFORM_WIN32) && (tf == Enums.TransferFunction.GAMMA22 || tf == Enums.TransferFunction.SRGB))
+                LOGGER.warn("Detected sRGB or Gamma2.2 EOTF, which probably means HDR isn't supported under current configuration.");
+            }
+        }
+    @Redirect(method = "setIcon", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GLX;getGlfwPlatform()I"))
+    private int hdr_mod$bypassWaylandCheckOnSetIcon(){
+        int i = GLX.getGlfwPlatform();
+        if(i == GLFW.GLFW_PLATFORM_WAYLAND) return GLFW.GLFW_PLATFORM_X11;
+        return i;
+    }
+    @WrapOperation(method = "setMode", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/VideoMode;getWidth()I"))
+    private int hdr_mod$getWidth(VideoMode instance, Operation<Integer> original){
+        FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
+        FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
+        GLFW.glfwGetWindowContentScale(handle, xscale, yscale);
+        float xscaleValue = xscale.get();
+        if(GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND){
+            // HDRMod.LOGGER.info("Scaled width: {}", Math.round(instance.getWidth() / xscaleValue));
+            return Math.round(original.call(instance) / xscaleValue);
+        }
+        else return instance.getWidth();
+    }
+    @WrapOperation(method = "setMode", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/VideoMode;getHeight()I"))
+    private int hdr_mod$getHeight(VideoMode instance, Operation<Integer> original){
+        FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
+        FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
+        GLFW.glfwGetWindowContentScale(handle, xscale, yscale);
+        float yscaleValue = yscale.get();
+        if(GLFW.glfwGetPlatform() == GLFW.GLFW_PLATFORM_WAYLAND){
+            // HDRMod.LOGGER.info("Scaled height: {}", Math.round(instance.getHeight() / yscaleValue));
+            return Math.round(original.call(instance) / yscaleValue);
+        }
+        else return instance.getHeight();
+    }
+}

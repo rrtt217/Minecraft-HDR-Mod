@@ -68,5 +68,10 @@ the output of the shader(aka. what is written to main render target in final pas
 ## Copyright
 The main HDR Mod repo is licensed under MIT. Bundled GLFW from Tom94's/mine fork is licensed under the zlib/libpng license.
 ## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=rrtt217/Minecraft-HDR-Mod&type=date&legend=top-left)](https://www.star-history.com/#rrtt217/Minecraft-HDR-Mod&type=date&legend=top-left)
+<a href="https://www.star-history.com/?repos=rrtt217%2FMinecraft-HDR-Mod&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=rrtt217/Minecraft-HDR-Mod&type=date&theme=dark&legend=top-left&sealed_token=yLu7zfhVCVaETCwB9n9U148Z36ThvTI4zBXnMMhFbEMISwy-dd4inKhnDUYzPNMOnsaG6aVfmY2Qv3QDUU862SyGZ1-pL1lQLR8G8E2l9b5rGsXo1K1CxwTAuf2rwHQKcah6sd2BciQdeMjDtqTe_ZF7cegbzU-jTSilcoaOC4w-tPWSYZuyoQYy5s-V" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=rrtt217/Minecraft-HDR-Mod&type=date&legend=top-left&sealed_token=yLu7zfhVCVaETCwB9n9U148Z36ThvTI4zBXnMMhFbEMISwy-dd4inKhnDUYzPNMOnsaG6aVfmY2Qv3QDUU862SyGZ1-pL1lQLR8G8E2l9b5rGsXo1K1CxwTAuf2rwHQKcah6sd2BciQdeMjDtqTe_ZF7cegbzU-jTSilcoaOC4w-tPWSYZuyoQYy5s-V" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=rrtt217/Minecraft-HDR-Mod&type=date&legend=top-left&sealed_token=yLu7zfhVCVaETCwB9n9U148Z36ThvTI4zBXnMMhFbEMISwy-dd4inKhnDUYzPNMOnsaG6aVfmY2Qv3QDUU862SyGZ1-pL1lQLR8G8E2l9b5rGsXo1K1CxwTAuf2rwHQKcah6sd2BciQdeMjDtqTe_ZF7cegbzU-jTSilcoaOC4w-tPWSYZuyoQYy5s-V" />
+ </picture>
+</a>

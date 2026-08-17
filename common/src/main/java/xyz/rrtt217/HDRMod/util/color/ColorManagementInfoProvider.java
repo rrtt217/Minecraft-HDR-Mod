@@ -6,6 +6,7 @@ import org.lwjgl.glfw.GLFW;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.util.glfw.GLFWColorManagementUtils;
 
 public class ColorManagementInfoProvider {
     HDRModConfig config;

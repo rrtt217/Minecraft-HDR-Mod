@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
-import xyz.rrtt217.HDRMod.util.LibraryExtractor;
-import xyz.rrtt217.HDRMod.util.Platform;
+import xyz.rrtt217.HDRMod.util.platform.LibraryExtractor;
+import xyz.rrtt217.HDRMod.util.platform.Platform;
 
 import java.util.HashMap;
 import java.util.List;

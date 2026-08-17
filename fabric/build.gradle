@@ -113,5 +113,5 @@ shadowJar {
 }
 
 publishMods {
-    file = jar.archiveFile
+    file = shadowJar.archiveFile
 }
