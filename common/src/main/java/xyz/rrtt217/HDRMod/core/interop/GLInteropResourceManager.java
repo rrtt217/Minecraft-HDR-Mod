@@ -20,8 +20,6 @@ public abstract class GLInteropResourceManager {
 
     // These functions are shared.
     public int replaceFbo(int originalFbo) {
-        if (!shouldReplaceFbo(originalFbo))
-            return originalFbo;
 
         Window window = Minecraft.getInstance().getWindow();
         int width = window.getWidth(), height = window.getHeight();
@@ -70,7 +68,7 @@ public abstract class GLInteropResourceManager {
         }
     }
 
-    boolean shouldReplaceFbo(int originalFbo) {
+    public boolean shouldReplaceFbo(int originalFbo) {
         return originalFbo == 0 && Platform.isWindows();
     }
 

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 import me.decce.ixeris.api.IxerisApi;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.opengl.GL30;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.util.glfw.GLFWDXGIUtils;
@@ -21,6 +20,7 @@ public class GLFWGLInteropResourceManager extends GLInteropResourceManager {
     public void resize(int width, int height) {
         boolean isMinimized = Minecraft.getInstance().getWindow().isMinimized();
         int newTexture = getNewTexture(Minecraft.getInstance().getWindow().handle(), currentGlTexture);
+        if (newTexture == 0) return;
         if(currentIsMinimized != isMinimized || currentGlTextureWidth != width || currentGlTextureHeight != height) {
             // Rebind Color Texture To FBO
             bindFrameBufferTextures(currentGlFbo, newTexture, 0, 0, GL30.GL_FRAMEBUFFER, false);

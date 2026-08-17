@@ -35,6 +35,7 @@ public class MixinCustomImGuiImplGl3 {
 
     @ModifyArg(method = "bind", at = @At(value = "INVOKE", target = "Lorg/lwjgl/opengl/GL32;glBindFramebuffer(II)V", ordinal = -1), index = 1)
     private int hdr_mod$useDxPboForImgui(int target){
+        if(!HDRMod.glInteropResourceManager.shouldReplaceFbo(target)) return target;
         return HDRMod.glInteropResourceManager.replaceFbo(target);
     }
 

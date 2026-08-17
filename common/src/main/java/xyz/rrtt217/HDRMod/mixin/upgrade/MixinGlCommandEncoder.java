@@ -18,6 +18,7 @@ public class MixinGlCommandEncoder {
     }
     @ModifyArg(method = "presentTexture", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/DirectStateAccess;blitFrameBuffers(IIIIIIIIIIII)V"), index = 1)
     private int hdr_mod$modifyPresentTexture(int i){
+        if(!HDRMod.glInteropResourceManager.shouldReplaceFbo(i)) return i;
         return HDRMod.glInteropResourceManager.replaceFbo(i);
     }
 }

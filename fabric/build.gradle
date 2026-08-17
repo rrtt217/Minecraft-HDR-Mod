@@ -61,7 +61,7 @@ dependencies {
     // Axiom refuse to start with modImplementation. Just use modCompileOnly, download one from modrinth and put it in run/mods.
     compileOnly "maven.modrinth:axiom:${axiom_version}-fabric,${minecraft_version}"
     compileOnly "maven.modrinth:flashback:${flashback_version}-fabric,${minecraft_version}"
-    implementation "maven.modrinth:blazesdl:0.0.20"
+    compileOnly "maven.modrinth:blazesdl:0.0.20"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"
