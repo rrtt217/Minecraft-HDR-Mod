@@ -70,6 +70,7 @@ public class NewGLInteropResourceManager extends GLInteropResourceManager {
     @Override
     public boolean presentSwapchain() {
         if (glTexture == null) return false;
+        dxDevice.waitForSwapChainSignal();
         dxDevice.blitSharedTextureToSwapChain(glTexture);
         dxDevice.swapChainPresent();
         return true;

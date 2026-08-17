@@ -9,7 +9,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.core.interop.NewGLInteropResourceManager;
 
 @Mixin(GameRenderer.class)
 public class MixinGameRenderer {
@@ -31,11 +30,6 @@ public class MixinGameRenderer {
             )
     )
     void waitForSwapChain(ProfilerFiller instance, String s, Operation<Void> original) {
-        if(HDRMod.glInteropResourceManager instanceof NewGLInteropResourceManager) {
-            instance.push("vsync");
-            ((NewGLInteropResourceManager) HDRMod.glInteropResourceManager).getDXDevice().waitForSwapChainSignal();
-            instance.pop();
-        }
         original.call(instance, s);
     }
 }
