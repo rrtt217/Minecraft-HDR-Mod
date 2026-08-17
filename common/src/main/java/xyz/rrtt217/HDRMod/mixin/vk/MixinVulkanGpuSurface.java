@@ -89,9 +89,9 @@ public class MixinVulkanGpuSurface {
 
     @Unique
     private boolean hdr_mod$isWayland() {
-        return (GLX.getGlfwPlatform() == GLFW.GLFW_PLATFORM_WAYLAND && !hasBlazeSdl
-                || (Objects.equals(SDLVideo.SDL_GetCurrentVideoDriver(), "wayland") && hasBlazeSdl)
-        );
+        if(!hasBlazeSdl)
+            return GLX.getGlfwPlatform() == GLFW.GLFW_PLATFORM_WAYLAND;
+        return Objects.equals(SDLVideo.SDL_GetCurrentVideoDriver(), "wayland");
     }
 
     @Unique
