@@ -52,7 +52,7 @@ public abstract class GLInteropResourceManager {
     }
 
 
-    void bindFrameBufferTextures(int k, int l, int m, int n, int o, boolean useStencil) {
+    static void bindFrameBufferTextures(int k, int l, int m, int n, int o, boolean useStencil) {
         int i = o == 0 ? GL30.GL_DRAW_FRAMEBUFFER : o;
         int j = GlStateManager.getFrameBuffer(i);
         GlStateManager._glBindFramebuffer(i, k);

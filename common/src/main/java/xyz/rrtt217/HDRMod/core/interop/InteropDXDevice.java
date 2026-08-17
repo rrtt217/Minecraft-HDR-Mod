@@ -1,6 +1,5 @@
 package xyz.rrtt217.HDRMod.core.interop;
 
-
 // With a lot of reference from https://github.com/sidit77/perfect_presentation.
 /*
     The MIT License (MIT)
@@ -27,7 +26,6 @@ package xyz.rrtt217.HDRMod.core.interop;
 */
 
 import com.mojang.blaze3d.opengl.GlStateManager;
-import com.mojang.blaze3d.textures.GpuTexture;
 import org.jetbrains.annotations.Nullable;
 import windows.win32.foundation.WAIT_EVENT;
 import windows.win32.graphics.direct3d.D3D_DRIVER_TYPE;

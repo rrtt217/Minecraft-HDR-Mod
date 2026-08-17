@@ -27,7 +27,6 @@
     "compat.iris.MixinIrisCompatibility",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
-    "compat.ixeris.MixinDXGIStateManager",
     "compat.ixeris.MixinGLFWColorManagementUtils",
     "compat.replaymod.MixinOpenGlFrameCapturer",
     "compat.replaymod.MixinPboOpenGlFrameCapturer",
