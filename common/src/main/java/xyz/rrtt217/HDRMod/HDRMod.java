@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.slf4j.LoggerFactory;
 import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
+import xyz.rrtt217.HDRMod.core.color.BrightnessValueControl;
 import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
 import org.slf4j.Logger;
@@ -31,20 +32,44 @@ public final class HDRMod {
 
     // Key Mapping.
     public static final KeyMapping.Category HDRModCategory = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("hdr_mod","main"));
-    public static final KeyMapping CUSTOM_KEYMAPPING = new KeyMapping(
+    public static final KeyMapping OPEN_CONFIG = new KeyMapping(
             "key.hdr_mod.open_config_menu", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             InputConstants.KEY_F9, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
-    public static final KeyMapping CUSTOM_KEYMAPPING_2 = new KeyMapping(
+    public static final KeyMapping HDR_SCREENSHOT = new KeyMapping(
             "key.hdr_mod.take_hdr_screenshot", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             InputConstants.KEY_F10, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
-    public static final KeyMapping CUSTOM_KEYMAPPING_3 = new KeyMapping(
+    public static final KeyMapping TOGGLE_HDR = new KeyMapping(
             "key.hdr_mod.toggle_hdr", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            HDRModCategory // The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping VALUE_UP = new KeyMapping(
+            "key.hdr_mod.value_up", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            HDRModCategory // The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping VALUE_DOWN = new KeyMapping(
+            "key.hdr_mod.value_down", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            HDRModCategory // The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping TOGGLE_VALUE_ADJUSTED = new KeyMapping(
+            "key.hdr_mod.toggle_value_adjusted", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            HDRModCategory // The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping TOGGLE_VALUE_ADJUSTED_BACKWARDS = new KeyMapping(
+            "key.hdr_mod.toggle_value_adjusted_backwards", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             -1, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
@@ -63,29 +88,48 @@ public final class HDRMod {
         // Register config.
         configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
         configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
+
         // Register Key Mapping.
-        KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
+        KeyMappingRegistry.register(OPEN_CONFIG);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
-            while (CUSTOM_KEYMAPPING.consumeClick()) {
+            while (OPEN_CONFIG.consumeClick()) {
                 Minecraft.getInstance().setScreen(AutoConfigClient.getConfigScreen(HDRModConfig.class, Minecraft.getInstance().screen).get());
             }
         });
-        KeyMappingRegistry.register(CUSTOM_KEYMAPPING_2);
+        KeyMappingRegistry.register(HDR_SCREENSHOT);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
-            while (CUSTOM_KEYMAPPING_2.consumeClick()) {
+            while (HDR_SCREENSHOT.consumeClick()) {
                 PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
                     minecraft.gui.getChat().addMessage(arg);
                     minecraft.getNarrator().saySystemChatQueued(arg);
                 }));
             }
         });
-        KeyMappingRegistry.register(CUSTOM_KEYMAPPING_3);
+        KeyMappingRegistry.register(TOGGLE_HDR);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
-            while (CUSTOM_KEYMAPPING_3.consumeClick()) {
+            while (TOGGLE_HDR.consumeClick()) {
                 HDRModConfig config = configHolder.getConfig();
                 config.enableHDR = !config.enableHDR;
                 configHolder.setConfig(config);
                 configHolder.save();
+            }
+        });
+        KeyMappingRegistry.register(VALUE_UP);
+        KeyMappingRegistry.register(VALUE_DOWN);
+        KeyMappingRegistry.register(TOGGLE_VALUE_ADJUSTED);
+        KeyMappingRegistry.register(TOGGLE_VALUE_ADJUSTED_BACKWARDS);
+        ClientTickEvent.CLIENT_POST.register(minecraft -> {
+            while (TOGGLE_VALUE_ADJUSTED.consumeClick()) {
+                BrightnessValueControl.valueSwitchAdjusted();
+            }
+            while (TOGGLE_VALUE_ADJUSTED_BACKWARDS.consumeClick()) {
+                BrightnessValueControl.valueSwitchAdjustedBackwards();
+            }
+            while (VALUE_UP.consumeClick()) {
+                BrightnessValueControl.valueAdjust(10);
+            }
+            while (VALUE_DOWN.consumeClick()) {
+                BrightnessValueControl.valueAdjust(-10);
             }
         });
 

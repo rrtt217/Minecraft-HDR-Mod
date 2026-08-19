@@ -53,12 +53,25 @@ public class ColorManagementInfoProvider {
         return customValue < 0 ? queryValue : customValue;
     }
     public float getCurrentUIBrightness(long handle) {
+        return (Minecraft.getInstance().screen != null || !IrisCompatibility.isShaderPackInUse() || config.hudBrightness < 0 || !config.enableHDR) ? getCurrentNonHudUIBrightness(handle) : getCurrentHudUIBrightness(handle);
+    }
+
+    public float getCurrentNonHudUIBrightness(long handle) {
         if(HDRMod.isReplayRendering) return config.replayUIBrightness;
-        float customValue = (Minecraft.getInstance().screen != null || !IrisCompatibility.isShaderPackInUse() || config.hudBrightness < 0 || !config.enableHDR) ? config.uiBrightness : config.hudBrightness;
+        float customValue = config.uiBrightness;
         float queryValue = getWindowSdrWhiteLevel(handle);
         if(queryValue <= 0) queryValue = 203.0F; // Default paper white.
         return customValue < 0 ? queryValue : customValue;
     }
+
+    public float getCurrentHudUIBrightness(long handle) {
+        if(HDRMod.isReplayRendering) return config.replayUIBrightness;
+        float customValue = config.hudBrightness;
+        float queryValue = getWindowSdrWhiteLevel(handle);
+        if(queryValue <= 0) queryValue = 203.0F; // Default paper white.
+        return customValue < 0 ? queryValue : customValue;
+    }
+
     public float getCurrentGameMinimumBrightness(long handle) {
         if(HDRMod.isReplayRendering) return config.replayGameMinimumBrightness;
         float customValue = config.customGameMinimumBrightness;
