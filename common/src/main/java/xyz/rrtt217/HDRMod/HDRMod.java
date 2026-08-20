@@ -133,6 +133,10 @@ public final class HDRMod {
             }
         });
 
+        ClientTickEvent.CLIENT_POST.register(minecraft -> {
+            BrightnessValueControl.consumeClick();
+        });
+
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         colorManagementInfoProvider = new ColorManagementInfoProvider(config);
         previousEnableHDR = config.enableHDR;

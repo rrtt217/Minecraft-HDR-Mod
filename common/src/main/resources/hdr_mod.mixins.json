@@ -5,20 +5,21 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
+    "compat.imblocker.MixinKeyboardHandler",
+    "compat.ixeris.MixinTitieScreen",
     "debug.MixinDebugScreenEntries",
     "debug.MixinDebugScreenEntryList",
-    "upgrade.MixinGlCommandEncoder",
-    "upgrade.MixinGlDevice",
+    "features.BossHealthOverlayAccessor",
     "features.MixinGlStateManager",
     "features.MixinKeyboardHandler",
-    "upgrade.MixinMainTarget",
-    "init.MixinMinecraft",
-    "init.MixinRenderSystem",
     "features.MixinRenderTarget",
     "features.MixinScreenshot",
+    "init.MixinMinecraft",
+    "init.MixinRenderSystem",
     "init.MixinWindow",
-    "compat.imblocker.MixinKeyboardHandler",
-    "compat.ixeris.MixinTitieScreen"
+    "upgrade.MixinGlCommandEncoder",
+    "upgrade.MixinGlDevice",
+    "upgrade.MixinMainTarget"
   ],
   "mixins": [
     "compat.iris.MixinIrisCompatibility",
