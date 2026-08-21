@@ -27,6 +27,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     public static boolean hasIxeris = false;
     public static boolean hasIMblocker = false;
     public static boolean hasIris = false;
+    public static boolean hasSr = false;
 
     @Override
     public void onLoad(String s) {
@@ -66,6 +67,9 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
 
         if(Platform.isModLoaded("iris") || Platform.isModLoaded("oculus")) {
             hasIris = true;
+        }
+        if(Platform.isModLoaded("super_resolution")) {
+            hasSr = true;
         }
     }
 

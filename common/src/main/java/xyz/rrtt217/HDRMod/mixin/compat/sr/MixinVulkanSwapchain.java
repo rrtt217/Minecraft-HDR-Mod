@@ -35,7 +35,7 @@ public class MixinVulkanSwapchain {
     @Expression("candidate.colorSpace() == 0")
     @ModifyExpressionValue(method = "chooseSurfaceFormat", at = @At("MIXINEXTRAS:EXPRESSION"))
     private boolean hdr_mod$changeRequiredColorSpace(boolean original, @Local(name = "candidate") VkSurfaceFormatKHR candidate) {
-        return candidate.colorSpace() == VK_COLOR_SPACE_PASS_THROUGH_EXT;
+        return candidate.colorSpace() == VK_COLOR_SPACE_HDR10_ST2084_EXT;
     }
 
     @Definition(id = "candidate", local = @Local(type = VkSurfaceFormatKHR.class))

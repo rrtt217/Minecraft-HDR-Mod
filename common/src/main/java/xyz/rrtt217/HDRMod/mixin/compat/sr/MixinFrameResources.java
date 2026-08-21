@@ -18,6 +18,8 @@ import xyz.rrtt217.HDRMod.util.color.Enums;
 
 import java.lang.reflect.Constructor;
 
+import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
+
 @Mixin(FrameResources.class)
 public class MixinFrameResources {
     private ColorTransformRenderer finalColorTransformRenderer;
@@ -40,7 +42,7 @@ public class MixinFrameResources {
         }
         try {
             GpuTextureAdapter adapter = (GpuTextureAdapter) gpuTextureAdapterConstructor.newInstance(texture);
-            if(finalColorTextureView.texture() != adapter){
+            if(finalColorTextureView != null && finalColorTextureView.texture() != adapter){
                 finalColorTextureView.close();
                 finalColorTextureView = null;
             }
@@ -61,6 +63,7 @@ public class MixinFrameResources {
             finalColorTransformRenderer.render();
             return new GlOnlyNameTexture(() -> TextureFormat.RGBA16, () -> finalColorTransformRenderer.getDstTexture().getWidth(0), () -> finalColorTransformRenderer.getDstTexture().getHeight(0), () -> (long)((GlTexture) finalColorTransformRenderer.getDstTexture()).glId());
         } catch (Exception e) {
+            LOGGER.warn("Error while trying to render gl texture", e);
             return texture;
         }
     }
@@ -79,7 +82,7 @@ public class MixinFrameResources {
         }
         try {
             GpuTextureAdapter adapter = (GpuTextureAdapter) gpuTextureAdapterConstructor.newInstance(texture);
-            if(hudlessColorTextureView.texture() != adapter){
+            if(hudlessColorTextureView != null && hudlessColorTextureView.texture() != adapter){
                 hudlessColorTextureView.close();
                 hudlessColorTextureView = null;
             }
@@ -100,6 +103,7 @@ public class MixinFrameResources {
             hudlessColorTransformRenderer.render();
             return new GlOnlyNameTexture(() -> TextureFormat.RGBA16, () -> hudlessColorTransformRenderer.getDstTexture().getWidth(0), () -> hudlessColorTransformRenderer.getDstTexture().getHeight(0), () -> (long)((GlTexture) hudlessColorTransformRenderer.getDstTexture()).glId());
         } catch (Exception e) {
+            LOGGER.warn("Error while trying to render gl texture", e);
             return texture;
         }
     }

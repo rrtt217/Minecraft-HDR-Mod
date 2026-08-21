@@ -3,6 +3,7 @@ package xyz.rrtt217.HDRMod;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
+import io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -12,6 +13,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.slf4j.LoggerFactory;
 import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
+import xyz.rrtt217.HDRMod.compat.sr.SRVulkanPresentationColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.core.color.BrightnessValueControl;
 import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
@@ -20,6 +22,7 @@ import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
 
 import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
 
 public final class HDRMod {
     public static final String MOD_ID = "hdr_mod";
@@ -138,7 +141,10 @@ public final class HDRMod {
         });
 
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        colorManagementInfoProvider = new ColorManagementInfoProvider(config);
+        if(hasSr && VulkanPresentationFeature.isRequested()) {
+            colorManagementInfoProvider = new SRVulkanPresentationColorManagementInfoProvider();
+        }
+        else colorManagementInfoProvider = new ColorManagementInfoProvider(config);
         previousEnableHDR = config.enableHDR;
         LOGGER.debug("HDRMod Initialized!");
     }
