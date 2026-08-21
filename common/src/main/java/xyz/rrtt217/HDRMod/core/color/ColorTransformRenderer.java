@@ -32,15 +32,15 @@ public class ColorTransformRenderer implements AutoCloseable {
         COLOR_TRANSFORM = builder.build();
     }
     public static final RenderPipeline COLOR_TRANSFORM;
-    private RenderTarget srcTarget;
+    private GpuTextureView srcTextureView;
     private GpuTexture dstTexture;
     private GpuTextureView dstTextureView;
     private int dstTextureFormat;
     private int dstReadPixelFormat;
     private ColorTransformUBO colorTransformUbo;
     private GpuBuffer colorTransformBuffer;
-    public ColorTransformRenderer(RenderTarget srcTarget, String string) {
-        this.srcTarget = srcTarget;
+    public ColorTransformRenderer(GpuTextureView srcTextureView, String string) {
+        this.srcTextureView = srcTextureView;
         this.colorTransformUbo = new ColorTransformUBO(string);
         // Set a group of default UBO values. You may call updateColorTransformUniforms manually to update later.
         updateColorTransformUniforms(203.0F, 0.0F, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
@@ -48,8 +48,11 @@ public class ColorTransformRenderer implements AutoCloseable {
         TextureUpgradeUtils.setTargetReadPixelFormat(GL30.GL_HALF_FLOAT);
         this.dstReadPixelFormat = GL30.GL_HALF_FLOAT;
         this.dstTextureFormat = GL30.GL_RGBA16F;
-        this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, TextureFormat.RGBA8, srcTarget.width, srcTarget.height, 1, 1);
+        this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, TextureFormat.RGBA8, srcTextureView.getWidth(0), srcTextureView.getHeight(0), 1, 1);
         this.dstTextureView = RenderSystem.getDevice().createTextureView(this.dstTexture);
+    }
+    public ColorTransformRenderer(RenderTarget srcTarget, String string) {
+        this(srcTarget.getColorTextureView(), string);
     }
     public void updateColorTransformUniforms(float UIBrightness, float EotfEmulate, Enums.Primaries Primaries, Enums.TransferFunction TransferFunction){
         updateColorTransformUniforms(UIBrightness, EotfEmulate, Primaries.getId(), TransferFunction.getId());
@@ -66,7 +69,7 @@ public class ColorTransformRenderer implements AutoCloseable {
         }
     }
     public void resize(){
-        if(this.dstTexture.getHeight(0) != this.srcTarget.height || this.dstTexture.getWidth(0) != this.srcTarget.width){
+        if(this.dstTexture.getHeight(0) != this.srcTextureView.getHeight(0) || this.dstTexture.getWidth(0) != this.srcTextureView.getHeight(0)){
             this.recreateTexture();
         }
     }
@@ -75,29 +78,31 @@ public class ColorTransformRenderer implements AutoCloseable {
         this.dstTexture.close();
         TextureUpgradeUtils.setTargetTextureFormat(this.dstTextureFormat);
         TextureUpgradeUtils.setTargetReadPixelFormat(this.dstReadPixelFormat);
-        this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, TextureFormat.RGBA8, srcTarget.width, srcTarget.height, 1, 1);
+        this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, TextureFormat.RGBA8, srcTextureView.getWidth(0), srcTextureView.getHeight(0), 1, 1);
         this.dstTextureView = RenderSystem.getDevice().createTextureView(this.dstTexture);
     }
     public void render(){
         this.resize();
         // The actual renderer.
-        if (srcTarget.getColorTextureView() != null) {
+        if (srcTextureView != null) {
             try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Color Transform", this.dstTextureView, OptionalInt.empty())) {
                 renderPass.setPipeline(COLOR_TRANSFORM);
                 RenderSystem.bindDefaultUniforms(renderPass);
                 if (this.colorTransformUbo != null) renderPass.setUniform("ColorTransform", this.colorTransformBuffer);
-                renderPass.bindTexture("InSampler", srcTarget.getColorTextureView(), RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
+                renderPass.bindTexture("InSampler", srcTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
                 renderPass.draw(0, 3);
             }
         } else {
             throw new IllegalStateException("colorTexture is null");
         }
     }
-    public RenderTarget getSrcTarget(){
-        return this.srcTarget;
+
+    public GpuTextureView getSrcTextureView(){
+        return this.srcTextureView;
     }
-    public void setSrcTarget(RenderTarget srcTarget){
-        this.srcTarget = srcTarget;
+
+    public void setSrcTextureView(GpuTextureView srcTextureView){
+        this.srcTextureView = srcTextureView;
         this.recreateTexture();
     }
     public GpuTexture getDstTexture(){
@@ -108,7 +113,7 @@ public class ColorTransformRenderer implements AutoCloseable {
     }
     public void close(){
         colorTransformBuffer = null;
-        srcTarget = null;
+        srcTextureView = null;
         colorTransformUbo.close();
         dstTextureView.close();
         dstTexture.close();
