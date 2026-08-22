@@ -22,7 +22,7 @@ public class MixinRenderSystem {
     private static void hdr_mod$colorManagementHint(CallbackInfoReturnable<TimeSource.NanoTimeSource> cir) {
         if(HDRModMixinPlugin.hasGlfwLib) {
             SetupBeforeGLFWInit.setup();
-            if(!hasSr || !VulkanPresentationFeature.isRequested()) GLFW.glfwInitHint(0x00026002,GLFW.GLFW_TRUE);
+            GLFW.glfwInitHint(0x00026002,GLFW.GLFW_TRUE);
             if(Platform.isWindows()) {
                 GLFW.glfwInitHint(0x00050005,GLFW.GLFW_FALSE);
             }

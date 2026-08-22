@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
+import com.sun.jna.Platform;
 import io.homo.superresolution.common.presentation.vulkan.VulkanSurface;
 import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 import org.spongepowered.asm.mixin.Final;
@@ -35,7 +36,7 @@ public class MixinVulkanSwapchain {
     @Expression("candidate.colorSpace() == 0")
     @ModifyExpressionValue(method = "chooseSurfaceFormat", at = @At("MIXINEXTRAS:EXPRESSION"))
     private boolean hdr_mod$changeRequiredColorSpace(boolean original, @Local(name = "candidate") VkSurfaceFormatKHR candidate) {
-        return candidate.colorSpace() == VK_COLOR_SPACE_HDR10_ST2084_EXT;
+        return candidate.colorSpace() == (Platform.isLinux() ? VK_COLOR_SPACE_PASS_THROUGH_EXT : VK_COLOR_SPACE_HDR10_ST2084_EXT);
     }
 
     @Definition(id = "candidate", local = @Local(type = VkSurfaceFormatKHR.class))
