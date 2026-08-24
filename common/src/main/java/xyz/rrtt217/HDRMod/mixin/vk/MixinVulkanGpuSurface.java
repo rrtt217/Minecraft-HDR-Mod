@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.color.Enums;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.util.color.VulkanColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.util.color.VulkanSDLColorManagementInfoProvider;
 

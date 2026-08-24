@@ -19,7 +19,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.state.ScreenshotStateListener;
 import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
-import xyz.rrtt217.HDRMod.util.color.Enums;
 
 import java.io.File;
 import java.util.function.Consumer;
@@ -32,17 +31,17 @@ public class MixinScreenshot {
     private static void onVanillaScreenshotCalled(File file, @Nullable String string, RenderTarget renderTarget, int i, Consumer<Component> consumer, CallbackInfo ci){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(ScreenshotStateListener.getVanillaF2Screenshot()){
-            if (config.behaviorOnVanillaF2 != Enums.BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA) {
+            if (config.behaviorOnVanillaF2 != ScreenshotStateListener.BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA) {
                 PngjHDRScreenshot.grab(file, string, renderTarget, consumer);
-                if (config.behaviorOnVanillaF2 == Enums.BehaviorOnVanillaScreenshotCalled.ONLY_HDR)
+                if (config.behaviorOnVanillaF2 == ScreenshotStateListener.BehaviorOnVanillaScreenshotCalled.ONLY_HDR)
                     ci.cancel();
             }
             ScreenshotStateListener.unsetVanillaF2Screenshot();
         }
         else {
-            if (config.behaviorOnVanillaScreenshotCalled != Enums.BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA) {
+            if (config.behaviorOnVanillaScreenshotCalled != ScreenshotStateListener.BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA) {
                 PngjHDRScreenshot.grab(file, string, renderTarget, consumer);
-                if (config.behaviorOnVanillaScreenshotCalled == Enums.BehaviorOnVanillaScreenshotCalled.ONLY_HDR)
+                if (config.behaviorOnVanillaScreenshotCalled == ScreenshotStateListener.BehaviorOnVanillaScreenshotCalled.ONLY_HDR)
                     ci.cancel();
             }
         }

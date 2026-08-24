@@ -1,14 +1,19 @@
 package xyz.rrtt217.HDRMod;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
+import net.irisshaders.iris.Iris;
+import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.slf4j.LoggerFactory;
-import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
+import xyz.rrtt217.HDRMod.compat.sr.SRVulkanPresentationColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.core.api.HDRModApiImpl;
+import xyz.rrtt217.HDRMod.core.color.BrightnessValueControl;
 import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
 import org.slf4j.Logger;
@@ -18,7 +23,8 @@ import xyz.rrtt217.HDRMod.core.interop.StubGLInteropResourceManager;
 import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.util.color.SDLColorManagementInfoProvider;
 
-import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasIris;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
 
 public final class HDRMod {
@@ -32,20 +38,44 @@ public final class HDRMod {
 
     // Key Mapping.
     public static final KeyMapping.Category HDRModCategory = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("hdr_mod","main"));
-    public static final KeyMapping CUSTOM_KEYMAPPING = new KeyMapping(
+    public static final KeyMapping OPEN_CONFIG = new KeyMapping(
             "key.hdr_mod.open_config_menu", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             InputConstants.KEY_F9, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
-    public static final KeyMapping CUSTOM_KEYMAPPING_2 = new KeyMapping(
+    public static final KeyMapping HDR_SCREENSHOT = new KeyMapping(
             "key.hdr_mod.take_hdr_screenshot", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             InputConstants.KEY_F10, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
-    public static final KeyMapping CUSTOM_KEYMAPPING_3 = new KeyMapping(
+    public static final KeyMapping TOGGLE_HDR = new KeyMapping(
             "key.hdr_mod.toggle_hdr", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            HDRModCategory // The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping VALUE_UP = new KeyMapping(
+            "key.hdr_mod.value_up", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            HDRModCategory // The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping VALUE_DOWN = new KeyMapping(
+            "key.hdr_mod.value_down", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            HDRModCategory // The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping TOGGLE_VALUE_ADJUSTED = new KeyMapping(
+            "key.hdr_mod.toggle_value_adjusted", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            HDRModCategory // The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping TOGGLE_VALUE_ADJUSTED_BACKWARDS = new KeyMapping(
+            "key.hdr_mod.toggle_value_adjusted_backwards", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             -1, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
@@ -57,6 +87,8 @@ public final class HDRMod {
 
     public static ConfigHolder<HDRModConfig> configHolder;
 
+    public static HDRModApiImpl apiImpl;
+
     public static ColorManagementInfoProvider colorManagementInfoProvider;
 
     public static GLInteropResourceManager glInteropResourceManager;
@@ -67,14 +99,36 @@ public final class HDRMod {
     public static void init() {
         // Register config.
         if(configHolder == null) configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-        configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
         HDRModConfig config = configHolder.getConfig();
         if(colorManagementInfoProvider == null) {
-            if (hasBlazeSdl) colorManagementInfoProvider = new SDLColorManagementInfoProvider();
-            else colorManagementInfoProvider = new ColorManagementInfoProvider(config);
+            if (hasSr && VulkanPresentationFeature.isRequested()) {
+                colorManagementInfoProvider = new SRVulkanPresentationColorManagementInfoProvider();
+            } else if (hasBlazeSdl) {
+                colorManagementInfoProvider = new SDLColorManagementInfoProvider();
+            } else {
+                colorManagementInfoProvider = new ColorManagementInfoProvider(config);
+            }
         }
-        previousEnableHDR = config.enableHDR;
         glInteropResourceManager = new StubGLInteropResourceManager();
+
+        apiImpl = new HDRModApiImpl();
+        apiImpl.previousEnableHDR = config.enableHDR;
+
+        if(hasIris){
+            apiImpl.addHDRStateChangeListener(state -> {
+                if(IrisApi.getInstance().isShaderPackInUse()){
+                    try{
+                        Iris.reload();
+                    }
+                    catch (Exception ignored){}
+                }
+            });
+            // Currently we can't be better without a lot more work.
+            apiImpl.addHDRCompatibleShaderpackStateSupplier(IrisApi.getInstance()::isShaderPackInUse);
+        }
+
+        configHolder.registerSaveListener(apiImpl::onConfigSave);
+
         LOGGER.debug("HDRMod Initialized!");
     }
 }

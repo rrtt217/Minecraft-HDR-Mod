@@ -21,7 +21,7 @@ import org.jspecify.annotations.Nullable;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
-import xyz.rrtt217.HDRMod.util.color.Enums;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.util.platform.LibraryExtractor;
 
 import java.io.File;
@@ -173,7 +173,7 @@ public class PngjHDRScreenshot {
         }
         // Update ScreenshotColorTransformRenderer.srcTextureView.
         if(ScreenshotColorTransformRenderer.getSrcTextureView() != renderTarget.getColorTextureView()){
-            ScreenshotColorTransformRenderer.setSrcSrcTextureView(renderTarget.getColorTextureView());
+            ScreenshotColorTransformRenderer.setSrcTextureView(renderTarget.getColorTextureView());
         }
         ScreenshotColorTransformRenderer.updateColorTransformUniforms(
                 colorManagementInfoProvider.getCurrentUIBrightness(Minecraft.getInstance().getWindow().handle()), // For UI Brightness

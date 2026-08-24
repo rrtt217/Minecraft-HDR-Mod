@@ -29,6 +29,13 @@ configurations {
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
+    all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'org.lwjgl' && details.requested.name.startsWith('lwjgl') && !details.requested.name.contains("vulkan") && !details.requested.name.contains("vma")) {
+                details.useVersion '3.4.1'
+            }
+        }
+    }
 
     // Files in this configuration will be bundled into your mod using the Shadow plugin.
     // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
@@ -76,6 +83,16 @@ dependencies {
     implementation "io.github.douira:glsl-transformer:3.0.0-pre3"
     implementation "com.moulberry:mixinconstraints:1.0.8"
     implementation "com.moulberry:lattice:2.1.0"
+    localRuntime "com.electronwill.night-config:core:3.9.0"
+    localRuntime "com.electronwill.night-config:toml:3.9.0"
+    localRuntime "net.neoforged:bus:8.0.5"
+    localRuntime "io.github.spair:imgui-java-app:$imgui_version"
+    localRuntime "io.github.spair:imgui-java-binding:$imgui_version"
+    localRuntime "io.github.spair:imgui-java-lwjgl3:$imgui_version"
+    localRuntime "org.lwjgl:lwjgl-vulkan:3.4.1"
+    localRuntime "org.lwjgl:lwjgl-vma:3.4.1"
+    localRuntime "org.lwjgl:lwjgl-vma::natives-windows"
+    localRuntime "org.lwjgl:lwjgl-vma::natives-linux"
 
     implementation 'ar.com.hjg:pngj:2.1.0'
     implementation "org.lwjgl:lwjgl-sdl:3.4.1"
@@ -85,6 +102,7 @@ dependencies {
     //modLocalRuntime "maven.modrinth:spark:1.10.156-fabric"
     //modLocalRuntime "maven.modrinth:fabric-permissions-api:0.6.1"
     //localRuntime "maven.modrinth:lambdynamiclights:4.10.2+26.1.2"
+    localRuntime "maven.modrinth:superresolution:26.1-${sr_version}+gl-fabric"
 
     common(project(path: ":common")) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')

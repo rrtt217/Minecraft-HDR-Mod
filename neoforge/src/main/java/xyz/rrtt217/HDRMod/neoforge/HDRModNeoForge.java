@@ -31,8 +31,12 @@ public final class HDRModNeoForge {
     @SubscribeEvent // on the mod event bus only on the physical client
     public void registerBindings(RegisterKeyMappingsEvent event) {
         event.registerCategory(HDRModCategory);
-        event.register(CUSTOM_KEYMAPPING);
-        event.register(CUSTOM_KEYMAPPING_2);
-        event.register(CUSTOM_KEYMAPPING_3);
+        event.register(OPEN_CONFIG);
+        event.register(HDR_SCREENSHOT);
+        event.register(TOGGLE_HDR);
+        event.register(VALUE_UP);
+        event.register(VALUE_DOWN);
+        event.register(TOGGLE_VALUE_ADJUSTED);
+        event.register(TOGGLE_VALUE_ADJUSTED_BACKWARDS);
     }
 }

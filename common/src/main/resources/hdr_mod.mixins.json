@@ -11,6 +11,8 @@
     "debug.MixinDebugScreenEntryList",
     "debug.MixinGpuTexture",
     "debug.MixinRenderTarget",
+    "features.BossHealthOverlayAccessor",
+    "features.KeyMappingAccessor",
     "features.MixinGpuSurface",
     "features.MixinRenderPass",
     "features.MixinScreenshot",
@@ -33,7 +35,6 @@
     "vk.MixinVulkanInstance"
   ],
   "mixins": [
-    "compat.iris.MixinIrisCompatibility",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinIrisPipelines",
     "compat.iris.MixinStandardMacros",
@@ -41,8 +42,14 @@
     "compat.replaymod.MixinOpenGlFrameCapturer",
     "compat.replaymod.MixinPboOpenGlFrameCapturer",
     "compat.replaymod.MixinRenderSettingsEncodingPreset",
-    "compat.sodium.MixinShaderChunkRenderer"
+    "compat.sodium.MixinShaderChunkRenderer",
+    "compat.sr.MixinFrameResources",
+    "compat.sr.MixinVulkanSwapchain",
+    "compat.sr.VulkanSurfaceAccessor"
   ],
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  },
   "injectors": {
     "defaultRequire": 1
   }

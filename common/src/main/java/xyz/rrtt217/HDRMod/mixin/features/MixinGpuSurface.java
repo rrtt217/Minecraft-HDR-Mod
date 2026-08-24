@@ -31,7 +31,7 @@ public class MixinGpuSurface {
                 HDRMod.colorManagementInfoProvider.getCurrentTransferFunction(handle)
         );
         if (minecraft.gameRenderer.mainRenderTarget().getColorTextureView() != null && !textureView.equals(HDRMod.PresentationColorTransformRenderer.getSrcTextureView()))
-            HDRMod.PresentationColorTransformRenderer.setSrcSrcTextureView(textureView);
+            HDRMod.PresentationColorTransformRenderer.setSrcTextureView(textureView);
         HDRMod.PresentationColorTransformRenderer.render();
 
         if(!config.forceDisableBeforeBlitPipeline) return PresentationColorTransformRenderer.getDstTextureView();

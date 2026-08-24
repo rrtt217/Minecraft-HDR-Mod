@@ -21,13 +21,14 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     private final String IXERIS_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.ixeris.";
     private final String IMBLOCKER_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.imblocker.";
     private final String IRIS_COMPAT_MIXIN_CLASS_START = "xyz.rrtt217.HDRMod.mixin.compat.iris.";
-    private final String LIBRARY_VERSION = "3.5.8";
+    private final String LIBRARY_VERSION = "3.5.9";
     public static final Logger LOGGER = LoggerFactory.getLogger("hdr_mod_mixin_plugin");
     public static boolean hasGlfwLib = false;
     public static boolean hasIxeris = false;
     public static boolean hasIMblocker = false;
     public static boolean hasIris = false;
     public static boolean hasBlazeSdl = false;
+    public static boolean hasSr = false;
 
     @Override
     public void onLoad(String s) {
@@ -70,6 +71,9 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
 
         if(Platform.isModLoaded("iris") || Platform.isModLoaded("oculus")) {
             hasIris = true;
+        }
+        if(Platform.isModLoaded("super_resolution")) {
+            hasSr = true;
         }
     }
 

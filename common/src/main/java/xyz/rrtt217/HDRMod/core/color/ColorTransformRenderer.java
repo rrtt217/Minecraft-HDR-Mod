@@ -15,7 +15,7 @@ import com.mojang.blaze3d.textures.GpuTextureView;
 import com.mojang.blaze3d.GpuFormat;
 import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.resources.Identifier;
-import xyz.rrtt217.HDRMod.util.color.Enums;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 
 import java.util.Optional;
 
@@ -104,8 +104,8 @@ public class ColorTransformRenderer implements AutoCloseable {
     public GpuTextureView getSrcTextureView(){
         return this.srcTextureView;
     }
-    public void setSrcSrcTextureView(GpuTextureView SrcTextureView){
-        this.srcTextureView = SrcTextureView;
+    public void setSrcTextureView(GpuTextureView srcTextureView){
+        this.srcTextureView = srcTextureView;
         this.recreateTexture();
     }
     public GpuTexture getDstTexture(){

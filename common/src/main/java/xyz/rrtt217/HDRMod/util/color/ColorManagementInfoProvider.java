@@ -4,11 +4,15 @@ import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
+import xyz.rrtt217.HDRMod.api.color.ColorManagementInfo;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.core.api.HDRModApiImpl;
 import xyz.rrtt217.HDRMod.util.glfw.GLFWColorManagementUtils;
 
-public class ColorManagementInfoProvider {
+import java.util.Optional;
+
+public class ColorManagementInfoProvider implements ColorManagementInfo {
     HDRModConfig config;
     int bitsPerChannel = 0;
     public ColorManagementInfoProvider(HDRModConfig config) {
@@ -53,12 +57,25 @@ public class ColorManagementInfoProvider {
         return customValue < 0 ? queryValue : customValue;
     }
     public float getCurrentUIBrightness(long handle) {
+        return (Minecraft.getInstance().screen != null || !Optional.ofNullable(HDRMod.apiImpl).map(HDRModApiImpl::isHDRCompatibleShaderpackInUse).orElse(false) || config.hudBrightness < 0 || !config.enableHDR) ? getCurrentNonHudUIBrightness(handle) : getCurrentHudUIBrightness(handle);
+    }
+
+    public float getCurrentNonHudUIBrightness(long handle) {
         if(HDRMod.isReplayRendering) return config.replayUIBrightness;
-        float customValue = (Minecraft.getInstance().gui.screen() != null || !IrisCompatibility.isShaderPackInUse() || config.hudBrightness < 0 || !config.enableHDR) ? config.uiBrightness : config.hudBrightness;
+        float customValue = config.uiBrightness;
         float queryValue = getWindowSdrWhiteLevel(handle);
         if(queryValue <= 0) queryValue = 203.0F; // Default paper white.
         return customValue < 0 ? queryValue : customValue;
     }
+
+    public float getCurrentHudUIBrightness(long handle) {
+        if(HDRMod.isReplayRendering) return config.replayUIBrightness;
+        float customValue = config.hudBrightness;
+        float queryValue = getWindowSdrWhiteLevel(handle);
+        if(queryValue <= 0) queryValue = 203.0F; // Default paper white.
+        return customValue < 0 ? queryValue : customValue;
+    }
+
     public float getCurrentGameMinimumBrightness(long handle) {
         if(HDRMod.isReplayRendering) return config.replayGameMinimumBrightness;
         float customValue = config.customGameMinimumBrightness;

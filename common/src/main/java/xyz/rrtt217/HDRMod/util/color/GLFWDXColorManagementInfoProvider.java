@@ -19,6 +19,7 @@ import windows.win32.graphics.dxgi.IDXGISwapChain;
 import windows.win32.graphics.gdi.MONITOR_FROM_FLAGS;
 import windows.win32.graphics.gdi.MONITORINFO;
 import windows.win32.graphics.gdi.MONITORINFOEXW;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.core.interop.InteropDXDevice;
 
 import java.lang.foreign.Arena;
