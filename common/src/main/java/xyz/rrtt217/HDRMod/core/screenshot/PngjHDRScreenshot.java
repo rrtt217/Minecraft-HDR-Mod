@@ -22,7 +22,7 @@ import org.lwjgl.opengl.GL30;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
-import xyz.rrtt217.HDRMod.util.color.Enums;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.util.glfw.GLFWColorManagementUtils;
 import xyz.rrtt217.HDRMod.util.platform.LibraryExtractor;
 import xyz.rrtt217.HDRMod.util.state.TextureUpgradeUtils;
@@ -175,8 +175,8 @@ public class PngjHDRScreenshot {
             ScreenshotColorTransformRenderer = new ColorTransformRenderer(renderTarget, "Screenshot");
         }
         // Update ScreenshotColorTransformRenderer.srcTarget.
-        if(ScreenshotColorTransformRenderer.getSrcTarget() != renderTarget){
-            ScreenshotColorTransformRenderer.setSrcTarget(renderTarget);
+        if(ScreenshotColorTransformRenderer.getSrcTextureView() != renderTarget.getColorTextureView()){
+            ScreenshotColorTransformRenderer.setSrcTextureView(renderTarget.getColorTextureView());
         }
 
         long handle = Minecraft.getInstance().getWindow().handle();

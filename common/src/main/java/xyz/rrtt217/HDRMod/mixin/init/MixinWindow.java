@@ -16,8 +16,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import oshi.SystemInfo;
+import oshi.hardware.GraphicsCard;
+import oshi.hardware.HardwareAbstractionLayer;
+import xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.util.color.Enums;
 
 import java.nio.FloatBuffer;
 

@@ -27,6 +27,10 @@ public class MixinRenderTarget {
     @Nullable
     protected GpuTexture colorTexture;
 
+    @Shadow
+    @Nullable
+    protected GpuTextureView colorTextureView;
+
     @Inject(method = "blitToScreen", at = @At("HEAD"))
     private void hdr_mod$beforeBlitRenderer(CallbackInfo ci) {
         RenderSystem.assertOnRenderThread();
@@ -42,8 +46,8 @@ public class MixinRenderTarget {
                 HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle),
                 HDRMod.colorManagementInfoProvider.getCurrentTransferFunction(handle)
         );
-        if (this.colorTexture != null && !this.colorTexture.equals(HDRMod.PresentationColorTransformRenderer.getSrcTarget().getColorTexture()))
-            HDRMod.PresentationColorTransformRenderer.setSrcTarget((RenderTarget) (Object) this);
+        if (this.colorTextureView != null && !this.colorTextureView.equals(HDRMod.PresentationColorTransformRenderer.getSrcTextureView()))
+            HDRMod.PresentationColorTransformRenderer.setSrcTextureView(((RenderTarget) (Object) this).getColorTextureView());
         HDRMod.PresentationColorTransformRenderer.render();
     }
 @ModifyArg(method = "blitToScreen", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;presentTexture(Lcom/mojang/blaze3d/textures/GpuTextureView;)V"), index = 0)

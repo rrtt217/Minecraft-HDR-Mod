@@ -65,7 +65,19 @@
 
   "text.autoconfig.hdr_mod.title": "HDR Mod Config",
 
+  "text.autoconfig.hdr_mod.option.displayBrightnessBar": "Display Brightness Adjustment Bar",
+  "text.autoconfig.hdr_mod.option.displayBrightnessBar.@Tooltip": "Show a bar on screen when adjusting brightness;\nwhen disabled, only the current value is shown as an overlay message.",
+  "text.autoconfig.hdr_mod.option.initialStep": "Brightness Key Initial Step",
+  "text.autoconfig.hdr_mod.option.initialStep.@Tooltip": "In nits, the initial amount of adjustment when pressing the brightness keys.\nIf \"Round Brightness Adjustment To Initial Step\" is enabled, this value is also used as the rounding unit.",
+  "text.autoconfig.hdr_mod.option.timeFactor": "Brightness Key Acceleration Factor",
+  "text.autoconfig.hdr_mod.option.timeFactor.@Tooltip": "The longer the brightness key is held, the larger each adjustment becomes,\ngrowing per tick by this factor.",
+  "text.autoconfig.hdr_mod.option.maxTicks": "Brightness Key Max Held Ticks",
+  "text.autoconfig.hdr_mod.option.maxTicks.@Tooltip": "The maximum number of ticks counted for brightness key acceleration.",
+  "text.autoconfig.hdr_mod.option.roundStepToInitial": "Round Brightness Adjustment To Initial Step",
+  "text.autoconfig.hdr_mod.option.roundStepToInitial.@Tooltip": "When enabled, brightness adjustments are rounded to multiples of the initial step.",
+
   "text.autoconfig.hdr_mod.category.general": "General",
+  "text.autoconfig.hdr_mod.category.brightness": "Brightness Control",
   "text.autoconfig.hdr_mod.category.advanced": "Advanced",
   "text.autoconfig.hdr_mod.category.screenshot": "Screenshot",
   "text.autoconfig.hdr_mod.category.replay": "Replay Mod",
@@ -75,5 +87,7 @@
   "key.hdr_mod.open_config_menu": "Open Config Menu",
   "key.hdr_mod.take_hdr_screenshot": "Take HDR Screenshot",
   "key.hdr_mod.toggle_hdr": "Toggle HDR",
-  "key.category.hdr_mod.main": "HDR Mod"
+  "key.category.hdr_mod.main": "HDR Mod",
+
+  "text.hdr_mod.brightness_control.auto": "(Auto Set)"
 }

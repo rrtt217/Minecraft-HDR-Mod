@@ -11,6 +11,8 @@
     "upgrade.MixinGlCommandEncoder",
     "upgrade.MixinGlDevice",
     "features.MixinGlStateManager",
+    "features.BossHealthOverlayAccessor",
+    "features.KeyMappingAccessor",
     "init.MixinGLX",
     "features.MixinKeyboardHandler",
     "upgrade.MixinMainTarget",
@@ -29,8 +31,14 @@
     "compat.ixeris.MixinGLFWColorManagementUtils",
     "compat.replaymod.MixinOpenGlFrameCapturer",
     "compat.replaymod.MixinPboOpenGlFrameCapturer",
-    "compat.replaymod.MixinRenderSettingsEncodingPreset"
+    "compat.replaymod.MixinRenderSettingsEncodingPreset",
+    "compat.sr.MixinFrameResources",
+    "compat.sr.MixinVulkanSwapchain",
+    "compat.sr.VulkanSurfaceAccessor"
   ],
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  },
   "injectors": {
     "defaultRequire": 1
   }
