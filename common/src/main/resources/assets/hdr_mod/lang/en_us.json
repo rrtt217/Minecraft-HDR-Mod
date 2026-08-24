@@ -87,6 +87,10 @@
   "key.hdr_mod.open_config_menu": "Open Config Menu",
   "key.hdr_mod.take_hdr_screenshot": "Take HDR Screenshot",
   "key.hdr_mod.toggle_hdr": "Toggle HDR",
+  "key.hdr_mod.value_up": "Increase Selected Brightness Value",
+  "key.hdr_mod.value_down": "Decrease Selected Brightness Value",
+  "key.hdr_mod.toggle_value_adjusted": "Select Next Brightness Value",
+  "key.hdr_mod.toggle_value_adjusted_backwards": "Select Previous Brightness Value",
   "key.category.hdr_mod.main": "HDR Mod",
 
   "text.hdr_mod.brightness_control.auto": "(Auto Set)"

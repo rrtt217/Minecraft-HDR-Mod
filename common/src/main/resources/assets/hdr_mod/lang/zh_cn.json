@@ -86,6 +86,10 @@
   "key.hdr_mod.open_config_menu": "打开配置菜单",
   "key.hdr_mod.take_hdr_screenshot": "拍摄 HDR 截图",
   "key.hdr_mod.toggle_hdr": "开启/关闭 HDR",
+  "key.hdr_mod.value_up": "调高所选亮度值",
+  "key.hdr_mod.value_down": "调低所选亮度值",
+  "key.hdr_mod.toggle_value_adjusted": "切换到下一个亮度值",
+  "key.hdr_mod.toggle_value_adjusted_backwards": "切换到上一个亮度值",
   "key.category.hdr_mod.main": "HDR 模组",
 
   "text.hdr_mod.brightness_control.auto": "（自动设置）"
