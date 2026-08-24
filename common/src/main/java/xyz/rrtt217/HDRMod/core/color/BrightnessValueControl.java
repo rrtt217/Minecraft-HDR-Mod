@@ -221,7 +221,6 @@ public class BrightnessValueControl {
     private static LerpingBossEvent currentEvent;
     private static int currentEventTick = 40;
 
-    private static final int MAX_TICK = 40;
     public static int currentValueUpTick = 0;
     public static int currentValueDownTick = 0;
 
@@ -252,7 +251,7 @@ public class BrightnessValueControl {
     }
 
     public static void displayCurrentValue(){
-        // Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())),false);
+        if(!HDRMod.configHolder.getConfig().displayBrightnessBar) {Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())),false); return;}
         if(currentEvent == null){
             currentEvent = new LerpingBossEvent(
                     Mth.createInsecureUUID(),
@@ -269,7 +268,7 @@ public class BrightnessValueControl {
 
         currentEvent.setName(Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())));
         currentEvent.setProgress((float) getCurrentProgress());
-        currentEventTick = 60;
+        currentEventTick = 40;
     }
 
     public static void consumeClick() {
@@ -291,9 +290,9 @@ public class BrightnessValueControl {
     }
 
     public static void stepUpTick(){
-        if(currentValueUpTick < MAX_TICK) currentValueUpTick++;
+        if(currentValueUpTick < HDRMod.configHolder.getConfig().maxTicks) currentValueUpTick++;
     }
     public static void stepDownTick(){
-        if(currentValueDownTick < MAX_TICK) currentValueDownTick++;
+        if(currentValueDownTick < HDRMod.configHolder.getConfig().maxTicks) currentValueDownTick++;
     }
 }

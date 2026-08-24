@@ -32,6 +32,22 @@ public class HDRModConfig implements ConfigData {
     public float customEotfEmulate = Platform.isLinux() ? 0.0f : -1.0f;
 
     @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("brightness")
+    public boolean displayBrightnessBar = true;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("brightness")
+    public float initialStep = 5.0f;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("brightness")
+    public float timeFactor = 0.02f;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("brightness")
+    public int maxTicks = 60;
+    @ConfigEntry.Gui.Tooltip
+    @ConfigEntry.Category("brightness")
+    public boolean roundStepToInitial = true;
+
+    @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("screenshot")
     public float screenshotDownscaleFactor = 1.0f;
     @ConfigEntry.Gui.Tooltip

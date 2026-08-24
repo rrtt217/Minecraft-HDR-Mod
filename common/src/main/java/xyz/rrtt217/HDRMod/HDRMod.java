@@ -123,6 +123,7 @@ public final class HDRMod {
         KeyMappingRegistry.register(TOGGLE_VALUE_ADJUSTED);
         KeyMappingRegistry.register(TOGGLE_VALUE_ADJUSTED_BACKWARDS);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
+            HDRModConfig config = configHolder.getConfig();
             while (TOGGLE_VALUE_ADJUSTED.consumeClick()) {
                 BrightnessValueControl.valueSwitchAdjusted();
             }
@@ -132,10 +133,12 @@ public final class HDRMod {
             if(!VALUE_DOWN.isDown()) BrightnessValueControl.clearDownTick(); else BrightnessValueControl.stepDownTick();
             if(!VALUE_UP.isDown()) BrightnessValueControl.clearUpTick(); else BrightnessValueControl.stepUpTick();
             while (VALUE_UP.consumeClick()) {
-                BrightnessValueControl.valueAdjust( BrightnessValueControl.currentValueUpTick / 5 + 5);
+                if(config.roundStepToInitial) {BrightnessValueControl.valueAdjust((Math.round(BrightnessValueControl.currentValueUpTick * config.timeFactor / config.initialStep) + 1) * config.initialStep);}
+                else BrightnessValueControl.valueAdjust(Math.round(BrightnessValueControl.currentValueUpTick * config.timeFactor + config.initialStep));
             }
             while (VALUE_DOWN.consumeClick()) {
-                BrightnessValueControl.valueAdjust(-BrightnessValueControl.currentValueDownTick / 5 - 5);
+                if(config.roundStepToInitial) {BrightnessValueControl.valueAdjust((Math.round( - BrightnessValueControl.currentValueDownTick * config.timeFactor / config.initialStep) - 1) * config.initialStep);}
+                else BrightnessValueControl.valueAdjust(Math.round(-BrightnessValueControl.currentValueDownTick * config.timeFactor - config.initialStep));
             }
         });
 
