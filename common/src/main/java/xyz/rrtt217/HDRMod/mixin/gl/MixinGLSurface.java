@@ -1,5 +1,7 @@
 package xyz.rrtt217.HDRMod.mixin.gl;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.opengl.GlSurface;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,9 +18,9 @@ public class MixinGLSurface {
         if(HDRMod.glInteropResourceManager.presentSwapchain()) ci.cancel();
     }
 
-    @Redirect(method = "configure", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwSwapInterval(I)V"))
-    private void configure(int interval) {
+    @WrapOperation(method = "configure", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwSwapInterval(I)V"))
+    private void configure(int interval, Operation<Void> original) {
         if(!HDRMod.glInteropResourceManager.setSwapInterval(interval))
-            GLFW.glfwSwapInterval(interval);
+            original.call(interval);
     }
 }
