@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.LerpingBossEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.BossEvent;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
@@ -254,7 +255,7 @@ public class BrightnessValueControl {
         if(!HDRMod.configHolder.getConfig().displayBrightnessBar) {Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())).append(isPullFromSystem() ? Component.translatable("text.hdr_mod.brightness_control.auto") : Component.empty()),false); return;}
         if(currentEvent == null){
             currentEvent = new LerpingBossEvent(
-                    Mth.createInsecureUUID(),
+                    Mth.createInsecureUUID(RandomSource.create()),
                     Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())).append(isPullFromSystem() ? Component.translatable("text.hdr_mod.brightness_control.auto") : Component.empty()),
                     (float) getCurrentProgress(),
                     BossEvent.BossBarColor.BLUE,

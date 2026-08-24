@@ -25,7 +25,6 @@
   ],
   "mixins": [
     "compat.blazesdl.MixinSDLGlBackend",
-    "compat.iris.MixinIrisCompatibility",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinGLFWColorManagementUtils",

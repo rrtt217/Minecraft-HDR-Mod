@@ -1,6 +1,7 @@
 package xyz.rrtt217.HDRMod;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.ConfigHolder;
@@ -99,18 +100,15 @@ public final class HDRMod {
     public static void init() {
         // Register config.
         configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-        configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(colorManagementInfoProvider == null) {
-            if (hasBlazeSdl) colorManagementInfoProvider = new SDLColorManagementInfoProvider();
-            else colorManagementInfoProvider = new ColorManagementInfoProvider(config);
-        }
-        previousEnableHDR = config.enableHDR;
-        glInteropResourceManager = new StubGLInteropResourceManager();
         if(hasSr && VulkanPresentationFeature.isRequested()) {
             colorManagementInfoProvider = new SRVulkanPresentationColorManagementInfoProvider();
+        } else if(hasBlazeSdl) {
+            colorManagementInfoProvider = new SDLColorManagementInfoProvider();
+        } else {
+            colorManagementInfoProvider = new ColorManagementInfoProvider(config);
         }
-        else colorManagementInfoProvider = new ColorManagementInfoProvider(config);
+        glInteropResourceManager = new StubGLInteropResourceManager();
 
         apiImpl = new HDRModApiImpl();
         apiImpl.previousEnableHDR = config.enableHDR;
