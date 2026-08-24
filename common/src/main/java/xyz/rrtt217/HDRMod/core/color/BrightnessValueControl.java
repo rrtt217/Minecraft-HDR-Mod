@@ -1,7 +1,6 @@
 package xyz.rrtt217.HDRMod.core.color;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.BossHealthOverlay;
 import net.minecraft.client.gui.components.LerpingBossEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -14,122 +13,205 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.BiFunction;
+import java.util.function.DoubleUnaryOperator;
 
 public class BrightnessValueControl {
+    public static class ProgressDisplayMapper{
+        public static DoubleUnaryOperator rangeMapper(double inMin, double inMax, double outMin, double outMax, DoubleUnaryOperator mapper){
+            double mappedInMin = mapper.applyAsDouble(inMin);
+            double mappedInMax = mapper.applyAsDouble(inMax);
+            double a = (outMax - outMin) / (mappedInMax - mappedInMin);
+            double b = outMin - a * mappedInMin;
+            DoubleUnaryOperator inOutAffineMapper = (x) -> (a * x + b);
+            return mapper.andThen(inOutAffineMapper);
+        }
+
+        public static DoubleUnaryOperator rangeMapper(double inMin, double inMax, DoubleUnaryOperator mapper) {
+            return rangeMapper(inMin, inMax, 0.0, 1.0, mapper);
+        }
+
+        static DoubleUnaryOperator logMapper(double base){
+            return  (x) -> (Math.log(x) / Math.log(base));
+        }
+
+        static final double m1 = 2610.0 / 16384.0;
+        static final double m2 = 2523.0f / 4096.0f * 128.0f;
+        static final double c1 = 3424.0f / 4096.0f;         // 0.8359375
+        static final double c2 = 2413.0f / 4096.0f * 32.0f; // 18.8515625
+        static final double c3 = 2392.0f / 4096.0f * 32.0f; // 18.6875
+
+        static DoubleUnaryOperator pqOetf = (o) -> {
+            double Y = o / 10000.0;
+            double Ypow = Math.pow(Y, m1);
+            double num = c1 + c2 * Ypow;
+            double den = 1.0f + c3 * Ypow;
+            return Math.pow(num / den, m2);
+        };
+
+        public static DoubleUnaryOperator linear(double min, double max) {
+            return rangeMapper(min, max, DoubleUnaryOperator.identity());
+        }
+
+        public static DoubleUnaryOperator log(double min, double max, double base) {
+            return rangeMapper(min, max, logMapper(base));
+        }
+
+        public static DoubleUnaryOperator pq(double min, double max) {
+            return rangeMapper(min, max, pqOetf);
+        }
+    }
     public enum BrightnessValue {
-        PAPERWHITE("text.autoconfig.hdr_mod.option.customGamePaperWhiteBrightness", 0.0F, 1000.0F){
+        PAPERWHITE("text.autoconfig.hdr_mod.option.customGamePaperWhiteBrightness", 15.0F, 1000.0F, ProgressDisplayMapper::pq){
             @Override
-            public float getCurrentValue() {
+            protected double pullFromSystem() {
                 return HDRMod.colorManagementInfoProvider.getCurrentGamePaperWhiteBrightness(Minecraft.getInstance().getWindow().handle());
             }
 
             @Override
-            public void valueAdjust(float delta) {
-                HDRModConfig config = HDRMod.configHolder.getConfig();
-                if(config.customGamePaperWhiteBrightness < 0) config.customGamePaperWhiteBrightness = getCurrentValue() + delta;
-                else config.customGamePaperWhiteBrightness += delta;
-                if(config.customGamePaperWhiteBrightness < delta) config.customGamePaperWhiteBrightness = delta;
-                HDRMod.configHolder.save();
+            protected float getConfigValue(HDRModConfig config) {
+                return config.customGamePaperWhiteBrightness;
+            }
+
+            @Override
+            protected void setConfigValue(HDRModConfig config, float value) {
+                config.customGamePaperWhiteBrightness = value;
             }
         },
-        PEAK("text.autoconfig.hdr_mod.option.customGamePeakBrightness", 0.0F, 10000.0F){
+        PEAK("text.autoconfig.hdr_mod.option.customGamePeakBrightness", 100.0F, 5000.0F, ProgressDisplayMapper::pq){
             @Override
-            public float getCurrentValue() {
+            protected double pullFromSystem() {
                 return HDRMod.colorManagementInfoProvider.getCurrentGamePeakBrightness(Minecraft.getInstance().getWindow().handle());
             }
 
             @Override
-            public void valueAdjust(float delta) {
-                HDRModConfig config = HDRMod.configHolder.getConfig();
-                if(config.customGamePeakBrightness < 0) config.customGamePeakBrightness = getCurrentValue() + delta;
-                else config.customGamePeakBrightness += delta;
-                if(config.customGamePeakBrightness < delta) config.customGamePeakBrightness = delta;
-                HDRMod.configHolder.save();
+            protected float getConfigValue(HDRModConfig config) {
+                return config.customGamePeakBrightness;
+            }
+
+            @Override
+            protected void setConfigValue(HDRModConfig config, float value) {
+                config.customGamePeakBrightness = value;
             }
         },
-        MINIMUM("text.autoconfig.hdr_mod.option.customGameMinimumBrightness", 0.0F, 1.0F){
+        MINIMUM("text.autoconfig.hdr_mod.option.customGameMinimumBrightness", 0.0F, 1.0F, ProgressDisplayMapper::pq){
             @Override
-            public float getCurrentValue() {
+            protected double pullFromSystem() {
                 return HDRMod.colorManagementInfoProvider.getCurrentGameMinimumBrightness(Minecraft.getInstance().getWindow().handle());
             }
 
             @Override
-            public void valueAdjust(float delta) {
-                HDRModConfig config = HDRMod.configHolder.getConfig();
-                if(config.customGameMinimumBrightness < 0) config.customGameMinimumBrightness = getCurrentValue() + delta;
-                else config.customGameMinimumBrightness += delta;
-                if(config.customGameMinimumBrightness < 0) config.customGameMinimumBrightness = 0;
-                HDRMod.configHolder.save();
+            protected float getConfigValue(HDRModConfig config) {
+                return config.customGameMinimumBrightness;
+            }
+
+            @Override
+            protected void setConfigValue(HDRModConfig config, float value) {
+                config.customGameMinimumBrightness = value;
             }
         },
-        UI("text.autoconfig.hdr_mod.option.uiBrightness", 0.0F, 1000.0F){
+        UI("text.autoconfig.hdr_mod.option.uiBrightness", 15.0F, 1000.0F, ProgressDisplayMapper::pq){
             @Override
-            public float getCurrentValue() {
+            protected double pullFromSystem() {
                 return HDRMod.colorManagementInfoProvider.getCurrentNonHudUIBrightness(Minecraft.getInstance().getWindow().handle());
             }
 
             @Override
-            public void valueAdjust(float delta) {
-                HDRModConfig config = HDRMod.configHolder.getConfig();
-                if(config.uiBrightness < 0) config.uiBrightness = getCurrentValue() + delta;
-                else config.uiBrightness += delta;
-                if(config.uiBrightness < delta) config.uiBrightness = delta;
-                HDRMod.configHolder.save();
+            protected float getConfigValue(HDRModConfig config) {
+                return config.uiBrightness;
+            }
+
+            @Override
+            protected void setConfigValue(HDRModConfig config, float value) {
+                config.uiBrightness = value;
             }
         },
-        HUD("text.autoconfig.hdr_mod.option.hudBrightness", 0.0F, 1000.0F){
+        HUD("text.autoconfig.hdr_mod.option.hudBrightness", 15.0F, 1000.0F, ProgressDisplayMapper::pq){
             @Override
-            public float getCurrentValue() {
+            protected double pullFromSystem() {
                 return HDRMod.colorManagementInfoProvider.getCurrentHudUIBrightness(Minecraft.getInstance().getWindow().handle());
             }
 
             @Override
-            public void valueAdjust(float delta) {
-                HDRModConfig config = HDRMod.configHolder.getConfig();
-                if(config.hudBrightness < 0) config.hudBrightness = getCurrentValue() + delta;
-                else config.hudBrightness += delta;
-                if(config.hudBrightness < delta) config.hudBrightness = delta;
-                HDRMod.configHolder.save();
+            protected float getConfigValue(HDRModConfig config) {
+                return config.hudBrightness;
+            }
+
+            @Override
+            protected void setConfigValue(HDRModConfig config, float value) {
+                config.hudBrightness = value;
             }
         },
         EOTFEMULATE("text.autoconfig.hdr_mod.option.customEotfEmulate", 0.0F, 1000.0F){
             @Override
-            public float getCurrentValue() {
+            protected double pullFromSystem() {
                 return HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(Minecraft.getInstance().getWindow().handle());
             }
 
             @Override
-            public void valueAdjust(float delta) {
-                HDRModConfig config = HDRMod.configHolder.getConfig();
-                if(config.customEotfEmulate < 0) config.customEotfEmulate = getCurrentValue() + delta;
-                else config.customEotfEmulate += delta;
-                if(config.customEotfEmulate < delta) config.customEotfEmulate = delta;
-                HDRMod.configHolder.save();
+            protected float getConfigValue(HDRModConfig config) {
+                return config.customEotfEmulate;
+            }
+
+            @Override
+            protected void setConfigValue(HDRModConfig config, float value) {
+                config.customEotfEmulate = value;
             }
         };
-        private final String translationKey;
-        private final float minValue;
-        private final float maxValue;
 
-        BrightnessValue(String translationKey, float minValue, float maxValue) {
+        private final String translationKey;
+        private final double minValue;
+        private final double maxValue;
+        private final DoubleUnaryOperator displayMapper;
+
+        protected abstract double pullFromSystem();
+
+        protected abstract float getConfigValue(HDRModConfig config);
+
+        protected abstract void setConfigValue(HDRModConfig config, float value);
+
+        BrightnessValue(String translationKey, double minValue, double maxValue, BiFunction<Double, Double, DoubleUnaryOperator> displayMapperProvider) {
             this.translationKey = translationKey;
             this.minValue = minValue;
             this.maxValue = maxValue;
+            this.displayMapper = displayMapperProvider.apply(minValue, maxValue);
+        }
+
+        BrightnessValue(String translationKey, double minValue, double maxValue, DoubleUnaryOperator displayMapper) {
+            this.translationKey = translationKey;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+            this.displayMapper = displayMapper;
+        }
+
+        BrightnessValue(String translationKey, double minValue, double maxValue) {
+            this.translationKey = translationKey;
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+            this.displayMapper = ProgressDisplayMapper.linear(minValue, maxValue);
         }
 
         public String getTranslationKey() {
             return translationKey;
         }
 
-        public float getMinValue() { return minValue; }
-
-        public float getMaxValue() { return maxValue; }
-
-        public float getCurrentValue() {
-            return 0.0F;
+        public double getCurrentValue() {
+            HDRModConfig config = HDRMod.configHolder.getConfig();
+            float value = getConfigValue(config);
+            return value < 0 ? pullFromSystem() : value;
         }
 
-        public void valueAdjust(float delta){
+        public void valueAdjust(double delta){
+            setConfigValue(HDRMod.configHolder.getConfig(), (float) Math.min(Math.max(getCurrentValue() + delta, minValue), maxValue));
+            HDRMod.configHolder.save();
+        }
+
+        public double getCurrentProgress(){
+            return this.displayMapper.applyAsDouble(getCurrentValue());
+        }
+
+        public boolean isPullFromSystem(){
+            return getConfigValue(HDRMod.configHolder.getConfig()) < 0.0F;
         }
     }
 
@@ -137,9 +219,13 @@ public class BrightnessValueControl {
     private static int currentIndex = 0;
 
     private static LerpingBossEvent currentEvent;
-    public static int currentEventTick = 40;
+    private static int currentEventTick = 40;
 
-    public static void valueAdjust(float delta){
+    private static final int MAX_TICK = 40;
+    public static int currentValueUpTick = 0;
+    public static int currentValueDownTick = 0;
+
+    public static void valueAdjust(double delta){
         valuesWithShortcut.get(currentIndex).valueAdjust(delta);
         displayCurrentValue();
     }
@@ -155,8 +241,14 @@ public class BrightnessValueControl {
         return valuesWithShortcut.get(currentIndex);
     }
 
-    public static float getCurrentValue(){
+    public static double getCurrentValue(){
         return getCurrentValueEnum().getCurrentValue();
+    }
+
+    public static double getCurrentProgress(){return getCurrentValueEnum().getCurrentProgress(); }
+
+    public static boolean isPullFromSystem(){
+        return getCurrentValueEnum().isPullFromSystem();
     }
 
     public static void displayCurrentValue(){
@@ -164,19 +256,20 @@ public class BrightnessValueControl {
         if(currentEvent == null){
             currentEvent = new LerpingBossEvent(
                     Mth.createInsecureUUID(),
-                    Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())),
-                    getCurrentValue()/(getCurrentValueEnum().maxValue - getCurrentValueEnum().minValue),
+                    Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())).append(isPullFromSystem() ? Component.translatable("text.hdr_mod.brightness_control.auto") : Component.empty()),
+                    (float) getCurrentProgress(),
                     BossEvent.BossBarColor.BLUE,
                     BossEvent.BossBarOverlay.PROGRESS,
                     false,false,false);
         }
+        getCurrentValue();
         Map<UUID, LerpingBossEvent> events = ((BossHealthOverlayAccessor) Minecraft.getInstance().gui.getBossOverlay()).getEvents();
         if(events == null) return;
         if(!events.containsKey(currentEvent.getId())) events.put(currentEvent.getId(), currentEvent);
 
         currentEvent.setName(Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())));
-        currentEvent.setProgress(getCurrentValue()/(getCurrentValueEnum().maxValue - getCurrentValueEnum().minValue));
-        currentEventTick = 40;
+        currentEvent.setProgress((float) getCurrentProgress());
+        currentEventTick = 60;
     }
 
     public static void consumeClick() {
@@ -189,10 +282,18 @@ public class BrightnessValueControl {
         else currentEventTick--;
     }
 
-    public static BrightnessValue getPreviousValueEnum(){
-        return valuesWithShortcut.get(Math.floorMod(currentIndex - 1, valuesWithShortcut.size()));
+    public static void clearUpTick(){
+        currentValueUpTick = 0;
     }
-    public static BrightnessValue getNextValueEnum(){
-        return valuesWithShortcut.get(Math.floorMod(currentIndex + 1, valuesWithShortcut.size()));
+
+    public static void clearDownTick(){
+        currentValueDownTick = 0;
+    }
+
+    public static void stepUpTick(){
+        if(currentValueUpTick < MAX_TICK) currentValueUpTick++;
+    }
+    public static void stepDownTick(){
+        if(currentValueDownTick < MAX_TICK) currentValueDownTick++;
     }
 }

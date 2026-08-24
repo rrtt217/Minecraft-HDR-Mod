@@ -73,5 +73,7 @@
   "key.hdr_mod.open_config_menu": "Open Config Menu",
   "key.hdr_mod.take_hdr_screenshot": "Take HDR Screenshot",
   "key.hdr_mod.toggle_hdr": "Toggle HDR",
-  "key.category.hdr_mod.main": "HDR Mod"
+  "key.category.hdr_mod.main": "HDR Mod",
+
+  "text.hdr_mod.brightness_control.auto": "(Auto Set)"
 }

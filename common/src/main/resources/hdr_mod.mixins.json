@@ -10,6 +10,7 @@
     "debug.MixinDebugScreenEntries",
     "debug.MixinDebugScreenEntryList",
     "features.BossHealthOverlayAccessor",
+    "features.KeyMappingAccessor",
     "features.MixinGlStateManager",
     "features.MixinKeyboardHandler",
     "features.MixinRenderTarget",

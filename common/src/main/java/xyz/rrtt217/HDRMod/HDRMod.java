@@ -19,6 +19,7 @@ import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.mixin.features.KeyMappingAccessor;
 import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
 
 import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
@@ -128,11 +129,13 @@ public final class HDRMod {
             while (TOGGLE_VALUE_ADJUSTED_BACKWARDS.consumeClick()) {
                 BrightnessValueControl.valueSwitchAdjustedBackwards();
             }
+            if(!VALUE_DOWN.isDown()) BrightnessValueControl.clearDownTick(); else BrightnessValueControl.stepDownTick();
+            if(!VALUE_UP.isDown()) BrightnessValueControl.clearUpTick(); else BrightnessValueControl.stepUpTick();
             while (VALUE_UP.consumeClick()) {
-                BrightnessValueControl.valueAdjust(10);
+                BrightnessValueControl.valueAdjust( BrightnessValueControl.currentValueUpTick / 5 + 5);
             }
             while (VALUE_DOWN.consumeClick()) {
-                BrightnessValueControl.valueAdjust(-10);
+                BrightnessValueControl.valueAdjust(-BrightnessValueControl.currentValueDownTick / 5 - 5);
             }
         });
 
