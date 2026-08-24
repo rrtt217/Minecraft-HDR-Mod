@@ -219,6 +219,8 @@ if (findProject(':fabric') != null && findProject(':neoforge') != null) {
         curseforge("curseforgeFabric") {
             from cfOptions
             file project(":fabric")
+            version = "$project.mod_version+fabric"
+            displayName = "[Fabric $project.minecraft_version] v$project.version"
             modLoaders.add("fabric")
             requires("cloth-config")
             requires("fabric-api")
@@ -229,6 +231,8 @@ if (findProject(':fabric') != null && findProject(':neoforge') != null) {
         curseforge("curseforgeNeoForge") {
             from cfOptions
             file project(":neoforge")
+            version = "$project.mod_version+neoforge"
+            displayName = "[NeoForge $project.minecraft_version] v$project.version"
             modLoaders.add("neoforge")
             requires("cloth-config")
             optional("irisshaders")
@@ -238,6 +242,8 @@ if (findProject(':fabric') != null && findProject(':neoforge') != null) {
         modrinth("modrinthFabric") {
             from mrOptions
             file project(":fabric")
+            version = "$project.mod_version+fabric"
+            displayName = "[Fabric $project.minecraft_version] v$project.version"
             modLoaders.add("fabric")
             requires("cloth-config")
             requires("fabric-api")
@@ -248,6 +254,8 @@ if (findProject(':fabric') != null && findProject(':neoforge') != null) {
         modrinth("modrinthNeoForge") {
             from mrOptions
             file project(":neoforge")
+            version = "$project.mod_version+neoforge"
+            displayName = "[NeoForge $project.minecraft_version] v$project.version"
             modLoaders.add("neoforge")
             requires("cloth-config")
             optional("iris")

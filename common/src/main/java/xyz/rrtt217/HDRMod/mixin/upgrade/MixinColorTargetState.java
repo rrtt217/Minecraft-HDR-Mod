@@ -17,7 +17,7 @@ public class MixinColorTargetState {
 
     @ModifyArg(method = "<clinit>", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/ColorTargetState;<init>(Ljava/util/Optional;Lcom/mojang/blaze3d/GpuFormat;I)V"), index = 1, require = 0)
     private static GpuFormat hdr_mod$modifyDefaultColorTargetFormat(GpuFormat format) {
-        if(HDRMod.configHolder == null) HDRMod.configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        HDRMod.earlyInit();
         HDRModConfig config = HDRMod.configHolder.getConfig();
         if(format == GpuFormat.RGBA8_UNORM && config.modifyDefaultColorTargetState){
             return GpuFormat.RGBA16_FLOAT;
@@ -26,7 +26,7 @@ public class MixinColorTargetState {
     }
     @ModifyArg(method = "<init>(Lcom/mojang/blaze3d/pipeline/BlendFunction;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/ColorTargetState;<init>(Ljava/util/Optional;Lcom/mojang/blaze3d/GpuFormat;I)V"), index = 1, require = 0)
     private static GpuFormat hdr_mod$modifyDefaultInitColorTargetFormat(GpuFormat format) {
-        if(HDRMod.configHolder == null) HDRMod.configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        HDRMod.earlyInit();
         HDRModConfig config = HDRMod.configHolder.getConfig();
         if(format == GpuFormat.RGBA8_UNORM && config.modifyDefaultColorTargetState){
             return GpuFormat.RGBA16_FLOAT;

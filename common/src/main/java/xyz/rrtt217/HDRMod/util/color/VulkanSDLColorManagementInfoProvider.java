@@ -1,6 +1,7 @@
 package xyz.rrtt217.HDRMod.util.color;
 
 import com.sun.jna.Platform;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 
 import static org.lwjgl.sdl.SDLProperties.SDL_GetFloatProperty;
 import static org.lwjgl.sdl.SDLVideo.*;

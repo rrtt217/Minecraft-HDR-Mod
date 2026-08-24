@@ -89,10 +89,6 @@ dependencies {
     localRuntime "io.github.spair:imgui-java-app:$imgui_version"
     localRuntime "io.github.spair:imgui-java-binding:$imgui_version"
     localRuntime "io.github.spair:imgui-java-lwjgl3:$imgui_version"
-    localRuntime "org.lwjgl:lwjgl-vulkan:3.4.1"
-    localRuntime "org.lwjgl:lwjgl-vma:3.4.1"
-    localRuntime "org.lwjgl:lwjgl-vma::natives-windows"
-    localRuntime "org.lwjgl:lwjgl-vma::natives-linux"
 
     implementation 'ar.com.hjg:pngj:2.1.0'
     implementation "org.lwjgl:lwjgl-sdl:3.4.1"
@@ -102,7 +98,7 @@ dependencies {
     //modLocalRuntime "maven.modrinth:spark:1.10.156-fabric"
     //modLocalRuntime "maven.modrinth:fabric-permissions-api:0.6.1"
     //localRuntime "maven.modrinth:lambdynamiclights:4.10.2+26.1.2"
-    localRuntime "maven.modrinth:superresolution:26.1-${sr_version}+gl-fabric"
+    localRuntime "maven.modrinth:superresolution:${minecraft_version}-${sr_version}+gl-fabric"
 
     common(project(path: ":common")) { transitive false }
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')

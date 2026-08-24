@@ -1,7 +1,10 @@
-# HDR Mod v3.1.1-26.2 Changelog
+# HDR Mod v3.2.0 Changelog
 ## New Features
-- Separate GUI/HUD brightness by detecting if there's a screen
+- Brightness Control by shortcuts (default no keybind)
+- Initial Super Resolution Vulkan Presentation and (possibly) framegen support
+- Mod API
+- Get HDR display metadata without GL-DX interop on Windows
 ## Fixes
-- Incorrect FP32 buffer on Windows (from upstream tom94/glfw)
-- Some lifecycle-related crash
-- Several other minor bugs
+- `java.lang.NoClassDefFoundError: org/lwjgl/sdl/SDLVideo` (#80)
+## Others
+- Internal refactor (this doesn't affect mod compatibility like IMBlocker)

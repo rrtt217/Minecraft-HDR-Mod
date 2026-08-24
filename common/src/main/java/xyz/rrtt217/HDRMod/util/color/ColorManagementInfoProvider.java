@@ -57,7 +57,7 @@ public class ColorManagementInfoProvider implements ColorManagementInfo {
         return customValue < 0 ? queryValue : customValue;
     }
     public float getCurrentUIBrightness(long handle) {
-        return (Minecraft.getInstance().screen != null || !Optional.ofNullable(HDRMod.apiImpl).map(HDRModApiImpl::isHDRCompatibleShaderpackInUse).orElse(false) || config.hudBrightness < 0 || !config.enableHDR) ? getCurrentNonHudUIBrightness(handle) : getCurrentHudUIBrightness(handle);
+        return (Minecraft.getInstance().gui.screen() != null || !Optional.ofNullable(HDRMod.apiImpl).map(HDRModApiImpl::isHDRCompatibleShaderpackInUse).orElse(false) || config.hudBrightness < 0 || !config.enableHDR) ? getCurrentNonHudUIBrightness(handle) : getCurrentHudUIBrightness(handle);
     }
 
     public float getCurrentNonHudUIBrightness(long handle) {

@@ -252,7 +252,7 @@ public class BrightnessValueControl {
     }
 
     public static void displayCurrentValue(){
-        if(!HDRMod.configHolder.getConfig().displayBrightnessBar) {Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())).append(isPullFromSystem() ? Component.translatable("text.hdr_mod.brightness_control.auto") : Component.empty()),false); return;}
+        if(!HDRMod.configHolder.getConfig().displayBrightnessBar) {Minecraft.getInstance().gui.hud.setOverlayMessage(Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())).append(isPullFromSystem() ? Component.translatable("text.hdr_mod.brightness_control.auto") : Component.empty()),false); return;}
         if(currentEvent == null){
             currentEvent = new LerpingBossEvent(
                     Mth.createInsecureUUID(RandomSource.create()),
@@ -263,7 +263,7 @@ public class BrightnessValueControl {
                     false,false,false);
         }
         getCurrentValue();
-        Map<UUID, LerpingBossEvent> events = ((BossHealthOverlayAccessor) Minecraft.getInstance().gui.getBossOverlay()).getEvents();
+        Map<UUID, LerpingBossEvent> events = ((BossHealthOverlayAccessor) Minecraft.getInstance().gui.hud.getBossOverlay()).getEvents();
         if(events == null) return;
         if(!events.containsKey(currentEvent.getId())) events.put(currentEvent.getId(), currentEvent);
 
@@ -275,7 +275,7 @@ public class BrightnessValueControl {
     public static void consumeClick() {
         if(currentEvent == null) return;
         if(currentEventTick == 0){
-            Map<UUID, LerpingBossEvent> events = ((BossHealthOverlayAccessor) Minecraft.getInstance().gui.getBossOverlay()).getEvents();
+            Map<UUID, LerpingBossEvent> events = ((BossHealthOverlayAccessor) Minecraft.getInstance().gui.hud.getBossOverlay()).getEvents();
             if(events == null) return;
             events.remove(currentEvent.getId());
         }

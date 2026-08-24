@@ -49,13 +49,9 @@ dependencies {
     implementation "maven.modrinth:xaeroplus:${xaero_plus_version}+fabric-${minecraft_version}"
     implementation "xaero.lib:xaerolib-common-$minecraft_version:${xaerolib_version}"
     implementation "maven.modrinth:blazesdl:0.1.10"
-    implementation "maven.modrinth:superresolution:26.1-${sr_version}+gl-fabric"
+    implementation "maven.modrinth:superresolution:${minecraft_version}-${sr_version}+gl-fabric"
 
     implementation "org.lwjgl:lwjgl-sdl:3.4.1"
-    implementation "org.lwjgl:lwjgl-vulkan:3.3.6"
-    implementation "org.lwjgl:lwjgl-vma:3.3.6"
-    implementation "org.lwjgl:lwjgl-vma::natives-windows"
-    implementation "org.lwjgl:lwjgl-vma::natives-linux"
     implementation 'com.github.oshi:oshi-core:6.9.3'
     implementation 'ar.com.hjg:pngj:2.1.0'
 }

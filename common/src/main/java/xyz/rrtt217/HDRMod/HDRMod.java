@@ -93,6 +93,11 @@ public final class HDRMod {
 
     public static GLInteropResourceManager glInteropResourceManager;
 
+    public static void earlyInit() {
+        if(configHolder == null) configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        if(apiImpl == null) apiImpl = new HDRModApiImpl();
+    }
+
     public HDRMod() {
     }
 
@@ -111,7 +116,7 @@ public final class HDRMod {
         }
         glInteropResourceManager = new StubGLInteropResourceManager();
 
-        apiImpl = new HDRModApiImpl();
+        if(apiImpl == null) apiImpl = new HDRModApiImpl();
         apiImpl.previousEnableHDR = config.enableHDR;
 
         if(hasIris){
