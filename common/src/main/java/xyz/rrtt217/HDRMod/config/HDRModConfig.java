@@ -4,7 +4,8 @@ import com.sun.jna.Platform;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import xyz.rrtt217.HDRMod.util.color.Enums.*;
+import xyz.rrtt217.HDRMod.api.color.Enums.*;
+import xyz.rrtt217.HDRMod.util.state.ScreenshotStateListener;
 
 @Config(name = "hdr_mod")
 public class HDRModConfig implements ConfigData {
@@ -58,10 +59,10 @@ public class HDRModConfig implements ConfigData {
     public boolean screenshotUseCICP = false;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("screenshot")
-    public BehaviorOnVanillaScreenshotCalled behaviorOnVanillaScreenshotCalled = BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA;
+    public ScreenshotStateListener.BehaviorOnVanillaScreenshotCalled behaviorOnVanillaScreenshotCalled = ScreenshotStateListener.BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA;
     @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("screenshot")
-    public BehaviorOnVanillaScreenshotCalled behaviorOnVanillaF2 = BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA;
+    public ScreenshotStateListener.BehaviorOnVanillaScreenshotCalled behaviorOnVanillaF2 = ScreenshotStateListener.BehaviorOnVanillaScreenshotCalled.ONLY_VANILLA;
 
     @ConfigEntry.Category("replay")
     public boolean enableReplayHDRVideoExport = true;

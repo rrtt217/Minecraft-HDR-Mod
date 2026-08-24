@@ -8,21 +8,22 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.AutoConfigClient;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
+import net.irisshaders.iris.Iris;
+import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.Identifier;
 import org.slf4j.LoggerFactory;
-import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
 import xyz.rrtt217.HDRMod.compat.sr.SRVulkanPresentationColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.core.api.HDRModApiImpl;
 import xyz.rrtt217.HDRMod.core.color.BrightnessValueControl;
 import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.mixin.features.KeyMappingAccessor;
 import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
 
-import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasIris;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
 
 public final class HDRMod {
@@ -83,6 +84,8 @@ public final class HDRMod {
 
     public static ConfigHolder<HDRModConfig> configHolder;
 
+    public static HDRModApiImpl apiImpl;
+
     public static ColorManagementInfoProvider colorManagementInfoProvider;
 
     public HDRMod() {
@@ -91,8 +94,6 @@ public final class HDRMod {
     public static void init() {
         // Register config.
         configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-        configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
-
         // Register Key Mapping.
         KeyMappingRegistry.register(OPEN_CONFIG);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
@@ -151,7 +152,25 @@ public final class HDRMod {
             colorManagementInfoProvider = new SRVulkanPresentationColorManagementInfoProvider();
         }
         else colorManagementInfoProvider = new ColorManagementInfoProvider(config);
-        previousEnableHDR = config.enableHDR;
+
+        apiImpl = new HDRModApiImpl();
+        apiImpl.previousEnableHDR = config.enableHDR;
+
+        if(hasIris){
+            apiImpl.addHDRStateChangeListener(state -> {
+                if(IrisApi.getInstance().isShaderPackInUse()){
+                    try{
+                        Iris.reload();
+                    }
+                    catch (Exception ignored){}
+                }
+            });
+            // Currently we can't be better without a lot more work.
+            apiImpl.addHDRCompatibleShaderpackStateSupplier(IrisApi.getInstance()::isShaderPackInUse);
+        }
+
+        configHolder.registerSaveListener(apiImpl::onConfigSave);
+
         LOGGER.debug("HDRMod Initialized!");
     }
 }

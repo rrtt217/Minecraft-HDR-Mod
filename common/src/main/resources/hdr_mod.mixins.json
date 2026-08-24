@@ -23,7 +23,6 @@
     "upgrade.MixinMainTarget"
   ],
   "mixins": [
-    "compat.iris.MixinIrisCompatibility",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",

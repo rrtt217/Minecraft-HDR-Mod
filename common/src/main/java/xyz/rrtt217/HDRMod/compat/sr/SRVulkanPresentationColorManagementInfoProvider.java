@@ -1,7 +1,7 @@
 package xyz.rrtt217.HDRMod.compat.sr;
 
 import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
-import xyz.rrtt217.HDRMod.util.color.Enums;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 
 public class SRVulkanPresentationColorManagementInfoProvider extends ColorManagementInfoProvider {
     @Override

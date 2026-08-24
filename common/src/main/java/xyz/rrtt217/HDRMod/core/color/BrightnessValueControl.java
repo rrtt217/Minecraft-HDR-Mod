@@ -251,7 +251,7 @@ public class BrightnessValueControl {
     }
 
     public static void displayCurrentValue(){
-        if(!HDRMod.configHolder.getConfig().displayBrightnessBar) {Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())),false); return;}
+        if(!HDRMod.configHolder.getConfig().displayBrightnessBar) {Minecraft.getInstance().gui.setOverlayMessage(Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())).append(isPullFromSystem() ? Component.translatable("text.hdr_mod.brightness_control.auto") : Component.empty()),false); return;}
         if(currentEvent == null){
             currentEvent = new LerpingBossEvent(
                     Mth.createInsecureUUID(),
@@ -266,7 +266,7 @@ public class BrightnessValueControl {
         if(events == null) return;
         if(!events.containsKey(currentEvent.getId())) events.put(currentEvent.getId(), currentEvent);
 
-        currentEvent.setName(Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())));
+        currentEvent.setName(Component.translatable(getCurrentValueEnum().translationKey).append(MessageFormat.format(": {0}", (int) getCurrentValue())).append(isPullFromSystem() ? Component.translatable("text.hdr_mod.brightness_control.auto") : Component.empty()));
         currentEvent.setProgress((float) getCurrentProgress());
         currentEventTick = 40;
     }

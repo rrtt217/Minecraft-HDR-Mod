@@ -4,11 +4,15 @@ import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
+import xyz.rrtt217.HDRMod.api.color.ColorManagementInfo;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.core.api.HDRModApiImpl;
 import xyz.rrtt217.HDRMod.util.glfw.GLFWColorManagementUtils;
 
-public class ColorManagementInfoProvider {
+import java.util.Optional;
+
+public class ColorManagementInfoProvider implements ColorManagementInfo {
     HDRModConfig config;
     int bitsPerChannel = 0;
     public ColorManagementInfoProvider(HDRModConfig config) {
@@ -53,7 +57,7 @@ public class ColorManagementInfoProvider {
         return customValue < 0 ? queryValue : customValue;
     }
     public float getCurrentUIBrightness(long handle) {
-        return (Minecraft.getInstance().screen != null || !IrisCompatibility.isShaderPackInUse() || config.hudBrightness < 0 || !config.enableHDR) ? getCurrentNonHudUIBrightness(handle) : getCurrentHudUIBrightness(handle);
+        return (Minecraft.getInstance().screen != null || !Optional.ofNullable(HDRMod.apiImpl).map(HDRModApiImpl::isHDRCompatibleShaderpackInUse).orElse(false) || config.hudBrightness < 0 || !config.enableHDR) ? getCurrentNonHudUIBrightness(handle) : getCurrentHudUIBrightness(handle);
     }
 
     public float getCurrentNonHudUIBrightness(long handle) {
