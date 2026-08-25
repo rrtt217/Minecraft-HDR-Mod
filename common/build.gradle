@@ -27,6 +27,12 @@ repositories {
             snapshotsOnly()
         }
     }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
@@ -54,4 +60,5 @@ dependencies {
     implementation "org.lwjgl:lwjgl-sdl:3.4.1"
     implementation 'com.github.oshi:oshi-core:6.9.3'
     implementation 'ar.com.hjg:pngj:2.1.0'
+    implementation "curse.maven:vitrail-shaders-1649385:8711334"
 }
