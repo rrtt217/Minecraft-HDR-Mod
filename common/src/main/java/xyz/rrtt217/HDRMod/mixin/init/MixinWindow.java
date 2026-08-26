@@ -51,11 +51,11 @@ import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
                 LOGGER.warn("Detected sRGB or Gamma2.2 EOTF, which probably means HDR isn't supported under current configuration.");
             }
         }
-    @Redirect(method = "setIcon", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GLX;getGlfwPlatform()I"))
-    private int hdr_mod$bypassWaylandCheckOnSetIcon(){
-        int i = GLX.getGlfwPlatform();
+    @WrapOperation(method = "setIcon", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GLX;getGlfwPlatform()I"))
+    private int hdr_mod$bypassWaylandCheckOnSetIcon(Operation<Integer> original){
+        int i = original.call();
         if(i == GLFW.GLFW_PLATFORM_WAYLAND) return GLFW.GLFW_PLATFORM_X11;
-        return i;
+        else return i;
     }
     @WrapOperation(method = "setMode", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/VideoMode;getWidth()I"))
     private int hdr_mod$getWidth(VideoMode instance, Operation<Integer> original){

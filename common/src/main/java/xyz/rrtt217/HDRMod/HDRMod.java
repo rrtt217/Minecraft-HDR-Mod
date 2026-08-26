@@ -1,21 +1,26 @@
 package xyz.rrtt217.HDRMod;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import dev.vitrail.Vitrail;
+import dev.vitrail.render.PackChain;
+import dev.vitrail.screen.ScreenText;
+import dev.vitrail.settings.PackSession;
 import io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import net.irisshaders.iris.Iris;
 import net.irisshaders.iris.api.v0.IrisApi;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import org.slf4j.LoggerFactory;
 import xyz.rrtt217.HDRMod.compat.sr.SRVulkanPresentationColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.core.api.HDRModApiImpl;
-import xyz.rrtt217.HDRMod.core.color.BrightnessValueControl;
 import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
-import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.interop.GLInteropResourceManager;
@@ -23,9 +28,9 @@ import xyz.rrtt217.HDRMod.core.interop.StubGLInteropResourceManager;
 import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.util.color.SDLColorManagementInfoProvider;
 
-import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasIris;
-import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
-import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
+import java.nio.file.Path;
+
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.*;
 
 public final class HDRMod {
     public static final String MOD_ID = "hdr_mod";
@@ -130,6 +135,29 @@ public final class HDRMod {
             });
             // Currently we can't be better without a lot more work.
             apiImpl.addHDRCompatibleShaderpackStateSupplier(IrisApi.getInstance()::isShaderPackInUse);
+        }
+
+        if(hasVitrail){
+            apiImpl.addHDRStateChangeListener(state -> {
+                // Reload method from vitrail code. Original method is private.
+                Path directory = PackChain.session()
+                        .map(PackSession::gameDirectory)
+                        .orElseGet(() -> Vitrail.platform().gameDirectory());
+
+                PackChain.reload(directory);
+
+                MutableComponent said = PackChain.lastError()
+                        .map(reason -> Component.translatable(ScreenText.RELOAD_FAILED, reason)
+                                .withStyle(ChatFormatting.RED))
+                        .orElseGet(() -> Component.translatable(ScreenText.PACK_RELOADED));
+
+                // In a world only, which is Iris's own guard: outside one there is no chat to say it in, and
+                // what was read is in the log either way.
+                Minecraft minecraft = Minecraft.getInstance();
+                if (minecraft.player != null) {
+                    minecraft.player.sendSystemMessage(said);
+                }
+            });
         }
 
         configHolder.registerSaveListener(apiImpl::onConfigSave);

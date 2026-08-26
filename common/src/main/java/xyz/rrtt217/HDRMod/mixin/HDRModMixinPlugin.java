@@ -29,6 +29,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
     public static boolean hasIris = false;
     public static boolean hasBlazeSdl = false;
     public static boolean hasSr = false;
+    public static boolean hasVitrail = false;
 
     @Override
     public void onLoad(String s) {
@@ -74,6 +75,9 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
         }
         if(Platform.isModLoaded("super_resolution")) {
             hasSr = true;
+        }
+        if(Platform.isModLoaded("vitrail")) {
+            hasVitrail = true;
         }
     }
 

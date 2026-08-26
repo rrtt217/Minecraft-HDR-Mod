@@ -21,7 +21,9 @@ public class HDRModApiImpl implements HDRModApi {
     public Boolean previousEnableHDR;
     @Override
     public String getModVersion() {
-        return Platform.getVersion();
+        String version = Platform.getVersion();
+        if(version.contains("-")) version = version.substring(0, version.indexOf("-"));
+        return version;
     }
 
     @Override
