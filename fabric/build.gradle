@@ -99,7 +99,7 @@ dependencies {
     implementation "org.lwjgl:lwjgl-sdl:3.4.1"
     include 'ar.com.hjg:pngj:2.1.0'
 
-    localRuntime "curse.maven:vitrail-shaders-1649385:8711334"
+    localRuntime "curse.maven:vitrail-shaders-1649385:8737951"
     localRuntime "maven.modrinth:chloride:1.8.1-FABRIC-26.2"
 
     //localRuntime "maven.modrinth:renderscale:1.3.6"

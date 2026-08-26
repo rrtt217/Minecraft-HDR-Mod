@@ -26,6 +26,7 @@
     "init.MixinRenderSystem",
     "init.MixinWindow",
     "upgrade.MixinColorTargetState",
+    "upgrade.MixinGpuDevice",
     "upgrade.MixinLevelRenderer",
     "upgrade.MixinMainTarget",
     "upgrade.MixinPostChain",
@@ -47,6 +48,8 @@
     "compat.sr.MixinVulkanSwapchain",
     "compat.sr.VulkanSurfaceAccessor",
     "compat.vitrail.MixinEngineDefines",
+    "compat.vitrail.MixinPackPass",
+    "compat.vitrail.MixinRenderScale",
     "compat.vitrail.MixinUniformCatalog"
   ],
   "mixinextras": {
