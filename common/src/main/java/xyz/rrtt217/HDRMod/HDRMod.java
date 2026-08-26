@@ -158,6 +158,8 @@ public final class HDRMod {
                     minecraft.player.sendSystemMessage(said);
                 }
             });
+            // Currently we can't be better without a lot more work.
+            apiImpl.addHDRCompatibleShaderpackStateSupplier(() -> (!PackChain.noPackWanted() && !PackChain.packMissing()));
         }
 
         configHolder.registerSaveListener(apiImpl::onConfigSave);

@@ -1,10 +1,6 @@
-# HDR Mod v3.2.0 Changelog
+# HDR Mod v3.2.1 Changelog
 ## New Features
-- Brightness Control by shortcuts (default no keybind)
-- Initial Super Resolution Vulkan Presentation and (possibly) framegen support
-- Mod API
-- Get HDR display metadata without GL-DX interop on Windows
+- Vitrail compat
+    - This is not a recommendation. Vitrail is a heavily AI-assisted project; No stability guarantees.
 ## Fixes
-- `java.lang.NoClassDefFoundError: org/lwjgl/sdl/SDLVideo` (#80)
-## Others
-- Internal refactor (this doesn't affect mod compatibility like IMBlocker)
+- @Redirect for SDL GL surface
