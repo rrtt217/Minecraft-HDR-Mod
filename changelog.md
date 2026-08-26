@@ -4,3 +4,4 @@
     - This is not a recommendation. Vitrail is a heavily AI-assisted project; No stability guarantees.
 ## Fixes
 - @Redirect for SDL GL surface
+- Potentially improved compatibility with mods that precompile RenderPipeline with custom ShaderSource
