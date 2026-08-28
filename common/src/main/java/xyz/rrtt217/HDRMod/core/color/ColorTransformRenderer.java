@@ -88,7 +88,7 @@ public class ColorTransformRenderer implements AutoCloseable {
                 renderPass.setPipeline(COLOR_TRANSFORM);
                 RenderSystem.bindDefaultUniforms(renderPass);
                 if (this.colorTransformUbo != null) renderPass.setUniform("ColorTransform", this.colorTransformBuffer);
-                renderPass.bindTexture("InSampler", srcTextureView);
+                renderPass.bindSampler("InSampler", srcTextureView);
                 renderPass.draw(0, 3);
             }
         } else {

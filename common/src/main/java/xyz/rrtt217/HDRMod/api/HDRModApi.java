@@ -1,6 +1,6 @@
 package xyz.rrtt217.HDRMod.api;
 
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.api.color.ColorManagementInfo;
 
