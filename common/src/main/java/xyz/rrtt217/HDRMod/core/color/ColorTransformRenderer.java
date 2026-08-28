@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.core;
+package xyz.rrtt217.HDRMod.core.color;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -11,7 +11,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderInstance;
 import org.lwjgl.opengl.GL30;
-import xyz.rrtt217.HDRMod.util.Enums;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 
 import java.io.IOException;
 import java.nio.IntBuffer;
@@ -34,7 +34,7 @@ public class ColorTransformRenderer implements AutoCloseable {
     public ColorTransformRenderer(RenderTarget srcTarget, String string) throws IOException {
         this.srcTarget = srcTarget;
         this.ColorTransformShader = new ShaderInstance(Minecraft.getInstance().getVanillaPackResources().asProvider(), "color_transform", DefaultVertexFormat.BLIT_SCREEN);
-        // Set a group of default UBO values. You may call updateColorTransformUBO manually to update later.
+        // Set a group of default values. You may call updateColorTransformUniforms manually to update later.
         updateColorTransformUniforms(203.0F, 0.0F, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
         this.dstReadPixelFormat = GL30.GL_HALF_FLOAT;
         this.dstTextureFormat = GL30.GL_RGBA16F;

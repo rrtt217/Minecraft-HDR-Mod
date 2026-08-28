@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.features;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -13,14 +13,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
+import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 
-import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
 import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
 
 import java.io.IOException;
 
-import static xyz.rrtt217.HDRMod.HDRMod.*;
 import static xyz.rrtt217.HDRMod.HDRMod.PresentationColorTransformRenderer;
 
 @Mixin(RenderTarget.class)

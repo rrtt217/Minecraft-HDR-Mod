@@ -1,9 +1,5 @@
 package xyz.rrtt217.HDRMod.mixin.compat.sr;
 
-import com.mojang.blaze3d.opengl.GlTexture;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTextureView;
-import io.homo.superresolution.common.minecraft.GpuTextureAdapter;
 import io.homo.superresolution.common.presentation.capture.FrameResources;
 import io.homo.superresolution.core.graphics.impl.texture.ITexture;
 import io.homo.superresolution.core.graphics.impl.texture.TextureFormat;
@@ -16,43 +12,18 @@ import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.api.color.Enums;
 
-import java.lang.reflect.Constructor;
-
 import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 
 @Mixin(FrameResources.class)
 public class MixinFrameResources {
     private ColorTransformRenderer finalColorTransformRenderer;
-    private GpuTextureView finalColorTextureView;
     private ColorTransformRenderer hudlessColorTransformRenderer;
-    private GpuTextureView hudlessColorTextureView;
-    private Constructor gpuTextureAdapterConstructor;
     @ModifyArg(method = "copyFinalColor", at = @At(value = "INVOKE", target = "Lio/homo/superresolution/common/presentation/capture/FrameTextureResource;copyFrom(Lio/homo/superresolution/core/graphics/impl/texture/ITexture;Z)V"), index = 0)
     private ITexture hdr_mod$transformFinalColorTexture(ITexture texture) {
-        long handle = Minecraft.getInstance().getWindow().handle();
-        if(gpuTextureAdapterConstructor == null) {
-            try {
-                Class<?> clazz = GpuTextureAdapter.class;
-                gpuTextureAdapterConstructor = clazz.getDeclaredConstructor(ITexture.class);
-                gpuTextureAdapterConstructor.setAccessible(true);
-            }
-            catch (NoSuchMethodException e){
-                return texture;
-            }
-        }
+        long handle = Minecraft.getInstance().getWindow().getWindow();
         try {
-            GpuTextureAdapter adapter = (GpuTextureAdapter) gpuTextureAdapterConstructor.newInstance(texture);
-            if(finalColorTextureView != null && finalColorTextureView.texture() != adapter){
-                finalColorTextureView.close();
-                finalColorTextureView = null;
-            }
-            if(finalColorTextureView == null) {
-                finalColorTextureView = RenderSystem.getDevice().createTextureView(adapter);
-                if(finalColorTransformRenderer != null)
-                    finalColorTransformRenderer.setSrcTextureView(finalColorTextureView);
-            }
             if(finalColorTransformRenderer == null) {
-                finalColorTransformRenderer = new ColorTransformRenderer(finalColorTextureView, "SR Final Color");
+                finalColorTransformRenderer = new ColorTransformRenderer(((FrameBufferTextureAdapterAccessor) texture).getFrameBuffer().asMcRenderTarget(), "SR Final Color");
                 finalColorTransformRenderer.updateColorTransformUniforms(
                     HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
                     HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
@@ -61,7 +32,7 @@ public class MixinFrameResources {
                 );
             }
             finalColorTransformRenderer.render();
-            return new GlOnlyNameTexture(() -> TextureFormat.RGBA16, () -> finalColorTransformRenderer.getDstTexture().getWidth(0), () -> finalColorTransformRenderer.getDstTexture().getHeight(0), () -> (long)((GlTexture) finalColorTransformRenderer.getDstTexture()).glId());
+            return new GlOnlyNameTexture(() -> TextureFormat.RGBA16, () -> finalColorTransformRenderer.getSrcTarget().width, () -> finalColorTransformRenderer.getSrcTarget().height, () -> (long)(finalColorTransformRenderer.getDstTextureId()));
         } catch (Exception e) {
             LOGGER.warn("Error while trying to render gl texture", e);
             return texture;
@@ -69,30 +40,10 @@ public class MixinFrameResources {
     }
     @ModifyArg(method = "copyHudlessColor", at = @At(value = "INVOKE", target = "Lio/homo/superresolution/common/presentation/capture/FrameTextureResource;copyFrom(Lio/homo/superresolution/core/graphics/impl/texture/ITexture;Z)V"), index = 0)
     private ITexture hdr_mod$transformHudlessColorTexture(ITexture texture) {
-        long handle = Minecraft.getInstance().getWindow().handle();
-        if(gpuTextureAdapterConstructor == null) {
-            try {
-                Class<?> clazz = GpuTextureAdapter.class;
-                gpuTextureAdapterConstructor = clazz.getDeclaredConstructor(ITexture.class);
-                gpuTextureAdapterConstructor.setAccessible(true);
-            }
-            catch (NoSuchMethodException e){
-                return texture;
-            }
-        }
+        long handle = Minecraft.getInstance().getWindow().getWindow();
         try {
-            GpuTextureAdapter adapter = (GpuTextureAdapter) gpuTextureAdapterConstructor.newInstance(texture);
-            if(hudlessColorTextureView != null && hudlessColorTextureView.texture() != adapter){
-                hudlessColorTextureView.close();
-                hudlessColorTextureView = null;
-            }
-            if(hudlessColorTextureView == null) {
-                hudlessColorTextureView = RenderSystem.getDevice().createTextureView(adapter);
-                if(hudlessColorTransformRenderer != null)
-                    hudlessColorTransformRenderer.setSrcTextureView(hudlessColorTextureView);
-            }
             if(hudlessColorTransformRenderer == null) {
-                hudlessColorTransformRenderer = new ColorTransformRenderer(hudlessColorTextureView, "SR Hudless Color");
+                hudlessColorTransformRenderer = new ColorTransformRenderer(((FrameBufferTextureAdapterAccessor) texture).getFrameBuffer().asMcRenderTarget(), "SR Hudless Color");
                 hudlessColorTransformRenderer.updateColorTransformUniforms(
                         HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
                         HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
@@ -101,7 +52,7 @@ public class MixinFrameResources {
                 );
             }
             hudlessColorTransformRenderer.render();
-            return new GlOnlyNameTexture(() -> TextureFormat.RGBA16, () -> hudlessColorTransformRenderer.getDstTexture().getWidth(0), () -> hudlessColorTransformRenderer.getDstTexture().getHeight(0), () -> (long)((GlTexture) hudlessColorTransformRenderer.getDstTexture()).glId());
+            return new GlOnlyNameTexture(() -> TextureFormat.RGBA16, () -> hudlessColorTransformRenderer.getSrcTarget().width, () -> hudlessColorTransformRenderer.getSrcTarget().height, () -> (long) hudlessColorTransformRenderer.getDstTextureId());
         } catch (Exception e) {
             LOGGER.warn("Error while trying to render gl texture", e);
             return texture;

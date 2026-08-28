@@ -9,9 +9,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
-import xyz.rrtt217.HDRMod.util.Platform;
+import xyz.rrtt217.HDRMod.api.color.Enums;
+import xyz.rrtt217.HDRMod.util.platform.Platform;
 
 import java.util.List;
 

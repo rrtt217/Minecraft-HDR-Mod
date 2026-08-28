@@ -1,4 +1,4 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.features;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.KeyboardHandler;

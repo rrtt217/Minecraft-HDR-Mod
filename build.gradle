@@ -65,6 +65,21 @@ subprojects {
                 it.options.release = 21
             }
 
+            // Axiom/ReplayMod 通过 JIJ 内嵌了旧版 mixinextras-fabric (0.3.5/0.3.6)，
+            // loom 会把它们注入到 dev classpath。这里统一到 0.5.0。
+            // 注意：只能挂在普通 classpath 配置上，不能碰 loom 在配置阶段
+            // 就已解析完的 mappings/minecraft，否则会报
+            // "Cannot change resolution strategy ... after it has been resolved"。
+            ['compileClasspath', 'runtimeClasspath', 'testCompileClasspath', 'testRuntimeClasspath'].each { configName ->
+                configurations.matching { it.name == configName }.configureEach {
+                    resolutionStrategy.eachDependency { details ->
+                        if (details.requested.group == 'io.github.llamalad7' && details.requested.name == 'mixinextras-fabric') {
+                            details.useVersion '0.5.0'
+                        }
+                    }
+                }
+            }
+
             // Configure Maven publishing.
             publishing {
                 publications {

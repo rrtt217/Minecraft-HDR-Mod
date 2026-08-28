@@ -88,9 +88,21 @@ public final class HDRMod {
     public HDRMod() {
     }
 
+    public static void earlyInit() {
+        if(configHolder == null) {
+            configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+            colorManagementInfoProvider = new ColorManagementInfoProvider(configHolder.getConfig());
+        }
+        if(apiImpl == null) {
+            apiImpl = new HDRModApiImpl();
+            HDRModConfig config = configHolder.getConfig();
+            apiImpl.previousEnableHDR = config.enableHDR;
+        }
+    }
+
     public static void init() {
         // Register config.
-        configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
+        earlyInit();
         // Register Key Mapping.
         KeyMappingRegistry.register(OPEN_CONFIG);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
@@ -149,9 +161,6 @@ public final class HDRMod {
             colorManagementInfoProvider = new SRVulkanPresentationColorManagementInfoProvider();
         }
         else colorManagementInfoProvider = new ColorManagementInfoProvider(config);
-
-        apiImpl = new HDRModApiImpl();
-        apiImpl.previousEnableHDR = config.enableHDR;
 
         if(hasIris){
             apiImpl.addHDRStateChangeListener(state -> {

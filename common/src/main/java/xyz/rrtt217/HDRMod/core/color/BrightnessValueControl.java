@@ -65,7 +65,7 @@ public class BrightnessValueControl {
         PAPERWHITE("text.autoconfig.hdr_mod.option.customGamePaperWhiteBrightness", 15.0F, 1000.0F, ProgressDisplayMapper::pq){
             @Override
             protected double pullFromSystem() {
-                return HDRMod.colorManagementInfoProvider.getCurrentGamePaperWhiteBrightness(Minecraft.getInstance().getWindow().handle());
+                return HDRMod.colorManagementInfoProvider.getCurrentGamePaperWhiteBrightness(Minecraft.getInstance().getWindow().getWindow());
             }
 
             @Override
@@ -81,7 +81,7 @@ public class BrightnessValueControl {
         PEAK("text.autoconfig.hdr_mod.option.customGamePeakBrightness", 100.0F, 5000.0F, ProgressDisplayMapper::pq){
             @Override
             protected double pullFromSystem() {
-                return HDRMod.colorManagementInfoProvider.getCurrentGamePeakBrightness(Minecraft.getInstance().getWindow().handle());
+                return HDRMod.colorManagementInfoProvider.getCurrentGamePeakBrightness(Minecraft.getInstance().getWindow().getWindow());
             }
 
             @Override
@@ -97,7 +97,7 @@ public class BrightnessValueControl {
         MINIMUM("text.autoconfig.hdr_mod.option.customGameMinimumBrightness", 0.0F, 1.0F, ProgressDisplayMapper::pq){
             @Override
             protected double pullFromSystem() {
-                return HDRMod.colorManagementInfoProvider.getCurrentGameMinimumBrightness(Minecraft.getInstance().getWindow().handle());
+                return HDRMod.colorManagementInfoProvider.getCurrentGameMinimumBrightness(Minecraft.getInstance().getWindow().getWindow());
             }
 
             @Override
@@ -113,7 +113,7 @@ public class BrightnessValueControl {
         UI("text.autoconfig.hdr_mod.option.uiBrightness", 15.0F, 1000.0F, ProgressDisplayMapper::pq){
             @Override
             protected double pullFromSystem() {
-                return HDRMod.colorManagementInfoProvider.getCurrentNonHudUIBrightness(Minecraft.getInstance().getWindow().handle());
+                return HDRMod.colorManagementInfoProvider.getCurrentNonHudUIBrightness(Minecraft.getInstance().getWindow().getWindow());
             }
 
             @Override
@@ -129,7 +129,7 @@ public class BrightnessValueControl {
         HUD("text.autoconfig.hdr_mod.option.hudBrightness", 15.0F, 1000.0F, ProgressDisplayMapper::pq){
             @Override
             protected double pullFromSystem() {
-                return HDRMod.colorManagementInfoProvider.getCurrentHudUIBrightness(Minecraft.getInstance().getWindow().handle());
+                return HDRMod.colorManagementInfoProvider.getCurrentHudUIBrightness(Minecraft.getInstance().getWindow().getWindow());
             }
 
             @Override
@@ -145,7 +145,7 @@ public class BrightnessValueControl {
         EOTFEMULATE("text.autoconfig.hdr_mod.option.customEotfEmulate", 0.0F, 1000.0F){
             @Override
             protected double pullFromSystem() {
-                return HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(Minecraft.getInstance().getWindow().handle());
+                return HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(Minecraft.getInstance().getWindow().getWindow());
             }
 
             @Override

@@ -1,10 +1,9 @@
-package xyz.rrtt217.HDRMod.mixin;
+package xyz.rrtt217.HDRMod.mixin.init;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.platform.*;
 import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,12 +16,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import oshi.SystemInfo;
 import oshi.hardware.GraphicsCard;
 import oshi.hardware.HardwareAbstractionLayer;
-import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
-import xyz.rrtt217.HDRMod.core.DXGIStateManager;
-import xyz.rrtt217.HDRMod.util.ColorManagementInfoProvider;
-import xyz.rrtt217.HDRMod.util.Enums;
+import xyz.rrtt217.HDRMod.core.interop.DXGIStateManager;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin;
 
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -30,9 +28,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static xyz.rrtt217.HDRMod.HDRMod.configHolder;
-import static xyz.rrtt217.HDRMod.HDRMod.colorManagementInfoProvider;
-import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
+import static xyz.rrtt217.HDRMod.HDRMod.*;
 
 
 @Mixin(value = Window.class, priority = 1010)
@@ -45,13 +41,7 @@ import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR
             // Get GLFW platform.
             int platform = GLFW.glfwGetPlatform();
 
-            if(configHolder == null) {
-                configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-                configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
-                HDRModConfig config = configHolder.getConfig();
-                colorManagementInfoProvider = new ColorManagementInfoProvider(config);
-                previousEnableHDR = config.enableHDR;
-            }
+            earlyInit();
 
             // Get config.
             HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();

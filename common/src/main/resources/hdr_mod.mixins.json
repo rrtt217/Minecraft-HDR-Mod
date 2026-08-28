@@ -7,11 +7,16 @@
   "client": [
     "compat.imblocker.MixinKeyboardHandler",
     "compat.ixeris.MixinTitieScreen",
+    "debug.MixinDebugScreenOverlay",
     "features.BossHealthOverlayAccessor",
     "features.KeyMappingAccessor",
     "features.MixinGlStateManager",
+    "features.MixinKeyboardHandler",
+    "features.MixinRenderTarget",
     "features.MixinScreenshot",
-    "init.MixinRenderSystem"
+    "init.MixinRenderSystem",
+    "init.MixinWindow",
+    "upgrade.MixinMainTarget"
   ],
   "mixins": [
     "compat.iris.MixinIrisExclusiveUniforms",
@@ -22,13 +27,13 @@
     "compat.replaymod.MixinOpenGlFrameCapturer",
     "compat.replaymod.MixinPboOpenGlFrameCapturer",
     "compat.replaymod.MixinRenderSettingsEncodingPreset",
+    "compat.sr.FrameBufferTextureAdapterAccessor",
     "compat.sr.MixinFrameResources",
     "compat.sr.MixinVulkanSwapchain",
-    "compat.sr.VulkanSurfaceAccessor"
+    "compat.sr.VulkanSurfaceAccessor",
+    "init.MixinVanillaPackResources"
   ],
-  "mixinextras": {
-    "minVersion": "0.5.0"
-  },
+  "mixinextras": {"minVersion": "0.5.0"},
   "injectors": {
     "defaultRequire": 1
   }
