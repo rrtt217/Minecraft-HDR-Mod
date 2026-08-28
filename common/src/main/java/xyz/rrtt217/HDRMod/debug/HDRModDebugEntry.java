@@ -8,12 +8,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.Enums;
-import xyz.rrtt217.HDRMod.util.GLFWColorManagementUtils;
-import xyz.rrtt217.HDRMod.util.Platform;
+import xyz.rrtt217.HDRMod.api.color.Enums;
+import xyz.rrtt217.HDRMod.util.platform.Platform;
 
 public class HDRModDebugEntry implements DebugScreenEntry {
     @Override

@@ -5,23 +5,24 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
-    "MixinDebugScreenEntries",
-    "MixinDebugScreenEntryList",
-    "MixinGlCommandEncoder",
-    "MixinGlDevice",
-    "MixinGlStateManager",
-    "MixinKeyboardHandler",
-    "MixinMainTarget",
-    "MixinMinecraft",
-    "MixinRenderSystem",
-    "MixinRenderTarget",
-    "MixinScreenshot",
-    "MixinWindow",
     "compat.imblocker.MixinKeyboardHandler",
-    "compat.ixeris.MixinTitieScreen"
+    "compat.ixeris.MixinTitieScreen",
+    "debug.MixinDebugScreenEntries",
+    "debug.MixinDebugScreenEntryList",
+    "features.BossHealthOverlayAccessor",
+    "features.KeyMappingAccessor",
+    "features.MixinGlStateManager",
+    "features.MixinKeyboardHandler",
+    "features.MixinRenderTarget",
+    "features.MixinScreenshot",
+    "init.MixinMinecraft",
+    "init.MixinRenderSystem",
+    "init.MixinWindow",
+    "upgrade.MixinGlCommandEncoder",
+    "upgrade.MixinGlDevice",
+    "upgrade.MixinMainTarget"
   ],
   "mixins": [
-    "compat.iris.MixinIrisCompatibility",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",
@@ -29,8 +30,14 @@
     "compat.ixeris.MixinGLFWIMEUtils",
     "compat.replaymod.MixinOpenGlFrameCapturer",
     "compat.replaymod.MixinPboOpenGlFrameCapturer",
-    "compat.replaymod.MixinRenderSettingsEncodingPreset"
+    "compat.replaymod.MixinRenderSettingsEncodingPreset",
+    "compat.sr.MixinFrameResources",
+    "compat.sr.MixinVulkanSwapchain",
+    "compat.sr.VulkanSurfaceAccessor"
   ],
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  },
   "injectors": {
     "defaultRequire": 1
   }
