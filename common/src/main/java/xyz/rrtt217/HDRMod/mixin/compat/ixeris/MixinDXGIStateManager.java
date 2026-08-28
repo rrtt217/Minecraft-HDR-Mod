@@ -6,9 +6,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import xyz.rrtt217.HDRMod.core.DXGIStateManager;
-import xyz.rrtt217.HDRMod.core.DXGISwapchainCache;
-import xyz.rrtt217.HDRMod.util.GLFWDXGIUtils;
+import xyz.rrtt217.HDRMod.core.interop.DXGIStateManager;
+import xyz.rrtt217.HDRMod.core.interop.DXGISwapchainCache;
+import xyz.rrtt217.HDRMod.util.glfw.GLFWDXGIUtils;
 
 @Mixin(value = DXGIStateManager.class, remap = false)
 public class MixinDXGIStateManager {

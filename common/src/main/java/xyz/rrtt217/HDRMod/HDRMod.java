@@ -3,22 +3,26 @@ package xyz.rrtt217.HDRMod;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.event.events.client.ClientTickEvent;
 import dev.architectury.registry.client.keymappings.KeyMappingRegistry;
+import io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.ConfigHolder;
 import me.shedaniel.autoconfig.serializer.Toml4jConfigSerializer;
+import net.irisshaders.iris.Iris;
+import net.irisshaders.iris.api.v0.IrisApi;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import org.slf4j.LoggerFactory;
-
-import xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility;
-import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
-import xyz.rrtt217.HDRMod.core.PngjHDRScreenshot;
-import xyz.rrtt217.HDRMod.util.Enums.*;
+import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
+import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
+import xyz.rrtt217.HDRMod.compat.sr.SRVulkanPresentationColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.core.api.HDRModApiImpl;
+import xyz.rrtt217.HDRMod.core.color.BrightnessValueControl;
 import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.ColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
 
-import static xyz.rrtt217.HDRMod.compat.iris.IrisCompatibility.previousEnableHDR;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasIris;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
 
 public final class HDRMod {
     public static final String MOD_ID = "hdr_mod";
@@ -29,29 +33,55 @@ public final class HDRMod {
     public static ColorTransformRenderer ScreenshotColorTransformRenderer;
     public static ColorTransformRenderer ReplayColorTransformRenderer;
 
-    // Key Mapping.;
-    public static final KeyMapping CUSTOM_KEYMAPPING = new KeyMapping(
+    // Key Mapping.
+    public static final KeyMapping OPEN_CONFIG = new KeyMapping(
             "key.hdr_mod.open_config_menu", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             InputConstants.KEY_F9, // The default keycode
             "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
-    public static final KeyMapping CUSTOM_KEYMAPPING_2 = new KeyMapping(
+    public static final KeyMapping HDR_SCREENSHOT = new KeyMapping(
             "key.hdr_mod.take_hdr_screenshot", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             InputConstants.KEY_F10, // The default keycode
             "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
-    public static final KeyMapping CUSTOM_KEYMAPPING_3 = new KeyMapping(
+    public static final KeyMapping TOGGLE_HDR = new KeyMapping(
             "key.hdr_mod.toggle_hdr", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
             -1, // The default keycode
             "key.category.hdr_mod.main" // The category translation key used to categorize in the Controls screen
     );
+    public static final KeyMapping VALUE_UP = new KeyMapping(
+            "key.hdr_mod.value_up", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            "key.category.hdr_mod.main"// The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping VALUE_DOWN = new KeyMapping(
+            "key.hdr_mod.value_down", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            "key.category.hdr_mod.main"  // The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping TOGGLE_VALUE_ADJUSTED = new KeyMapping(
+            "key.hdr_mod.toggle_value_adjusted", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            "key.category.hdr_mod.main"  // The category translation key used to categorize in the Controls screen
+    );
+    public static final KeyMapping TOGGLE_VALUE_ADJUSTED_BACKWARDS = new KeyMapping(
+            "key.hdr_mod.toggle_value_adjusted_backwards", // The translation key of the name shown in the Controls screen
+            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            -1, // The default keycode
+            "key.category.hdr_mod.main"  // The category translation key used to categorize in the Controls screen
+    );
 
     public static boolean isReplayRendering = false;
 
     public static ConfigHolder<HDRModConfig> configHolder;
+
+    public static HDRModApiImpl apiImpl;
 
     public static ColorManagementInfoProvider colorManagementInfoProvider;
 
@@ -59,38 +89,84 @@ public final class HDRMod {
     }
 
     public static void init() {
-        if(configHolder == null) {
-            configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
-            configHolder.registerSaveListener(IrisCompatibility::onConfigSave);
-            HDRModConfig config = configHolder.getConfig();
-            colorManagementInfoProvider = new ColorManagementInfoProvider(config);
-            previousEnableHDR = config.enableHDR;
-        }
+        // Register config.
+        configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
         // Register Key Mapping.
-        KeyMappingRegistry.register(CUSTOM_KEYMAPPING);
+        KeyMappingRegistry.register(OPEN_CONFIG);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
-            while (CUSTOM_KEYMAPPING.consumeClick()) {
+            while (OPEN_CONFIG.consumeClick()) {
                 Minecraft.getInstance().setScreen(AutoConfig.getConfigScreen(HDRModConfig.class, Minecraft.getInstance().screen).get());
             }
         });
-        KeyMappingRegistry.register(CUSTOM_KEYMAPPING_2);
+        KeyMappingRegistry.register(HDR_SCREENSHOT);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
-            while (CUSTOM_KEYMAPPING_2.consumeClick()) {
+            while (HDR_SCREENSHOT.consumeClick()) {
                 PngjHDRScreenshot.grab(minecraft.gameDirectory, minecraft.getMainRenderTarget(), (arg) -> minecraft.execute(() -> {
                     minecraft.gui.getChat().addMessage(arg);
                     minecraft.getNarrator().say(arg);
                 }));
             }
         });
-        KeyMappingRegistry.register(CUSTOM_KEYMAPPING_3);
+        KeyMappingRegistry.register(TOGGLE_HDR);
         ClientTickEvent.CLIENT_POST.register(minecraft -> {
-            while (CUSTOM_KEYMAPPING_3.consumeClick()) {
+            while (TOGGLE_HDR.consumeClick()) {
                 HDRModConfig config = configHolder.getConfig();
                 config.enableHDR = !config.enableHDR;
                 configHolder.setConfig(config);
                 configHolder.save();
             }
         });
+        KeyMappingRegistry.register(VALUE_UP);
+        KeyMappingRegistry.register(VALUE_DOWN);
+        KeyMappingRegistry.register(TOGGLE_VALUE_ADJUSTED);
+        KeyMappingRegistry.register(TOGGLE_VALUE_ADJUSTED_BACKWARDS);
+        ClientTickEvent.CLIENT_POST.register(minecraft -> {
+            HDRModConfig config = configHolder.getConfig();
+            while (TOGGLE_VALUE_ADJUSTED.consumeClick()) {
+                BrightnessValueControl.valueSwitchAdjusted();
+            }
+            while (TOGGLE_VALUE_ADJUSTED_BACKWARDS.consumeClick()) {
+                BrightnessValueControl.valueSwitchAdjustedBackwards();
+            }
+            if(!VALUE_DOWN.isDown()) BrightnessValueControl.clearDownTick(); else BrightnessValueControl.stepDownTick();
+            if(!VALUE_UP.isDown()) BrightnessValueControl.clearUpTick(); else BrightnessValueControl.stepUpTick();
+            while (VALUE_UP.consumeClick()) {
+                if(config.roundStepToInitial) {BrightnessValueControl.valueAdjust((Math.round(BrightnessValueControl.currentValueUpTick * config.timeFactor / config.initialStep) + 1) * config.initialStep);}
+                else BrightnessValueControl.valueAdjust(Math.round(BrightnessValueControl.currentValueUpTick * config.timeFactor + config.initialStep));
+            }
+            while (VALUE_DOWN.consumeClick()) {
+                if(config.roundStepToInitial) {BrightnessValueControl.valueAdjust((Math.round( - BrightnessValueControl.currentValueDownTick * config.timeFactor / config.initialStep) - 1) * config.initialStep);}
+                else BrightnessValueControl.valueAdjust(Math.round(-BrightnessValueControl.currentValueDownTick * config.timeFactor - config.initialStep));
+            }
+        });
+
+        ClientTickEvent.CLIENT_POST.register(minecraft -> {
+            BrightnessValueControl.consumeClick();
+        });
+
+        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
+        if(hasSr && VulkanPresentationFeature.isRequested()) {
+            colorManagementInfoProvider = new SRVulkanPresentationColorManagementInfoProvider();
+        }
+        else colorManagementInfoProvider = new ColorManagementInfoProvider(config);
+
+        apiImpl = new HDRModApiImpl();
+        apiImpl.previousEnableHDR = config.enableHDR;
+
+        if(hasIris){
+            apiImpl.addHDRStateChangeListener(state -> {
+                if(IrisApi.getInstance().isShaderPackInUse()){
+                    try{
+                        Iris.reload();
+                    }
+                    catch (Exception ignored){}
+                }
+            });
+            // Currently we can't be better without a lot more work.
+            apiImpl.addHDRCompatibleShaderpackStateSupplier(IrisApi.getInstance()::isShaderPackInUse);
+        }
+
+        configHolder.registerSaveListener(apiImpl::onConfigSave);
 
         LOGGER.debug("HDRMod Initialized!");
     }

@@ -5,20 +5,15 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
-    "MixinDebugScreenOverlay",
-    "MixinGlStateManager",
-    "MixinKeyboardHandler",
-    "MixinMainTarget",
-    "MixinRenderSystem",
-    "MixinRenderTarget",
-    "MixinScreenshot",
-    "MixinWindow",
     "compat.imblocker.MixinKeyboardHandler",
-    "compat.ixeris.MixinTitieScreen"
+    "compat.ixeris.MixinTitieScreen",
+    "features.BossHealthOverlayAccessor",
+    "features.KeyMappingAccessor",
+    "features.MixinGlStateManager",
+    "features.MixinScreenshot",
+    "init.MixinRenderSystem"
   ],
   "mixins": [
-    "MixinVanillaPackResources",
-    "compat.iris.MixinIrisCompatibility",
     "compat.iris.MixinIrisExclusiveUniforms",
     "compat.iris.MixinStandardMacros",
     "compat.ixeris.MixinDXGIStateManager",
@@ -27,8 +22,13 @@
     "compat.replaymod.MixinOpenGlFrameCapturer",
     "compat.replaymod.MixinPboOpenGlFrameCapturer",
     "compat.replaymod.MixinRenderSettingsEncodingPreset",
-    "compat.replaymod.OpenGlFrameCapturerAccessor"
+    "compat.sr.MixinFrameResources",
+    "compat.sr.MixinVulkanSwapchain",
+    "compat.sr.VulkanSurfaceAccessor"
   ],
+  "mixinextras": {
+    "minVersion": "0.5.0"
+  },
   "injectors": {
     "defaultRequire": 1
   }
