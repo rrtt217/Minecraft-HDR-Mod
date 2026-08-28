@@ -1,6 +1,7 @@
 package xyz.rrtt217.HDRMod.mixin.features;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
@@ -20,6 +21,7 @@ import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
 import java.io.IOException;
 
 import static xyz.rrtt217.HDRMod.HDRMod.PresentationColorTransformRenderer;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
 
 @Mixin(RenderTarget.class)
 public class MixinRenderTarget {
@@ -64,6 +66,7 @@ public class MixinRenderTarget {
 
     @Redirect(method = "_blitToScreen", at = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;colorTextureId:I", opcode = Opcodes.GETFIELD))
     private int hdr_mod$replaceBlitTarget(RenderTarget instance) {
+        if(hasSr && VulkanPresentationFeature.isRequested()) return colorTextureId;
         if (HDRModInjectHooks.getTargetDisableBlend()) {
             HDRModInjectHooks.unsetTargetDisableBlend();
             return PresentationColorTransformRenderer.getDstTextureId();
