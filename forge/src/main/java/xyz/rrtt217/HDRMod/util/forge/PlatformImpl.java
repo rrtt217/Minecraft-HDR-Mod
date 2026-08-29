@@ -1,4 +1,8 @@
+<<<<<<<< HEAD:forge/src/main/java/xyz/rrtt217/HDRMod/util/forge/PlatformImpl.java
 package xyz.rrtt217.HDRMod.util.forge;
+========
+package xyz.rrtt217.HDRMod.util.platform.neoforge;
+>>>>>>>> 1.21.1:neoforge/src/main/java/xyz/rrtt217/HDRMod/util/platform/neoforge/PlatformImpl.java
 
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.LoadingModList;

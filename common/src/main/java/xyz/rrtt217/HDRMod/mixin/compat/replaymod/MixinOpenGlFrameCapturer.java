@@ -10,9 +10,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.rrtt217.HDRMod.HDRMod;
+import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.core.ColorTransformRenderer;
-import xyz.rrtt217.HDRMod.util.Enums;
+import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 
 import java.io.IOException;
 
