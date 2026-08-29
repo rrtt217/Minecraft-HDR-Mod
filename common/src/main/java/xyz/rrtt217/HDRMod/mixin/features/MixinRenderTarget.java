@@ -47,7 +47,6 @@ public class MixinRenderTarget {
 
     @Inject(method = "_blitToScreen", at = @At("HEAD"))
     private void hdr_mod$doPresentationTransform(int i, int j, boolean bl, CallbackInfo ci) {
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if (bl) {
             long handle = Minecraft.getInstance().getWindow().getWindow();
             HDRModInjectHooks.setTargetDisableBlend();

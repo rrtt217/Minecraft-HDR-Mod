@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:forge/src/main/java/xyz/rrtt217/HDRMod/util/forge/SetupBeforeGLFWInitImpl.java
-package xyz.rrtt217.HDRMod.util.forge;
-========
-package xyz.rrtt217.HDRMod.util.platform.neoforge;
->>>>>>>> 1.21.1:neoforge/src/main/java/xyz/rrtt217/HDRMod/util/platform/neoforge/SetupBeforeGLFWInitImpl.java
+package xyz.rrtt217.HDRMod.util.platform.forge;
 
 import net.minecraftforge.fml.loading.FMLConfig;
 

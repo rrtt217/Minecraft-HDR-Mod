@@ -34,7 +34,7 @@ public class MixinVulkanSwapchain {
     @Definition(id = "candidate", local = @Local(type = VkSurfaceFormatKHR.class))
     @Definition(id = "colorSpace", method = "Lorg/lwjgl/vulkan/VkSurfaceFormatKHR;colorSpace()I")
     @Expression("candidate.colorSpace() == 0")
-    @ModifyExpressionValue(method = "chooseSurfaceFormat", at = @At("MIXINEXTRAS:EXPRESSION"))
+    @ModifyExpressionValue(method = "chooseSurfaceFormat", at = @At("MIXINEXTRAS:EXPRESSION"), remap = false)
     private boolean hdr_mod$changeRequiredColorSpace(boolean original, @Local(name = "candidate") VkSurfaceFormatKHR candidate) {
         return candidate.colorSpace() == (Platform.isLinux() ? VK_COLOR_SPACE_PASS_THROUGH_EXT : VK_COLOR_SPACE_HDR10_ST2084_EXT);
     }
@@ -42,12 +42,12 @@ public class MixinVulkanSwapchain {
     @Definition(id = "candidate", local = @Local(type = VkSurfaceFormatKHR.class))
     @Definition(id = "format", method = "Lorg/lwjgl/vulkan/VkSurfaceFormatKHR;format()I")
     @Expression("candidate.format() == 44")
-    @ModifyExpressionValue(method = "chooseSurfaceFormat", at = @At("MIXINEXTRAS:EXPRESSION"))
+    @ModifyExpressionValue(method = "chooseSurfaceFormat", at = @At("MIXINEXTRAS:EXPRESSION"), remap = false)
     private boolean hdr_mod$changeRequiredFormat(boolean original, @Local(name = "candidate") VkSurfaceFormatKHR candidate) {
         return candidate.format() == VK_FORMAT_A2B10G10R10_UNORM_PACK32;
     }
 
-    @Inject(method = "presentImage(IZJJJZ)I", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "presentImage(IZJJJZ)I", at = @At("HEAD"), cancellable = true, remap = false)
     private void hdr_mod$cancelPresentBeforeShown(int imageIndex, boolean outOfBandPresent, long targetSwapchain, long presentReadyBinary, long immutablePresentId, boolean applicationManaged, CallbackInfoReturnable<Integer> cir){
         if(!((VulkanSurfaceAccessor) (Object) surface).getShown()) cir.setReturnValue(VK_SUCCESS);
     }

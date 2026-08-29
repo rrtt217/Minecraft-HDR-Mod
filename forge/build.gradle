@@ -58,7 +58,7 @@ repositories {
 
 configurations.all {
     resolutionStrategy.eachDependency { details ->
-        if (details.requested.group == 'org.lwjgl' && details.requested.name.startsWith('lwjgl')) {
+        if (details.requested.group == 'org.lwjgl' && details.requested.name.startsWith('lwjgl') && details.requested.name.startsWith('lwjgl') && !details.requested.name.contains("vulkan") && !details.requested.name.contains("vma")) {
             details.useVersion '3.3.1'
         }
     }
@@ -84,6 +84,16 @@ dependencies {
     modCompileOnly "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
     //modLocalRuntime files("/home/david/Minecraft-HDR-Mod/libs/IMBlocker-5.5.3-dev-forge+1.17-1.20.4.jar")
     modImplementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
+
+    forgeRuntimeLibrary "io.github.spair:imgui-java-app:$imgui_version"
+    forgeRuntimeLibrary "io.github.spair:imgui-java-binding:$imgui_version"
+    forgeRuntimeLibrary "io.github.spair:imgui-java-lwjgl3:$imgui_version"
+    forgeRuntimeLibrary "org.lwjgl:lwjgl-vulkan:3.3.6"
+    forgeRuntimeLibrary "org.lwjgl:lwjgl-vma:3.3.6"
+    forgeRuntimeLibrary "org.lwjgl:lwjgl-vma::natives-windows"
+    forgeRuntimeLibrary "org.lwjgl:lwjgl-vma::natives-linux"
+    forgeRuntimeLibrary "net.neoforged:bus:8.0.5"
+    modLocalRuntime "maven.modrinth:superresolution:${minecraft_version}-${sr_version}+gl-forge"
 
     localRuntime "org.anarres:jcpp:1.4.14"
     include "org.anarres:jcpp:1.4.14"

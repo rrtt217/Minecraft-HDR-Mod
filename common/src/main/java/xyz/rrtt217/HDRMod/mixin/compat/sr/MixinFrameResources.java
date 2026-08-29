@@ -18,7 +18,7 @@ import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 public class MixinFrameResources {
     private ColorTransformRenderer finalColorTransformRenderer;
     private ColorTransformRenderer hudlessColorTransformRenderer;
-    @ModifyArg(method = "copyFinalColor", at = @At(value = "INVOKE", target = "Lio/homo/superresolution/common/presentation/capture/FrameTextureResource;copyFrom(Lio/homo/superresolution/core/graphics/impl/texture/ITexture;Z)V"), index = 0)
+    @ModifyArg(method = "copyFinalColor", at = @At(value = "INVOKE", target = "Lio/homo/superresolution/common/presentation/capture/FrameTextureResource;copyFrom(Lio/homo/superresolution/core/graphics/impl/texture/ITexture;Z)V"), index = 0, remap = false)
     private ITexture hdr_mod$transformFinalColorTexture(ITexture texture) {
         long handle = Minecraft.getInstance().getWindow().getWindow();
         try {
@@ -38,7 +38,7 @@ public class MixinFrameResources {
             return texture;
         }
     }
-    @ModifyArg(method = "copyHudlessColor", at = @At(value = "INVOKE", target = "Lio/homo/superresolution/common/presentation/capture/FrameTextureResource;copyFrom(Lio/homo/superresolution/core/graphics/impl/texture/ITexture;Z)V"), index = 0)
+    @ModifyArg(method = "copyHudlessColor", at = @At(value = "INVOKE", target = "Lio/homo/superresolution/common/presentation/capture/FrameTextureResource;copyFrom(Lio/homo/superresolution/core/graphics/impl/texture/ITexture;Z)V"), index = 0, remap = false)
     private ITexture hdr_mod$transformHudlessColorTexture(ITexture texture) {
         long handle = Minecraft.getInstance().getWindow().getWindow();
         try {

@@ -34,7 +34,7 @@ dependencies {
     modImplementation "maven.modrinth:replaymod:1.20.1-2.6.23"
     modImplementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
     modImplementation "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
-    modImplementation "maven.modrinth:superresolution:1.21-${sr_version}+gl-fabric"
+    modImplementation "maven.modrinth:superresolution:${minecraft_version}-${sr_version}+gl-forge"
 
     implementation "org.lwjgl:lwjgl-vulkan:3.3.6"
     implementation "org.lwjgl:lwjgl-vma:3.3.6"
