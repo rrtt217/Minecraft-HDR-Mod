@@ -3,6 +3,8 @@ package xyz.rrtt217.HDRMod.compat.imblocker;
 import io.github.reserveword.imblocker.common.IMManager;
 import io.github.reserveword.imblocker.common.LinuxIMFramework;
 import io.github.reserveword.imblocker.common.gui.*;
+import io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature;
+import io.homo.superresolution.common.presentation.window.PresentationWindowState;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.BufferUtils;
@@ -15,6 +17,7 @@ import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 
 import static io.github.reserveword.imblocker.common.IMManager.calculateCaretPos;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
 import static xyz.rrtt217.HDRMod.util.ime.GLFWIMEUtils.glfwSetPreeditCursorRectangle;
 
 @SuppressWarnings("unused")
@@ -43,28 +46,12 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
     }
 
     @Override
-    public void updateCompositionWindowPos(Point pos) {
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(!state) return;
-        if(config.enableIMBlockerSetPreeditCallbackIntegration)
-            UniversalIMEPreeditOverlay.getInstance().updateCaretPosition(pos.x(), pos.y());
-    }
-
-    public static void updatePreeditCursorRectanglePosition(int x, int y, int w, int h) {
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(!state) return;
+    public void setPreeditCursorRectangle(int x, int y, int w, int h) {
         long handle = Minecraft.getInstance().getWindow().handle();
-        float xscaleValue = 1.0f;
-        float yscaleValue = 1.0f;
-        if(config.PreeditOverlayPositionFollowMonitorScale) {
-            FloatBuffer xscale = BufferUtils.createFloatBuffer(1);
-            FloatBuffer yscale = BufferUtils.createFloatBuffer(1);
-            GLFW.glfwGetWindowContentScale(handle, xscale, yscale);
-            xscaleValue = xscale.get();
-            yscaleValue = yscale.get();
-        }
-        glfwSetPreeditCursorRectangle(Minecraft.getInstance().getWindow().handle(),
-                (int) (x / xscaleValue), (int) (y / yscaleValue), (int) (w / xscaleValue), (int) (h / yscaleValue));
+
+        if(hasSr && VulkanPresentationFeature.isRequested()) handle = PresentationWindowState.renderHandle();
+
+        glfwSetPreeditCursorRectangle(handle, x, y, w, h);
     }
 
     private void checkIMFramework() {
