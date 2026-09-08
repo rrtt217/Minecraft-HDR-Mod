@@ -3,7 +3,8 @@ package xyz.rrtt217.HDRMod;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.vitrail.Vitrail;
 import dev.vitrail.render.PackChain;
-import dev.vitrail.screen.ScreenText;
+import dev.vitrail.render.PackChoice;
+import dev.vitrail.ScreenText;
 import dev.vitrail.settings.PackSession;
 import io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -139,27 +140,37 @@ public final class HDRMod {
 
         if(hasVitrail){
             apiImpl.addHDRStateChangeListener(state -> {
-                // Reload method from vitrail code. Original method is private.
-                Path directory = PackChain.session()
-                        .map(PackSession::gameDirectory)
-                        .orElseGet(() -> Vitrail.platform().gameDirectory());
+                try {
+                    // Reload method from vitrail code. Original method is private.
+                    Path directory = PackChoice.session()
+                            .map(PackSession::gameDirectory)
+                            .orElseGet(() -> Vitrail.platform().gameDirectory());
 
-                PackChain.reload(directory);
+                    PackChoice.reload(directory);
 
-                MutableComponent said = PackChain.lastError()
-                        .map(reason -> Component.translatable(ScreenText.RELOAD_FAILED, reason)
-                                .withStyle(ChatFormatting.RED))
-                        .orElseGet(() -> Component.translatable(ScreenText.PACK_RELOADED));
+                    MutableComponent said = PackChoice.lastError()
+                            .map(reason -> Component.translatable(ScreenText.RELOAD_FAILED, reason)
+                                    .withStyle(ChatFormatting.RED))
+                            .orElseGet(() -> Component.translatable(ScreenText.PACK_RELOADED));
 
-                // In a world only, which is Iris's own guard: outside one there is no chat to say it in, and
-                // what was read is in the log either way.
-                Minecraft minecraft = Minecraft.getInstance();
-                if (minecraft.player != null) {
-                    minecraft.player.sendSystemMessage(said);
+                    // In a world only, which is Iris's own guard: outside one there is no chat to say it in, and
+                    // what was read is in the log either way.
+                    Minecraft minecraft = Minecraft.getInstance();
+                    if (minecraft.player != null) {
+                        minecraft.player.sendSystemMessage(said);
+                    }
+                } catch (Exception ignored) {
+
                 }
             });
             // Currently we can't be better without a lot more work.
-            apiImpl.addHDRCompatibleShaderpackStateSupplier(() -> (!PackChain.noPackWanted() && !PackChain.packMissing()));
+            apiImpl.addHDRCompatibleShaderpackStateSupplier(() -> {
+                try {
+                    return !PackChoice.noPackWanted() && !PackChoice.packMissing();
+                }
+                catch (Exception ignored){}
+                return false;
+            });
         }
 
         configHolder.registerSaveListener(apiImpl::onConfigSave);
