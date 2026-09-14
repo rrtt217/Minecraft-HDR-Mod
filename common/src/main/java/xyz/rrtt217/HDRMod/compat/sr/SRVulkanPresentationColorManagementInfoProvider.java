@@ -17,22 +17,4 @@ public class SRVulkanPresentationColorManagementInfoProvider extends ColorManage
     public Enums.TransferFunction getWindowTransferFunction(long handle) {
         return Enums.TransferFunction.ST2084_PQ;
     }
-
-    @Override
-    public float getWindowSdrWhiteLevel(long handle) {
-        if(hasSr && VulkanPresentationFeature.isRequested()) return super.getWindowSdrWhiteLevel(PresentationWindowState.presentationHandle());
-        return super.getWindowSdrWhiteLevel(handle);
-    }
-
-    @Override
-    public float getWindowMinLuminance(long handle) {
-        if(hasSr && VulkanPresentationFeature.isRequested()) return super.getWindowMinLuminance(PresentationWindowState.presentationHandle());
-        return super.getWindowMinLuminance(handle);
-    }
-
-    @Override
-    public float getWindowMaxLuminance(long handle) {
-        if(hasSr && VulkanPresentationFeature.isRequested()) return super.getWindowMaxLuminance(PresentationWindowState.presentationHandle());
-        return super.getWindowMaxLuminance(handle);
-    }
 }

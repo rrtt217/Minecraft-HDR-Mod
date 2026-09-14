@@ -1,21 +1,21 @@
 package xyz.rrtt217.HDRMod.mixin.features;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL30;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 
 import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
 
 import java.io.IOException;
+import java.nio.IntBuffer;
 
 import static xyz.rrtt217.HDRMod.HDRMod.PresentationColorTransformRenderer;
 import static xyz.rrtt217.HDRMod.compat.sr.SRCompatibility.isUsingVulkanPresentation;
