@@ -24,6 +24,7 @@ import xyz.rrtt217.HDRMod.core.interop.StubGLInteropResourceManager;
 import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.util.color.SDLColorManagementInfoProvider;
 
+import static xyz.rrtt217.HDRMod.compat.sr.SRCompatibility.isUsingVulkanPresentation;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasIris;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
@@ -101,7 +102,7 @@ public final class HDRMod {
         // Register config.
         configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(hasSr && VulkanPresentationFeature.isRequested()) {
+        if(hasSr && isUsingVulkanPresentation()) {
             colorManagementInfoProvider = new SRVulkanPresentationColorManagementInfoProvider();
         } else if(hasBlazeSdl) {
             colorManagementInfoProvider = new SDLColorManagementInfoProvider();
