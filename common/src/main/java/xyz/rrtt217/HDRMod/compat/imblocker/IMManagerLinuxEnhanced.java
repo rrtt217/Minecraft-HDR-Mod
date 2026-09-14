@@ -31,7 +31,7 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
     @Override
     public void setState(boolean on) {
         if (state != on) {
-            GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().handle(),0x00033007, on ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
+            GLFW.glfwSetInputMode(Minecraft.getInstance().getWindow().getWindow(),0x00033007, on ? GLFW.GLFW_TRUE : GLFW.GLFW_FALSE);
             state = on;
         }
     }
@@ -47,7 +47,7 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
 
     @Override
     public void setPreeditCursorRectangle(int x, int y, int w, int h) {
-        long handle = Minecraft.getInstance().getWindow().handle();
+        long handle = Minecraft.getInstance().getWindow().getWindow();
 
         if(hasSr && VulkanPresentationFeature.isRequested()) handle = PresentationWindowState.renderHandle();
 
