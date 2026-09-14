@@ -53,13 +53,14 @@ public class MixinFrameResources {
             }
             if(finalColorTransformRenderer == null) {
                 finalColorTransformRenderer = new ColorTransformRenderer(finalColorTextureView, "SR Final Color");
-                finalColorTransformRenderer.updateColorTransformUniforms(
+
+            }
+            finalColorTransformRenderer.updateColorTransformUniforms(
                     HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
                     HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
                     Enums.Primaries.BT2020,
                     Enums.TransferFunction.ST2084_PQ
-                );
-            }
+            );
             finalColorTransformRenderer.render();
             return new GlOnlyNameTexture(() -> TextureFormat.RGBA16, () -> finalColorTransformRenderer.getDstTexture().getWidth(0), () -> finalColorTransformRenderer.getDstTexture().getHeight(0), () -> (long)((GlTexture) finalColorTransformRenderer.getDstTexture()).glId());
         } catch (Exception e) {
@@ -93,13 +94,13 @@ public class MixinFrameResources {
             }
             if(hudlessColorTransformRenderer == null) {
                 hudlessColorTransformRenderer = new ColorTransformRenderer(hudlessColorTextureView, "SR Hudless Color");
-                hudlessColorTransformRenderer.updateColorTransformUniforms(
-                        HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
-                        HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
-                        Enums.Primaries.BT2020,
-                        Enums.TransferFunction.ST2084_PQ
-                );
             }
+            hudlessColorTransformRenderer.updateColorTransformUniforms(
+                    HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
+                    HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
+                    Enums.Primaries.BT2020,
+                    Enums.TransferFunction.ST2084_PQ
+            );
             hudlessColorTransformRenderer.render();
             return new GlOnlyNameTexture(() -> TextureFormat.RGBA16, () -> hudlessColorTransformRenderer.getDstTexture().getWidth(0), () -> hudlessColorTransformRenderer.getDstTexture().getHeight(0), () -> (long)((GlTexture) hudlessColorTransformRenderer.getDstTexture()).glId());
         } catch (Exception e) {
