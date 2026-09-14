@@ -42,8 +42,5 @@
   },
   "suggests": {
     "iris": "*"
-  },
-  "breaks": {
-    "imblocker": "<6.2.0"
   }
 }
