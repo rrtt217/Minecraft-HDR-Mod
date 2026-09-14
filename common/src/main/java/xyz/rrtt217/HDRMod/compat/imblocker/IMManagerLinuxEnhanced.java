@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 
 import static io.github.reserveword.imblocker.common.IMManager.calculateCaretPos;
+import static xyz.rrtt217.HDRMod.compat.sr.SRCompatibility.isUsingVulkanPresentation;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
 import static xyz.rrtt217.HDRMod.util.ime.GLFWIMEUtils.glfwSetPreeditCursorRectangle;
 
@@ -49,7 +50,7 @@ public class IMManagerLinuxEnhanced implements IMManager.PlatformIMManager{
     public void setPreeditCursorRectangle(int x, int y, int w, int h) {
         long handle = Minecraft.getInstance().getWindow().getWindow();
 
-        if(hasSr && VulkanPresentationFeature.isRequested()) handle = PresentationWindowState.renderHandle();
+        if(hasSr && isUsingVulkanPresentation()) handle = PresentationWindowState.renderHandle();
 
         glfwSetPreeditCursorRectangle(handle, x, y, w, h);
     }

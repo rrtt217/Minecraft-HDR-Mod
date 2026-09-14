@@ -26,13 +26,13 @@ public class MixinFrameResources {
         try {
             if(finalColorTransformRenderer == null) {
                 finalColorTransformRenderer = new ColorTransformRenderer(((FrameBufferTextureAdapterAccessor) texture).getFrameBuffer().asMcRenderTarget(), "SR Final Color");
-                finalColorTransformRenderer.updateColorTransformUniforms(
+            }
+            finalColorTransformRenderer.updateColorTransformUniforms(
                     HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
                     HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
                     Enums.Primaries.BT2020,
                     Enums.TransferFunction.ST2084_PQ
-                );
-            }
+            );
             finalColorTransformRenderer.render();
             return new GlOnlyNameTexture(() -> TextureFormat.RGBA16, () -> finalColorTransformRenderer.getSrcTarget().width, () -> finalColorTransformRenderer.getSrcTarget().height, () -> (long)(finalColorTransformRenderer.getDstTextureId()));
         } catch (Exception e) {
@@ -46,13 +46,13 @@ public class MixinFrameResources {
         try {
             if(hudlessColorTransformRenderer == null) {
                 hudlessColorTransformRenderer = new ColorTransformRenderer(((FrameBufferTextureAdapterAccessor) texture).getFrameBuffer().asMcRenderTarget(), "SR Hudless Color");
-                hudlessColorTransformRenderer.updateColorTransformUniforms(
-                        HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
-                        HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
-                        Enums.Primaries.BT2020,
-                        Enums.TransferFunction.ST2084_PQ
-                );
             }
+            hudlessColorTransformRenderer.updateColorTransformUniforms(
+                    HDRMod.colorManagementInfoProvider.getCurrentUIBrightness(handle),
+                    HDRMod.colorManagementInfoProvider.getCurrentEotfEmulate(handle),
+                    Enums.Primaries.BT2020,
+                    Enums.TransferFunction.ST2084_PQ
+            );
             hudlessColorTransformRenderer.render();
             return new GlOnlyNameTexture(() -> TextureFormat.RGBA16, () -> hudlessColorTransformRenderer.getSrcTarget().width, () -> hudlessColorTransformRenderer.getSrcTarget().height, () -> (long) hudlessColorTransformRenderer.getDstTextureId());
         } catch (Exception e) {

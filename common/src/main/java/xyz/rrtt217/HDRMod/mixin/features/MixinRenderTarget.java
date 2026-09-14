@@ -1,7 +1,6 @@
 package xyz.rrtt217.HDRMod.mixin.features;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL30;
 import org.objectweb.asm.Opcodes;
@@ -17,31 +16,14 @@ import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
 
 import java.io.IOException;
-import java.nio.IntBuffer;
 
-import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 import static xyz.rrtt217.HDRMod.HDRMod.PresentationColorTransformRenderer;
+import static xyz.rrtt217.HDRMod.compat.sr.SRCompatibility.isUsingVulkanPresentation;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
 
 @Mixin(RenderTarget.class)
 public class MixinRenderTarget {
 
-    @Unique
-    private static Boolean hdr_mod$vulkanPresentationRequested;
-
-    @Unique
-    private static boolean hdr_mod$isVulkanPresentationRequested() {
-        if (hdr_mod$vulkanPresentationRequested == null) {
-            try {
-                Class<?> clazz = Class.forName("io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature");
-                hdr_mod$vulkanPresentationRequested = (boolean) clazz.getMethod("isRequested").invoke(null);
-            } catch (Throwable t) {
-                hdr_mod$vulkanPresentationRequested = false;
-                t.printStackTrace();
-            }
-        }
-        return hdr_mod$vulkanPresentationRequested;
-    }
 
     @Shadow
     protected int colorTextureId;
@@ -90,8 +72,8 @@ public class MixinRenderTarget {
 
     @Redirect(method = "_blitToScreen", at = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;colorTextureId:I", opcode = Opcodes.GETFIELD))
     private int hdr_mod$replaceBlitTarget(RenderTarget instance) {
-        if (hdr_mod$isVulkanPresentationRequested()){
-            return colorTextureId;
+        if (hasSr) {
+            if (isUsingVulkanPresentation()) return colorTextureId;
         }
         if (HDRModInjectHooks.getTargetDisableBlend()) {
             HDRModInjectHooks.unsetTargetDisableBlend();

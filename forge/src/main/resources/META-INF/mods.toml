@@ -45,5 +45,16 @@ versionRange = "*"
 ordering = "AFTER"
 side = "BOTH"
 
+[[dependencies.hdr_mod]]
+modId = "imblocker"
+mandatory = false
+versionRange = "[5.6.0,)"
+ordering = "NONE"
+side = "BOTH"
+
+
+[[mixins]]
+config = "hdr_mod.mixins.json"
+
 [mods."sodium:options"]
 "mixin.features.render.compositing" = false
