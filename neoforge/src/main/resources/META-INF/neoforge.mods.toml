@@ -45,7 +45,7 @@ side = "BOTH"
 [[dependencies.hdr_mod]]
 modId = "imblocker"
 type = "incompatible"
-versionRange = "[,6.2.0)"
+versionRange = "[,5.6.0)"
 ordering = "NONE"
 side = "BOTH"
 
