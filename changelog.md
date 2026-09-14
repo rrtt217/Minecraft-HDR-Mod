@@ -1,8 +1,7 @@
-# HDR Mod v2.5.0 Changelog
-## New Features
-- Brightness Control by shortcuts (default no keybind)
-- Initial Super Resolution Vulkan Presentation and (possibly) framegen support
-- Mod API
-- Get HDR display metadata without GL-DX interop on Windows
-## Others
-- Internal refactor (this doesn't affect mod compatibility like IMBlocker)
+# HDR Mod v2.5.1 Changelog
+## Fixes
+- IMBlocker >=6.2.0/5.6.0 compat
+  - Due to API change, IMBlocker < 6.2.0/5.6.0 compatibility will be dropped.
+- Axiom (?) > 6.0.0 compat
+  - Similarly, we dropped compatibility with older versions
+- Super Resolution 0.9.1-alpha.2+ compat

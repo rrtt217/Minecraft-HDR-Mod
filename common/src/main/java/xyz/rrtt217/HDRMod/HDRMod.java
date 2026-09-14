@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
 
+import static xyz.rrtt217.HDRMod.compat.sr.SRCompatibility.isUsingVulkanPresentation;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasIris;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
 
@@ -147,7 +148,7 @@ public final class HDRMod {
         });
 
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(hasSr && VulkanPresentationFeature.isRequested()) {
+        if(hasSr && isUsingVulkanPresentation()) {
             colorManagementInfoProvider = new SRVulkanPresentationColorManagementInfoProvider();
         }
         else colorManagementInfoProvider = new ColorManagementInfoProvider(config);

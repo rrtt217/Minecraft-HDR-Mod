@@ -42,6 +42,13 @@ versionRange = "*"
 ordering = "NONE"
 side = "BOTH"
 
+[[dependencies.hdr_mod]]
+modId = "imblocker"
+type = "incompatible"
+versionRange = "[,6.2.0)"
+ordering = "NONE"
+side = "BOTH"
+
 
 [[mixins]]
 config = "hdr_mod.mixins.json"
