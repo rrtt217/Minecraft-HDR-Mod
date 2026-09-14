@@ -47,6 +47,9 @@
   "custom": {
     "sodium:options": {
       "mixin.features.render.compositing": false
+    },
+    "breaks": {
+      "imblocker": "<5.6.0"
     }
   }
 }
