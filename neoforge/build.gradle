@@ -17,6 +17,14 @@ configurations {
     runtimeClasspath.extendsFrom common
     developmentNeoForge.extendsFrom common
 
+    all {
+        resolutionStrategy.eachDependency { details ->
+            if (details.requested.group == 'org.lwjgl' && details.requested.name.startsWith('lwjgl') && !details.requested.name.contains("vulkan") && !details.requested.name.contains("vma")) {
+                details.useVersion '3.3.3'
+            }
+        }
+    }
+
     // Files in this configuration will be bundled into your mod using the Shadow plugin.
     // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
     shadowBundle {
@@ -75,15 +83,15 @@ dependencies {
 
     localRuntime "com.electronwill.night-config:core:3.9.0"
     localRuntime "com.electronwill.night-config:toml:3.9.0"
-    forgeRuntimeLibrary "io.github.spair:imgui-java-app:$imgui_version"
-    forgeRuntimeLibrary "io.github.spair:imgui-java-binding:$imgui_version"
-    forgeRuntimeLibrary "io.github.spair:imgui-java-lwjgl3:$imgui_version"
-    forgeRuntimeLibrary "org.lwjgl:lwjgl-vulkan:3.3.6"
-    forgeRuntimeLibrary "org.lwjgl:lwjgl-vma:3.3.6"
-    forgeRuntimeLibrary "org.lwjgl:lwjgl-vma::natives-windows"
-    forgeRuntimeLibrary "org.lwjgl:lwjgl-vma::natives-linux"
+    //forgeRuntimeLibrary "io.github.spair:imgui-java-app:$imgui_version"
+    //forgeRuntimeLibrary "io.github.spair:imgui-java-binding:$imgui_version"
+    //forgeRuntimeLibrary "io.github.spair:imgui-java-lwjgl3:$imgui_version"
+    //forgeRuntimeLibrary "org.lwjgl:lwjgl-vulkan:3.3.6"
+    //forgeRuntimeLibrary "org.lwjgl:lwjgl-vma:3.3.6"
+    //forgeRuntimeLibrary "org.lwjgl:lwjgl-vma::natives-windows"
+    //forgeRuntimeLibrary "org.lwjgl:lwjgl-vma::natives-linux"
 
-    modLocalRuntime "maven.modrinth:superresolution:1.21-${sr_version}+gl-neo"
+    //modLocalRuntime "maven.modrinth:superresolution:1.21-${sr_version}+gl-neo"
     //localRuntime 'com.github.ReplayMod:lwjgl-utils:27dcd66'
     modCompileOnly "curse.maven:reforgedplay-mod-1018692:6942967"
 

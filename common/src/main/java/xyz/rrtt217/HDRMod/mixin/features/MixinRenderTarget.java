@@ -1,19 +1,16 @@
 package xyz.rrtt217.HDRMod.mixin.features;
 
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature;
-import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.MouseHandler;
 import org.lwjgl.opengl.GL30;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 
 import xyz.rrtt217.HDRMod.util.HDRModInjectHooks;
@@ -25,6 +22,23 @@ import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasSr;
 
 @Mixin(RenderTarget.class)
 public class MixinRenderTarget {
+
+    @Unique
+    private static Boolean hdr_mod$vulkanPresentationRequested;
+
+    @Unique
+    private static boolean hdr_mod$isVulkanPresentationRequested() {
+        if (hdr_mod$vulkanPresentationRequested == null) {
+            try {
+                Class<?> clazz = Class.forName("io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature");
+                hdr_mod$vulkanPresentationRequested = (boolean) clazz.getMethod("isRequested").invoke(null);
+            } catch (Throwable t) {
+                hdr_mod$vulkanPresentationRequested = false;
+            }
+        }
+        return hdr_mod$vulkanPresentationRequested;
+    }
+
     @Shadow
     protected int colorTextureId;
 
@@ -38,7 +52,6 @@ public class MixinRenderTarget {
 
     @Inject(method = "_blitToScreen", at = @At("HEAD"))
     private void hdr_mod$doPresentationTransform(int i, int j, boolean bl, CallbackInfo ci) {
-        HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if (bl) {
             long handle = Minecraft.getInstance().getWindow().getWindow();
             HDRModInjectHooks.setTargetDisableBlend();
@@ -66,7 +79,9 @@ public class MixinRenderTarget {
 
     @Redirect(method = "_blitToScreen", at = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;colorTextureId:I", opcode = Opcodes.GETFIELD))
     private int hdr_mod$replaceBlitTarget(RenderTarget instance) {
-        if(hasSr && VulkanPresentationFeature.isRequested()) return colorTextureId;
+        if (hasSr) {
+            if (hdr_mod$isVulkanPresentationRequested()) return colorTextureId;
+        }
         if (HDRModInjectHooks.getTargetDisableBlend()) {
             HDRModInjectHooks.unsetTargetDisableBlend();
             return PresentationColorTransformRenderer.getDstTextureId();

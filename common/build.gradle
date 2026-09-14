@@ -37,10 +37,10 @@ dependencies {
     modImplementation "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
     modImplementation "maven.modrinth:superresolution:1.21-${sr_version}+gl-fabric"
 
-    implementation "org.lwjgl:lwjgl-vulkan:3.3.6"
-    implementation "org.lwjgl:lwjgl-vma:3.3.6"
-    implementation "org.lwjgl:lwjgl-vma::natives-windows"
-    implementation "org.lwjgl:lwjgl-vma::natives-linux"
+    compileOnly "org.lwjgl:lwjgl-vulkan:3.3.6"
+    compileOnly "org.lwjgl:lwjgl-vma:3.3.6"
+    compileOnly "org.lwjgl:lwjgl-vma::natives-windows"
+    compileOnly "org.lwjgl:lwjgl-vma::natives-linux"
     implementation 'com.github.oshi:oshi-core:6.9.3'
     implementation 'ar.com.hjg:pngj:2.1.0'
 }
