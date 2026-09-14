@@ -1,6 +1,8 @@
 package xyz.rrtt217.HDRMod.mixin.compat.sr;
 
 import io.homo.superresolution.common.presentation.capture.FrameResources;
+import io.homo.superresolution.common.presentation.vulkan.VulkanPresentationFeature;
+import io.homo.superresolution.common.presentation.window.PresentationWindowState;
 import io.homo.superresolution.core.graphics.impl.texture.ITexture;
 import io.homo.superresolution.core.graphics.impl.texture.TextureFormat;
 import io.homo.superresolution.core.graphics.opengl.framebuffer.GlOnlyNameTexture;
@@ -20,7 +22,7 @@ public class MixinFrameResources {
     private ColorTransformRenderer hudlessColorTransformRenderer;
     @ModifyArg(method = "copyFinalColor", at = @At(value = "INVOKE", target = "Lio/homo/superresolution/common/presentation/capture/FrameTextureResource;copyFrom(Lio/homo/superresolution/core/graphics/impl/texture/ITexture;Z)V"), index = 0, remap = false)
     private ITexture hdr_mod$transformFinalColorTexture(ITexture texture) {
-        long handle = Minecraft.getInstance().getWindow().getWindow();
+        long handle = PresentationWindowState.renderHandle();
         try {
             if(finalColorTransformRenderer == null) {
                 finalColorTransformRenderer = new ColorTransformRenderer(((FrameBufferTextureAdapterAccessor) texture).getFrameBuffer().asMcRenderTarget(), "SR Final Color");
@@ -40,7 +42,7 @@ public class MixinFrameResources {
     }
     @ModifyArg(method = "copyHudlessColor", at = @At(value = "INVOKE", target = "Lio/homo/superresolution/common/presentation/capture/FrameTextureResource;copyFrom(Lio/homo/superresolution/core/graphics/impl/texture/ITexture;Z)V"), index = 0, remap = false)
     private ITexture hdr_mod$transformHudlessColorTexture(ITexture texture) {
-        long handle = Minecraft.getInstance().getWindow().getWindow();
+        long handle = PresentationWindowState.renderHandle();
         try {
             if(hudlessColorTransformRenderer == null) {
                 hudlessColorTransformRenderer = new ColorTransformRenderer(((FrameBufferTextureAdapterAccessor) texture).getFrameBuffer().asMcRenderTarget(), "SR Hudless Color");

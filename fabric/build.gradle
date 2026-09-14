@@ -63,7 +63,7 @@ dependencies {
     modCompileOnly "maven.modrinth:axiom:${axiom_version}-fabric,${minecraft_version}"
     modImplementation "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
 
-    //modLocalRuntime "maven.modrinth:superresolution:1.21-${sr_version}+gl-fabric"
+    // modLocalRuntime "maven.modrinth:superresolution:1.21-${sr_version}+gl-fabric"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"

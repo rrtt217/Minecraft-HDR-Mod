@@ -69,7 +69,7 @@ public class HDRModMixinPlugin implements IMixinConfigPlugin {
         if(Platform.isModLoaded("iris") || Platform.isModLoaded("oculus")) {
             hasIris = true;
         }
-        if(Platform.isModLoaded("super_resolution")) {
+        if(Platform.isModLoaded("superresolution") || Platform.isModLoaded("super_resolution")) {
             hasSr = true;
         }
     }

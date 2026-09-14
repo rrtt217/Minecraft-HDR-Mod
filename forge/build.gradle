@@ -83,7 +83,7 @@ dependencies {
     modImplementation "curse.maven:reforgedplay-mod-1018692:5637596"
     modCompileOnly "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
     //modLocalRuntime files("/home/david/Minecraft-HDR-Mod/libs/IMBlocker-5.5.3-dev-forge+1.17-1.20.4.jar")
-    modImplementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
+    //modImplementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
 
     forgeRuntimeLibrary "io.github.spair:imgui-java-app:$imgui_version"
     forgeRuntimeLibrary "io.github.spair:imgui-java-binding:$imgui_version"
