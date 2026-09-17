@@ -73,5 +73,3 @@ libglfw.so.3.5
 
 # Profiling data
 *.hprof
-/native/dx11-interop-shim/build-win32-x64/
-/native/dx11-interop-shim/build-win32-x86/
