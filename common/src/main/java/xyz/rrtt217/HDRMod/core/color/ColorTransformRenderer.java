@@ -12,16 +12,18 @@ import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.resources.Identifier;
+import org.lwjgl.system.MemoryStack;
 import xyz.rrtt217.HDRMod.api.color.Enums;
 
+import java.nio.ByteBuffer;
 import java.util.Optional;
 
 public class ColorTransformRenderer implements AutoCloseable {
     private static RenderPipeline.Builder builder;
     static{
-        BindGroupLayout COLOR_TRANSFORM_LAYOUT = BindGroupLayout.builder().withUniform("ColorTransform", UniformType.UNIFORM_BUFFER).build();
+        BindGroupLayout COLOR_TRANSFORM_LAYOUT = BindGroupLayout.builder().build();
         builder = RenderPipeline.builder(RenderPipeline.builder().withBindGroupLayout(BindGroupLayouts.GLOBALS).buildSnippet()).withLocation("pipeline/color_transform").withFragmentShader(Identifier.fromNamespaceAndPath("hdr_mod","color_transform")).withVertexShader("core/screenquad").withBindGroupLayout(BindGroupLayouts.IN_SAMPLER).withBindGroupLayout(COLOR_TRANSFORM_LAYOUT)
-                .withPrimitiveTopology(PrimitiveTopology.TRIANGLES);
+                .withPrimitiveTopology(PrimitiveTopology.TRIANGLES).withPushConstantSize(16);
         for(Enums.Primaries p : Enums.Primaries.values()) {
             builder = builder.withShaderDefine("PRIMARIES_"+p.toString(), p.getId());
         }
@@ -37,12 +39,15 @@ public class ColorTransformRenderer implements AutoCloseable {
     private GpuTexture dstTexture;
     private GpuTextureView dstTextureView;
     private GpuFormat dstTextureFormat;
-    private ColorTransformUBO colorTransformUbo;
-    private GpuBuffer colorTransformBuffer;
+
+    public float currentUIBrightness = -1.0f;
+    public float currentEotfEmulate =  -1.0f;
+    public int currentPrimaries = -1;
+    public int currentTransferFunction = -1;
 
     public ColorTransformRenderer(GpuTextureView srcTextureView, String string) {
         this.srcTextureView = srcTextureView;
-        this.colorTransformUbo = new ColorTransformUBO(string);
+        //this.colorTransformUbo = new ColorTransformUBO(string);
         // Set a group of default UBO values. You may call updateColorTransformUniforms manually to update later.
         updateColorTransformUniforms(203.0F, 0.0F, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
         this.dstTextureFormat = GpuFormat.RGBA16_FLOAT;
@@ -57,10 +62,6 @@ public class ColorTransformRenderer implements AutoCloseable {
         updateColorTransformUniforms(UIBrightness, EotfEmulate, Primaries.getId(), TransferFunction.getId());
     }
     public void updateColorTransformUniforms(float UIBrightness, float EotfEmulate, int Primaries, int TransferFunction) {
-        if(this.colorTransformUbo == null) {
-            throw new IllegalStateException("Cannot update color transform UBO when UBO is null");
-        }
-        this.colorTransformBuffer = colorTransformUbo.update(UIBrightness, EotfEmulate, Primaries, TransferFunction);
         if(TransferFunction == Enums.TransferFunction.ST2084_PQ.getId() && this.dstTextureFormat != GpuFormat.RGBA16_UNORM) {
             this.dstTextureFormat = GpuFormat.RGBA16_UNORM;
             this.recreateTexture();
@@ -69,6 +70,10 @@ public class ColorTransformRenderer implements AutoCloseable {
             this.dstTextureFormat = GpuFormat.RGBA16_FLOAT;
             this.recreateTexture();
         }
+        currentUIBrightness = UIBrightness;
+        currentEotfEmulate = EotfEmulate;
+        currentPrimaries = Primaries;
+        currentTransferFunction = TransferFunction;
     }
     public void resize(){
         if(this.dstTexture.getHeight(0) != this.srcTextureView.getHeight(0) || this.dstTexture.getWidth(0) != this.srcTextureView.getWidth(0)) {
@@ -87,10 +92,21 @@ public class ColorTransformRenderer implements AutoCloseable {
         if (srcTextureView != null) {
             try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Color Transform", this.dstTextureView, Optional.empty())) {
                 RenderSystem.bindDefaultUniforms(renderPass);
+
                 if(this.dstTextureFormat == GpuFormat.RGBA16_UNORM) renderPass.setPipeline(RenderSystem.getCompiledPipeline(COLOR_TRANSFORM_PQ));
                 else renderPass.setPipeline(RenderSystem.getCompiledPipeline(COLOR_TRANSFORM));
-                if (this.colorTransformUbo != null) renderPass.setUniform("ColorTransform", this.colorTransformBuffer);
                 renderPass.setUniform("InSampler", srcTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
+
+                try (MemoryStack stack = MemoryStack.stackPush()) {
+                    ByteBuffer memory = stack.malloc(16);
+                    memory.putFloat(this.currentUIBrightness);
+                    memory.putFloat(this.currentEotfEmulate);
+                    memory.putInt(this.currentPrimaries);
+                    memory.putInt(this.currentTransferFunction);
+                    memory.rewind();
+                    renderPass.pushConstants(memory);
+                }
+
                 renderPass.draw(3, 1, 0, 0);
             }
         } else {
@@ -112,9 +128,7 @@ public class ColorTransformRenderer implements AutoCloseable {
         return this.dstTextureView;
     }
     public void close(){
-        colorTransformBuffer = null;
         srcTextureView = null;
-        colorTransformUbo.close();
         dstTextureView.close();
         dstTexture.close();
     }

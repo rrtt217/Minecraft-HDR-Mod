@@ -2,12 +2,20 @@
 #extension GL_ARB_separate_shader_objects : require
 
 uniform sampler2D InSampler;
-layout(std140) uniform ColorTransform {
+
+#ifdef VULKAN
+layout(push_constant) uniform ColorTransform {
     float uiBrightness;
     float eoftEmulate;
     int primaries;
     int transferFunction;
 };
+#else
+uniform float uiBrightness;
+uniform float eoftEmulate;
+uniform int primaries;
+uniform int transferFunction;
+#endif
 
 layout(location = 0) in vec2 texCoord;
 
