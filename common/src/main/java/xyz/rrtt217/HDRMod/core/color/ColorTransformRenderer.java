@@ -28,7 +28,7 @@ public class ColorTransformRenderer implements AutoCloseable {
         for(Enums.TransferFunction tf : Enums.TransferFunction.values()) {
             builder = builder.withShaderDefine("TRANSFER_FUNCTION_"+tf.toString(), tf.getId());
         }
-        COLOR_TRANSFORM = builder.build();
+        COLOR_TRANSFORM = builder.withColorTargetState(new ColorTargetState(Optional.empty(), GpuFormat.RGBA16_FLOAT, 15)).build();
         COLOR_TRANSFORM_PQ = builder.withColorTargetState(new ColorTargetState(Optional.empty(), GpuFormat.RGBA16_UNORM, 15)).build();
     }
     public static RenderPipeline COLOR_TRANSFORM;

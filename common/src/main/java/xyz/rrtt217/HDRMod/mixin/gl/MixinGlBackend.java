@@ -1,5 +1,7 @@
 package xyz.rrtt217.HDRMod.mixin.gl;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.renderpearl.backend.opengl.GlBackend;
 import com.sun.jna.Platform;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -23,13 +25,15 @@ import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 
 @Mixin(GlBackend.class)
 public class MixinGlBackend {
-    @Inject(method = "createWindow", at = @At("HEAD"))
-    private void hdr_mod$setWindowHints(String title, int width, int height, long flags, CallbackInfoReturnable<Long> cir){
 
-        if(title.equals("Minecraft - RenderPearl OpenGL Hidden Utility Window"))
-            return;
-        if(title.equals("Minecraft - RenderPearl OpenGL Hidden Test Window"))
-            return;
+    @WrapOperation(method = "createWindow", at = @At(value = "INVOKE", target = "Lorg/lwjgl/sdl/SDLVideo;SDL_GL_SetAttribute(II)Z"))
+    private boolean hdr_mod$skipsRGB(int attr, int value, Operation<Boolean> original){
+        if(attr == SDL_GL_FRAMEBUFFER_SRGB_CAPABLE) return true;
+        return original.call(attr, value);
+    }
+
+    @Inject(method = "createWindow", at = @At(value = "INVOKE", target = "Lorg/lwjgl/sdl/SDLVideo;SDL_GL_SetAttribute(II)Z", ordinal = 4))
+    private void hdr_mod$setWindowHints(String title, int width, int height, long flags, CallbackInfoReturnable<Long> cir){
 
         // Get config.
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
@@ -58,8 +62,6 @@ public class MixinGlBackend {
 
         if(!applyWindowsWorkaround && !config.forceActivateGlDxInterop) {
             SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 16);
-            SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 16);
-            SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 16);
             SDL_GL_SetAttribute(SDL_GL_FLOATBUFFERS, 1);
         }
         else{
