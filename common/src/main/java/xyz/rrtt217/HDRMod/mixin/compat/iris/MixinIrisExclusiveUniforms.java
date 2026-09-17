@@ -10,20 +10,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.util.glfw.GLFWColorManagementUtils;
-
-import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
 
 @Mixin(IrisExclusiveUniforms.class)
 public class MixinIrisExclusiveUniforms {
     @Inject(method = "addIrisExclusiveUniforms", at = @At("RETURN"))
     private static void addHDRModExclusiveUniforms(UniformHolder uniforms, FrameUpdateNotifier updateNotifier, CallbackInfo ci) {
         var handle = Minecraft.getInstance().getWindow().handle();
-        if(!hasBlazeSdl) {
-            HDRMod.LOGGER.info("GLFW Reported Min: {}", GLFWColorManagementUtils.glfwGetWindowMinLuminance(handle));
-            HDRMod.LOGGER.info("GLFW Reported Peak: {}", GLFWColorManagementUtils.glfwGetWindowMaxLuminance(handle));
-            HDRMod.LOGGER.info("GLFW Reported Paper: {}", GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(handle));
-        }
         // Add uniforms. Almost no performance lost at least on Linux for calling GLFW functions every tick.
         HDRMod.colorManagementInfoProvider.updateConfig();
         uniforms.uniform1f(

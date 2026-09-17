@@ -2,17 +2,15 @@ package xyz.rrtt217.HDRMod.util.color;
 
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.GLFW;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.api.color.ColorManagementInfo;
 import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.api.HDRModApiImpl;
-import xyz.rrtt217.HDRMod.util.glfw.GLFWColorManagementUtils;
 
 import java.util.Optional;
 
-public class ColorManagementInfoProvider implements ColorManagementInfo {
+public abstract class ColorManagementInfoProvider implements ColorManagementInfo {
     HDRModConfig config;
     int bitsPerChannel = 0;
     public ColorManagementInfoProvider(HDRModConfig config) {
@@ -27,28 +25,18 @@ public class ColorManagementInfoProvider implements ColorManagementInfo {
     }
 
     public int getBitsPerChannel(long handle) {
-        return bitsPerChannel > 0 ? bitsPerChannel : GLFW.glfwGetWindowAttrib(handle, GLFW.GLFW_RED_BITS);
+        return bitsPerChannel;
     }
 
     public void setBitsPerChannel(int bpc) {
         this.bitsPerChannel = bpc;
     }
 
-    public float getWindowSdrWhiteLevel(long handle) {
-        return GLFWColorManagementUtils.glfwGetWindowSdrWhiteLevel(handle);
-    }
-    public float getWindowMinLuminance(long handle) {
-        return GLFWColorManagementUtils.glfwGetWindowMinLuminance(handle);
-    }
-    public float getWindowMaxLuminance(long handle) {
-        return GLFWColorManagementUtils.glfwGetWindowMaxLuminance(handle);
-    }
-    public Enums.Primaries getWindowPrimaries(long handle) {
-        return Enums.Primaries.fromId(GLFWColorManagementUtils.glfwGetWindowPrimaries(handle));
-    }
-    public Enums.TransferFunction getWindowTransferFunction(long handle) {
-        return Enums.TransferFunction.fromId(GLFWColorManagementUtils.glfwGetWindowTransfer(handle));
-    }
+    public abstract float getWindowSdrWhiteLevel(long handle);
+    public abstract float getWindowMinLuminance(long handle);
+    public abstract float getWindowMaxLuminance(long handle);
+    public abstract Enums.Primaries getWindowPrimaries(long handle);
+    public abstract Enums.TransferFunction getWindowTransferFunction(long handle);
     public float getCurrentGamePaperWhiteBrightness(long handle) {
         if(HDRMod.isReplayRendering) return config.replayGamePaperWhiteBrightness;
         float customValue = config.customGamePaperWhiteBrightness;

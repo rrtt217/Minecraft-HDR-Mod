@@ -1,7 +1,7 @@
 package xyz.rrtt217.HDRMod.mixin.compat.iris;
 
-import com.mojang.blaze3d.GpuFormat;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.GpuFormat;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import it.unimi.dsi.fastutil.Function;
 import net.irisshaders.iris.pipeline.IrisPipelines;
 import net.irisshaders.iris.pipeline.IrisRenderingPipeline;

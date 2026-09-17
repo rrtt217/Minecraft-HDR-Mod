@@ -1,4 +1,5 @@
 #version 330
+#extension GL_ARB_separate_shader_objects : require
 
 uniform sampler2D InSampler;
 layout(std140) uniform ColorTransform {
@@ -8,9 +9,9 @@ layout(std140) uniform ColorTransform {
     int transferFunction;
 };
 
-in vec2 texCoord;
+layout(location = 0) in vec2 texCoord;
 
-out vec4 fragColor;
+layout(location = 0) out vec4 fragColor;
 
 const float PQ_M1 = 2610.0/4096 * 1.0/4;
 const float PQ_M2 = 2523.0/4096 * 128;

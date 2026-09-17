@@ -2,13 +2,9 @@ package xyz.rrtt217.HDRMod.core.interop;
 
 import com.mojang.blaze3d.platform.Window;
 import me.shedaniel.autoconfig.AutoConfig;
-import net.minecraft.client.Minecraft;
-import org.lwjgl.glfw.GLFWNativeWin32;
 import windows.win32.graphics.direct3d11.D3D11_BIND_FLAG;
 import windows.win32.graphics.dxgi.common.DXGI_FORMAT;
-import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
-import xyz.rrtt217.HDRMod.util.color.GLFWDXColorManagementInfoProvider;
 
 import static org.lwjgl.opengl.WGLNVDXInterop.*;
 import static org.lwjgl.sdl.SDLProperties.SDL_GetPointerProperty;
@@ -17,7 +13,6 @@ import static org.lwjgl.sdl.SDLVideo.SDL_PROP_WINDOW_WIN32_HWND_POINTER;
 import static org.lwjgl.system.Checks.check;
 import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 import static xyz.rrtt217.HDRMod.core.interop.InteropDXDevice.asRaw;
-import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
 
 public class NewGLInteropResourceManager extends GLInteropResourceManager {
     private InteropDXDevice dxDevice;
@@ -29,16 +24,12 @@ public class NewGLInteropResourceManager extends GLInteropResourceManager {
         if(dxDevice == null){
             HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
             long pointer;
-            if(hasBlazeSdl) pointer = SDL_GetPointerProperty(SDL_GetWindowProperties(window.handle()), SDL_PROP_WINDOW_WIN32_HWND_POINTER, 0);
-            else pointer = GLFWNativeWin32.glfwGetWin32Window(window.handle());
+            pointer = SDL_GetPointerProperty(SDL_GetWindowProperties(window.handle()), SDL_PROP_WINDOW_WIN32_HWND_POINTER, 0);
             LOGGER.info("HWND pointer property is {}", pointer);
             dxDevice = new InteropDXDevice(pointer, config.useUNORMWindowPixelFormat ? DXGI_FORMAT.R10G10B10A2_UNORM : DXGI_FORMAT.R16G16B16A16_FLOAT);
             interopDeviceHandle = check(wglDXOpenDeviceNV(asRaw(dxDevice.device).address()));
             glTexture = dxDevice.createSharedTexture(null, D3D11_BIND_FLAG.D3D11_BIND_RENDER_TARGET | D3D11_BIND_FLAG.D3D11_BIND_SHADER_RESOURCE, window.getWidth(), window.getHeight(), interopDeviceHandle);
             dxDevice.makeCurrent();
-            if(HDRMod.colorManagementInfoProvider instanceof GLFWDXColorManagementInfoProvider) {
-                ((GLFWDXColorManagementInfoProvider) HDRMod.colorManagementInfoProvider).setDxDevice(dxDevice);
-            }
         }
     }
 
@@ -50,7 +41,7 @@ public class NewGLInteropResourceManager extends GLInteropResourceManager {
     @Override
     public void resize(int width, int height) {
         if (dxDevice == null) return;
-        if (width == currentGlTextureWidth && height == currentGlTextureHeight && Minecraft.getInstance().getWindow().isMinimized() == currentIsMinimized) return;
+        if (width == currentGlTextureWidth && height == currentGlTextureHeight) return;
         if (width < 1) width = 1;
         if (height < 1) height = 1;
 
@@ -68,7 +59,6 @@ public class NewGLInteropResourceManager extends GLInteropResourceManager {
 
         currentGlTextureWidth = width;
         currentGlTextureHeight = height;
-        currentIsMinimized = Minecraft.getInstance().getWindow().isMinimized();
     }
 
     @Override

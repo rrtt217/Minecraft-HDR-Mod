@@ -2,7 +2,7 @@ package xyz.rrtt217.HDRMod.util.color;
 
 import xyz.rrtt217.HDRMod.api.color.Enums;
 
-public class VulkanColorManagementInfoProvider extends ColorManagementInfoProvider {
+public abstract class VulkanColorManagementInfoProvider extends ColorManagementInfoProvider {
     // We will set these members in MixinVulkanGpuSurface, if not on Wayland.
     private Enums.Primaries primaries;
     private Enums.TransferFunction transferFunction;

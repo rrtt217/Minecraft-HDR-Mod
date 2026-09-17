@@ -1,14 +1,15 @@
 package xyz.rrtt217.HDRMod.mixin.gl;
 
-import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.renderpearl.backend.opengl.GlStateManager;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import xyz.rrtt217.HDRMod.HDRMod;
-import xyz.rrtt217.HDRMod.core.interop.GLFWGLInteropResourceManager;
 
 @Mixin(GlStateManager.class)
 public class MixinGlStateManager {
+    @Unique
     private static boolean hdr_mod$isReplacingFbo = false;
 
     @ModifyVariable(method = "_glBindFramebuffer", at = @At("HEAD"), argsOnly = true, index = 1)

@@ -5,9 +5,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import xyz.rrtt217.HDRMod.HDRMod;
 
-@Mixin(targets = "com.mojang.blaze3d.opengl.GlCommandEncoder")
+@Mixin(targets = "com.mojang.renderpearl.backend.opengl.GlCommandEncoder")
 public class MixinGlCommandEncoder {
-    @ModifyArg(method = "presentTexture", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/DirectStateAccess;blitFrameBuffers(IIIIIIIIIIII)V"), index = 1)
+    @ModifyArg(method = "presentTexture", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/backend/opengl/DirectStateAccess;blitFrameBuffers(IIIIIIIIIIII)V"), index = 1)
     private int hdr_mod$modifyPresentTexture(int i){
         if(!HDRMod.glInteropResourceManager.shouldReplaceFbo(i)) return i;
         return HDRMod.glInteropResourceManager.replaceFbo(i);

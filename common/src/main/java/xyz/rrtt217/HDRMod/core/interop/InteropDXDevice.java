@@ -25,7 +25,7 @@ package xyz.rrtt217.HDRMod.core.interop;
     THE SOFTWARE.
 */
 
-import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.renderpearl.backend.opengl.GlStateManager;
 import org.jetbrains.annotations.Nullable;
 import windows.win32.foundation.WAIT_EVENT;
 import windows.win32.graphics.direct3d.D3D_DRIVER_TYPE;

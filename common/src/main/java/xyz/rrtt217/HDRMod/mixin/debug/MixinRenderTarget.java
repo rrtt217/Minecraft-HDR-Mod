@@ -1,6 +1,6 @@
 package xyz.rrtt217.HDRMod.mixin.debug;
 
-import com.mojang.blaze3d.GpuFormat;
+import com.mojang.renderpearl.api.GpuFormat;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import me.shedaniel.autoconfig.AutoConfig;
 import org.spongepowered.asm.mixin.Final;
@@ -20,16 +20,16 @@ public class MixinRenderTarget {
     @Mutable
     @Final
     @Shadow
-    protected final GpuFormat format;
+    protected final GpuFormat colorFormat;
 
     public MixinRenderTarget(GpuFormat format) {
-        this.format = format;
+        this.colorFormat = format;
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void hdr_mod$scanRenderTarget(CallbackInfo ci) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
-        if(format == GpuFormat.RGBA8_UNORM && config.debugRGBA8StackTrace) {
+        if(colorFormat == GpuFormat.RGBA8_UNORM && config.debugRGBA8StackTrace) {
             LOGGER.info("RGBA8 RenderTarget StackTrace", new Throwable());
         }
     }

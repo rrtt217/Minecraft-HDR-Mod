@@ -2,10 +2,10 @@ package xyz.rrtt217.HDRMod.mixin.features;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.blaze3d.GpuFormat;
+import com.mojang.renderpearl.api.GpuFormat;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.renderpearl.api.textures.GpuTexture;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Screenshot;
 import net.minecraft.network.chat.Component;
@@ -46,7 +46,7 @@ public class MixinScreenshot {
             }
         }
     }
-    @WrapOperation(method = "takeScreenshot(Lcom/mojang/blaze3d/pipeline/RenderTarget;ILjava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;getColorTexture()Lcom/mojang/blaze3d/textures/GpuTexture;", ordinal = 0))
+    @WrapOperation(method = "takeScreenshot(Lcom/mojang/blaze3d/pipeline/RenderTarget;ILjava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/RenderTarget;getColorTexture()Lcom/mojang/renderpearl/api/textures/GpuTexture;", ordinal = 0))
     private static GpuTexture hdr_mod$convertVanillaScreenshotFormat(RenderTarget instance, Operation<GpuTexture> original){
         if(hdr_mod$vanillaScreenshotFlipTexture != null){
             hdr_mod$vanillaScreenshotFlipTexture.close();
@@ -57,7 +57,7 @@ public class MixinScreenshot {
         }
         return hdr_mod$vanillaScreenshotFlipTexture;
     }
-    @ModifyArg(method = "takeScreenshot(Lcom/mojang/blaze3d/pipeline/RenderTarget;ILjava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;copyTextureToBuffer(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/buffers/GpuBuffer;JLjava/lang/Runnable;I)V"), index = 3)
+    @ModifyArg(method = "takeScreenshot(Lcom/mojang/blaze3d/pipeline/RenderTarget;ILjava/util/function/Consumer;)V", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/CommandEncoder;copyTextureToBuffer(Lcom/mojang/renderpearl/api/textures/GpuTexture;Lcom/mojang/renderpearl/api/buffers/GpuBuffer;JLjava/lang/Runnable;I)V"), index = 3)
     private static Runnable hdr_mod$CloseTextureAfterScreenshot(Runnable callback){
         return () ->{
             callback.run();

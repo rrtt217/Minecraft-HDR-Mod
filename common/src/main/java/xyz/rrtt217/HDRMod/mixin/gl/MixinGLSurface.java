@@ -2,12 +2,10 @@ package xyz.rrtt217.HDRMod.mixin.gl;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.blaze3d.opengl.GlSurface;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.renderpearl.backend.opengl.GlSurface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
 
@@ -18,9 +16,10 @@ public class MixinGLSurface {
         if(HDRMod.glInteropResourceManager.presentSwapchain()) ci.cancel();
     }
 
-    @WrapOperation(method = "configure", at = @At(value = "INVOKE", target = "Lorg/lwjgl/glfw/GLFW;glfwSwapInterval(I)V"))
-    private void configure(int interval, Operation<Void> original) {
+    @WrapOperation(method = "configure", at = @At(value = "INVOKE", target = "Lorg/lwjgl/sdl/SDLVideo;SDL_GL_SetSwapInterval(I)Z"))
+    private boolean configure(int interval, Operation<Void> original) {
         if(!HDRMod.glInteropResourceManager.setSwapInterval(interval))
             original.call(interval);
+        return false;
     }
 }

@@ -1,6 +1,6 @@
 package xyz.rrtt217.HDRMod.core.interop;
 
-import com.mojang.blaze3d.opengl.GlStateManager;
+import com.mojang.renderpearl.backend.opengl.GlStateManager;
 import org.lwjgl.system.MemoryStack;
 import org.lwjgl.system.windows.WindowsUtil;
 import windows.win32.graphics.direct3d11.ID3D11ShaderResourceView;

@@ -47,43 +47,43 @@ public final class HDRMod {
     public static final KeyMapping.Category HDRModCategory = KeyMapping.Category.register(Identifier.fromNamespaceAndPath("hdr_mod","main"));
     public static final KeyMapping OPEN_CONFIG = new KeyMapping(
             "key.hdr_mod.open_config_menu", // The translation key of the name shown in the Controls screen
-            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
             InputConstants.KEY_F9, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
     public static final KeyMapping HDR_SCREENSHOT = new KeyMapping(
             "key.hdr_mod.take_hdr_screenshot", // The translation key of the name shown in the Controls screen
-            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
             InputConstants.KEY_F10, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
     public static final KeyMapping TOGGLE_HDR = new KeyMapping(
             "key.hdr_mod.toggle_hdr", // The translation key of the name shown in the Controls screen
-            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
             -1, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
     public static final KeyMapping VALUE_UP = new KeyMapping(
             "key.hdr_mod.value_up", // The translation key of the name shown in the Controls screen
-            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
             -1, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
     public static final KeyMapping VALUE_DOWN = new KeyMapping(
             "key.hdr_mod.value_down", // The translation key of the name shown in the Controls screen
-            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
             -1, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
     public static final KeyMapping TOGGLE_VALUE_ADJUSTED = new KeyMapping(
             "key.hdr_mod.toggle_value_adjusted", // The translation key of the name shown in the Controls screen
-            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
             -1, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
     public static final KeyMapping TOGGLE_VALUE_ADJUSTED_BACKWARDS = new KeyMapping(
             "key.hdr_mod.toggle_value_adjusted_backwards", // The translation key of the name shown in the Controls screen
-            InputConstants.Type.KEYSYM, // This key mapping is for Keyboards by default
+            InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
             -1, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
@@ -115,10 +115,8 @@ public final class HDRMod {
         if(colorManagementInfoProvider == null) {
             if (hasSr && isUsingVulkanPresentation()) {
                 colorManagementInfoProvider = new SRVulkanPresentationColorManagementInfoProvider();
-            } else if (hasBlazeSdl) {
-                colorManagementInfoProvider = new SDLColorManagementInfoProvider();
             } else {
-                colorManagementInfoProvider = new ColorManagementInfoProvider(config);
+                colorManagementInfoProvider = new SDLColorManagementInfoProvider();
             }
         }
         glInteropResourceManager = new StubGLInteropResourceManager();
@@ -175,6 +173,8 @@ public final class HDRMod {
         }
 
         configHolder.registerSaveListener(apiImpl::onConfigSave);
+
+        if(minecraft == null) minecraft = Minecraft.getInstance();
 
         LOGGER.debug("HDRMod Initialized!");
     }

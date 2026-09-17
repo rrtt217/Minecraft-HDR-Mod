@@ -1,8 +1,8 @@
 package xyz.rrtt217.HDRMod.mixin.compat.replaymod;
 
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.systems.CommandEncoder;
-import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.commands.CommandEncoder;
+import com.mojang.renderpearl.api.textures.GpuTexture;
 import com.replaymod.render.capturer.PboOpenGlFrameCapturer;
 import me.shedaniel.autoconfig.AutoConfig;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,6 +31,9 @@ public class MixinPboOpenGlFrameCapturer {
         if(config.enableReplayHDRVideoExport) return bpp * 2;
         return bpp;
     }
+
+    /*
+
     @Redirect(method = "captureFrame(ILjava/lang/Enum;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;copyTextureToBuffer(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/buffers/GpuBuffer;JLjava/lang/Runnable;I)V"))
     private void hdr_mod$copyTextureToBufferPbo(CommandEncoder instance, GpuTexture gpuTexture, GpuBuffer gpuBuffer, long l, Runnable runnable, int i){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
@@ -41,4 +44,5 @@ public class MixinPboOpenGlFrameCapturer {
             instance.copyTextureToBuffer(gpuTexture, gpuBuffer, l, runnable, i);
         }
     }
+     */
 }

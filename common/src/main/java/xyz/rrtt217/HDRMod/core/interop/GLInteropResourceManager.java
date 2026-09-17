@@ -1,8 +1,8 @@
 package xyz.rrtt217.HDRMod.core.interop;
 
-import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.platform.Window;
 
+import com.mojang.renderpearl.backend.opengl.GlStateManager;
 import com.sun.jna.Platform;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.opengl.GL30;
@@ -16,14 +16,12 @@ public abstract class GLInteropResourceManager {
     static int currentGlTexture = 0;
     static int currentGlTextureWidth = 0;
     static int currentGlTextureHeight = 0;
-    static boolean currentIsMinimized = false;
 
     // These functions are shared.
     public int replaceFbo(int originalFbo) {
 
         Window window = Minecraft.getInstance().getWindow();
         int width = window.getWidth(), height = window.getHeight();
-        boolean isMinimized = window.isMinimized();
 
         lazyResourceInit(window);
 

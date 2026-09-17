@@ -1,7 +1,7 @@
 package xyz.rrtt217.HDRMod.mixin.features;
 
-import com.mojang.blaze3d.systems.GpuSurface;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
+import com.mojang.renderpearl.frontend.FrontendGpuSurface;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,9 +14,9 @@ import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 import static xyz.rrtt217.HDRMod.HDRMod.PresentationColorTransformRenderer;
 import static xyz.rrtt217.HDRMod.HDRMod.minecraft;
 
-@Mixin(GpuSurface.class)
+@Mixin(FrontendGpuSurface.class)
 public class MixinGpuSurface {
-    @ModifyArg(method = "blitFromTexture", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/GpuSurfaceBackend;blitFromTexture(Lcom/mojang/blaze3d/systems/CommandEncoderBackend;Lcom/mojang/blaze3d/textures/GpuTextureView;)V"), index = 1)
+    @ModifyArg(method = "blitFromTexture", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/backend/api/GpuSurfaceBackend;blitFromTexture(Lcom/mojang/renderpearl/backend/api/CommandEncoderBackend;Lcom/mojang/renderpearl/api/textures/GpuTextureView;)V"), index = 1)
     private GpuTextureView hdr_mod$beforePresentationColorTransform(GpuTextureView textureView) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         long handle = Minecraft.getInstance().getWindow().handle();
@@ -30,6 +30,9 @@ public class MixinGpuSurface {
                 HDRMod.colorManagementInfoProvider.getCurrentPrimaries(handle),
                 HDRMod.colorManagementInfoProvider.getCurrentTransferFunction(handle)
         );
+
+        if(minecraft == null) minecraft = Minecraft.getInstance();
+
         if (minecraft.gameRenderer.mainRenderTarget().getColorTextureView() != null && !textureView.equals(HDRMod.PresentationColorTransformRenderer.getSrcTextureView()))
             HDRMod.PresentationColorTransformRenderer.setSrcTextureView(textureView);
         HDRMod.PresentationColorTransformRenderer.render();

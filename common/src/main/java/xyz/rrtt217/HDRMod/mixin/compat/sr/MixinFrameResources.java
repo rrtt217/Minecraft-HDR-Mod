@@ -1,8 +1,9 @@
 package xyz.rrtt217.HDRMod.mixin.compat.sr;
 
-import com.mojang.blaze3d.opengl.GlTexture;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.GpuTextureView;
+import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
+import com.mojang.renderpearl.backend.opengl.GlTexture;
 import io.homo.superresolution.common.minecraft.GpuTextureAdapter;
 import io.homo.superresolution.common.presentation.capture.FrameResources;
 import io.homo.superresolution.core.graphics.impl.texture.ITexture;
@@ -27,6 +28,8 @@ public class MixinFrameResources {
     private ColorTransformRenderer hudlessColorTransformRenderer;
     private GpuTextureView hudlessColorTextureView;
     private Constructor gpuTextureAdapterConstructor;
+
+    /*
     @ModifyArg(method = "copyFinalColor", at = @At(value = "INVOKE", target = "Lio/homo/superresolution/common/presentation/capture/FrameTextureResource;copyFrom(Lio/homo/superresolution/core/graphics/impl/texture/ITexture;Z)V"), index = 0)
     private ITexture hdr_mod$transformFinalColorTexture(ITexture texture) {
         long handle = Minecraft.getInstance().getWindow().handle();
@@ -47,7 +50,7 @@ public class MixinFrameResources {
                 finalColorTextureView = null;
             }
             if(finalColorTextureView == null) {
-                finalColorTextureView = RenderSystem.getDevice().createTextureView(adapter);
+                finalColorTextureView = RenderSystem.getDevice().createTextureView((GpuTexture) adapter);
                 if(finalColorTransformRenderer != null)
                     finalColorTransformRenderer.setSrcTextureView(finalColorTextureView);
             }
@@ -88,7 +91,7 @@ public class MixinFrameResources {
                 hudlessColorTextureView = null;
             }
             if(hudlessColorTextureView == null) {
-                hudlessColorTextureView = RenderSystem.getDevice().createTextureView(adapter);
+                hudlessColorTextureView = RenderSystem.getDevice().createTextureView((GpuTexture) adapter);
                 if(hudlessColorTransformRenderer != null)
                     hudlessColorTransformRenderer.setSrcTextureView(hudlessColorTextureView);
             }
@@ -108,4 +111,5 @@ public class MixinFrameResources {
             return texture;
         }
     }
+    */
 }

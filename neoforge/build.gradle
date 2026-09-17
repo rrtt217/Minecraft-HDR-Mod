@@ -60,19 +60,15 @@ dependencies {
     // Architectury API. This is optional, and you can comment it out if you don't need it.
     //implementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
 
-    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_api_version}"
+    //implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_api_version}"
     implementation "net.caffeinemc:sodium-neoforge:${sodium_version}+mc${minecraft_version}"
-    implementation "maven.modrinth:iris:${iris_version}-neoforge"
-    compileOnly "maven.modrinth:imblocker-original:${imblocker_version}-neoforge,${minecraft_version}"
-    compileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-neoforge"
-    implementation "maven.modrinth:blazesdl:0.1.10"
-
-    implementation "maven.modrinth:xaeros-minimap:neoforge-${minecraft_version}-${xaero_minimap_version}"
-    implementation "maven.modrinth:xaeros-world-map:neoforge-${minecraft_version}-${xaero_worldmap_version}"
-    implementation "maven.modrinth:xaeroplus:${xaero_plus_version}+neoforge-${minecraft_version}"
+    //implementation "maven.modrinth:iris:${iris_version}-neoforge"
+    //compileOnly "maven.modrinth:imblocker-original:${imblocker_version}-neoforge,${minecraft_version}"
+    //compileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-neoforge"
+    //implementation "maven.modrinth:blazesdl:0.1.10"
 
     implementation "org.anarres:jcpp:1.4.14"
-    implementation "org.lwjgl:lwjgl-sdl:3.4.1"
+    //implementation "org.lwjgl:lwjgl-sdl:3.4.1"
     implementation "org.antlr:antlr4-runtime:4.13.1"
     implementation "io.github.douira:glsl-transformer:3.0.0-pre3"
 

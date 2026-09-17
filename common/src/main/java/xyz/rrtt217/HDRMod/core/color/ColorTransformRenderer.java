@@ -1,18 +1,15 @@
 package xyz.rrtt217.HDRMod.core.color;
 
-import com.mojang.blaze3d.PrimitiveTopology;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.pipeline.BindGroupLayout;
-import com.mojang.blaze3d.pipeline.ColorTargetState;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
+import com.mojang.renderpearl.api.GpuFormat;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.commands.RenderPass;
+import com.mojang.renderpearl.api.pipeline.*;
+import com.mojang.renderpearl.api.textures.FilterMode;
+import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.renderpearl.api.textures.GpuTextureView;
+import com.mojang.renderpearl.api.vertex.VertexFormat;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.blaze3d.shaders.UniformType;
-import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.textures.FilterMode;
-import com.mojang.blaze3d.textures.GpuTexture;
-import com.mojang.blaze3d.textures.GpuTextureView;
-import com.mojang.blaze3d.GpuFormat;
 import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.resources.Identifier;
 import xyz.rrtt217.HDRMod.api.color.Enums;
@@ -22,7 +19,7 @@ import java.util.Optional;
 public class ColorTransformRenderer implements AutoCloseable {
     private static RenderPipeline.Builder builder;
     static{
-        BindGroupLayout COLOR_TRANSFORM_LAYOUT = BindGroupLayout.builder().withSampler("Sampler0").withUniform("ColorTransform", UniformType.UNIFORM_BUFFER).build();
+        BindGroupLayout COLOR_TRANSFORM_LAYOUT = BindGroupLayout.builder().withUniform("ColorTransform", UniformType.UNIFORM_BUFFER).build();
         builder = RenderPipeline.builder(RenderPipeline.builder().withBindGroupLayout(BindGroupLayouts.GLOBALS).buildSnippet()).withLocation("pipeline/color_transform").withFragmentShader(Identifier.fromNamespaceAndPath("hdr_mod","color_transform")).withVertexShader("core/screenquad").withBindGroupLayout(BindGroupLayouts.IN_SAMPLER).withBindGroupLayout(COLOR_TRANSFORM_LAYOUT)
                 .withPrimitiveTopology(PrimitiveTopology.TRIANGLES);
         for(Enums.Primaries p : Enums.Primaries.values()) {
@@ -90,10 +87,10 @@ public class ColorTransformRenderer implements AutoCloseable {
         if (srcTextureView != null) {
             try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Color Transform", this.dstTextureView, Optional.empty())) {
                 RenderSystem.bindDefaultUniforms(renderPass);
-                if(this.dstTextureFormat == GpuFormat.RGBA16_UNORM) renderPass.setPipeline(COLOR_TRANSFORM_PQ);
-                else renderPass.setPipeline(COLOR_TRANSFORM);
+                if(this.dstTextureFormat == GpuFormat.RGBA16_UNORM) renderPass.setPipeline(RenderSystem.getCompiledPipeline(COLOR_TRANSFORM_PQ));
+                else renderPass.setPipeline(RenderSystem.getCompiledPipeline(COLOR_TRANSFORM));
                 if (this.colorTransformUbo != null) renderPass.setUniform("ColorTransform", this.colorTransformBuffer);
-                renderPass.bindTexture("InSampler", srcTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
+                renderPass.setUniform("InSampler", srcTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
                 renderPass.draw(3, 1, 0, 0);
             }
         } else {

@@ -1,11 +1,8 @@
 package xyz.rrtt217.HDRMod.mixin.vk;
 
-import com.mojang.blaze3d.platform.GLX;
-import com.mojang.blaze3d.vulkan.VulkanDevice;
-import com.mojang.blaze3d.vulkan.VulkanGpuSurface;
+import com.mojang.renderpearl.backend.vulkan.VulkanDevice;
+import com.mojang.renderpearl.backend.vulkan.VulkanGpuSurface;
 import me.shedaniel.autoconfig.AutoConfig;
-import org.lwjgl.glfw.GLFW;
-import org.lwjgl.sdl.SDLPlatform;
 import org.lwjgl.sdl.SDLVideo;
 import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 import org.spongepowered.asm.mixin.*;
@@ -14,7 +11,6 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.api.color.Enums;
-import xyz.rrtt217.HDRMod.util.color.VulkanColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.util.color.VulkanSDLColorManagementInfoProvider;
 
 import java.util.Objects;
@@ -22,7 +18,6 @@ import java.util.Objects;
 import static org.lwjgl.vulkan.EXTSwapchainColorspace.*;
 import static org.lwjgl.vulkan.VK10.*;
 import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
-import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasBlazeSdl;
 
 @Mixin(VulkanGpuSurface.class)
 public class MixinVulkanGpuSurface {
@@ -89,8 +84,6 @@ public class MixinVulkanGpuSurface {
 
     @Unique
     private boolean hdr_mod$isWayland() {
-        if(!hasBlazeSdl)
-            return GLX.getGlfwPlatform() == GLFW.GLFW_PLATFORM_WAYLAND;
         return Objects.equals(SDLVideo.SDL_GetCurrentVideoDriver(), "wayland");
     }
 
@@ -108,14 +101,12 @@ public class MixinVulkanGpuSurface {
 
     @Unique
     private boolean hdr_mod$isPassthroughOrHdr10ForSdl(int colorSpace) {
-        return (colorSpace == VK_COLOR_SPACE_PASS_THROUGH_EXT && !hasBlazeSdl)
-            || (colorSpace == VK_COLOR_SPACE_HDR10_ST2084_EXT && hasBlazeSdl);
+        return colorSpace == VK_COLOR_SPACE_HDR10_ST2084_EXT;
     }
 
     @Unique
     private boolean hdr_mod$isPassthroughOrLinearForSdl(int colorSpace) {
-        return (colorSpace == VK_COLOR_SPACE_PASS_THROUGH_EXT && !hasBlazeSdl)
-            || (colorSpace == VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT && hasBlazeSdl);
+        return colorSpace == VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT;
     }
 
     @Unique
@@ -146,24 +137,16 @@ public class MixinVulkanGpuSurface {
 
     @Unique
     private void hdr_mod$setupSdrProvider(int bits) {
-        if (hasBlazeSdl) {
-            HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(bits, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
-        } else {
-            HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(bits, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
-        }
+        HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(bits, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
     }
 
     @Unique
     private void hdr_mod$applyWaylandProvider(VkSurfaceFormatKHR format) {
         int bits = (format.format() == VK_FORMAT_R16G16B16A16_UNORM || format.format() == VK_FORMAT_R16G16B16A16_SFLOAT) ? 16 : 10;
-        if (hasBlazeSdl) {
-            if (format.colorSpace() == VK_COLOR_SPACE_HDR10_ST2084_EXT) {
-                HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(bits, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
-            } else {
-                HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(bits, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
-            }
+        if (format.colorSpace() == VK_COLOR_SPACE_HDR10_ST2084_EXT) {
+            HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(bits, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
         } else {
-            HDRMod.colorManagementInfoProvider.setBitsPerChannel(bits);
+            HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(bits, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
         }
     }
 
@@ -171,18 +154,10 @@ public class MixinVulkanGpuSurface {
     private void hdr_mod$applyNonWaylandProvider(VkSurfaceFormatKHR format) {
         if (format.colorSpace() == VK_COLOR_SPACE_HDR10_ST2084_EXT) {
             int bits = format.format() == VK_FORMAT_R16G16B16A16_UNORM ? 16 : 10;
-            if (hasBlazeSdl) {
-                HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(bits, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
-            } else {
-                HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(bits, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
-            }
+            HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(bits, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
             LOGGER.info("Got HDR10 on Vulkan!");
         } else {
-            if (hasBlazeSdl) {
-                HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
-            } else {
-                HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
-            }
+            HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
             LOGGER.info("Got scRGB on Vulkan!");
         }
     }

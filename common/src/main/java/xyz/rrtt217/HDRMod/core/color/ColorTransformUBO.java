@@ -1,10 +1,10 @@
 package xyz.rrtt217.HDRMod.core.color;
 
-import com.mojang.blaze3d.buffers.GpuBuffer;
 import com.mojang.blaze3d.buffers.Std140Builder;
 import com.mojang.blaze3d.buffers.Std140SizeCalculator;
-import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.renderpearl.api.buffers.GpuBuffer;
+import com.mojang.renderpearl.api.device.GpuDevice;
 import org.lwjgl.system.MemoryStack;
 
 import java.nio.ByteBuffer;
