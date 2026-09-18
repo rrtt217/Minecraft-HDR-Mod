@@ -3,17 +3,22 @@ package xyz.rrtt217.HDRMod.mixin.vk;
 import com.mojang.renderpearl.backend.vulkan.VulkanDevice;
 import com.mojang.renderpearl.backend.vulkan.VulkanGpuSurface;
 import me.shedaniel.autoconfig.AutoConfig;
-import org.lwjgl.sdl.SDLVideo;
+import net.minecraft.client.Minecraft;
+import org.lwjgl.system.MemoryStack;
+import org.lwjgl.vulkan.EXTHdrMetadata;
+import org.lwjgl.vulkan.VkHdrMetadataEXT;
 import org.lwjgl.vulkan.VkSurfaceFormatKHR;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.util.color.VulkanSDLColorManagementInfoProvider;
 
-import java.util.Objects;
+import java.nio.LongBuffer;
 
 import static org.lwjgl.vulkan.EXTSwapchainColorspace.*;
 import static org.lwjgl.vulkan.VK10.*;
@@ -24,6 +29,9 @@ public class MixinVulkanGpuSurface {
     @Shadow
     @Final
     private VulkanDevice device;
+
+    @Shadow
+    private long swapchain;
 
     @Unique
     private int hdr_mod$chosenColorspace = 0;
@@ -40,18 +48,14 @@ public class MixinVulkanGpuSurface {
             if (hdr_mod$isVanillaFallback(format)) {
                 hdr_mod$setupSdrProvider(8);
                 hdr_mod$chosenColorspace = format.colorSpace();
+                hdr_mod$hasSetHdrMetadata = false;
                 return format;
             }
-            // On Wayland, we prefer passthrough, we choose format according to setting. As for colorspace, we use passthrough to prevent conflict with glfw side.
-            if (hdr_mod$isWayland() && hdr_mod$matchesWaylandFormat(format, config, true)) {
-                hdr_mod$applyWaylandProvider(format);
+            // We choose both format and colorspace according to setting.
+            if (hdr_mod$matchesFormat(format, config, true)) {
+                hdr_mod$applyProvider(format);
                 hdr_mod$chosenColorspace = format.colorSpace();
-                return format;
-            }
-            // On platforms other than Wayland, we choose both format and colorspace according to setting.
-            if (!hdr_mod$isWayland() && hdr_mod$matchesNonWaylandFormat(format, config, true)) {
-                hdr_mod$applyNonWaylandProvider(format);
-                hdr_mod$chosenColorspace = format.colorSpace();
+                hdr_mod$hasSetHdrMetadata = false;
                 return format;
             }
         }
@@ -60,16 +64,10 @@ public class MixinVulkanGpuSurface {
 
         // Try second time but not necessarily match the config.
         for (VkSurfaceFormatKHR format : formats) {
-            // On Wayland, we prefer passthrough, we choose format according to setting. As for colorspace, we use passthrough to prevent conflict with glfw side.
-            if (hdr_mod$isWayland() && hdr_mod$matchesWaylandFormat(format, config, false)) {
-                hdr_mod$applyWaylandProvider(format);
+            if (hdr_mod$matchesFormat(format, config, false)) {
+                hdr_mod$applyProvider(format);
                 hdr_mod$chosenColorspace = format.colorSpace();
-                return format;
-            }
-            // On platforms other than Wayland, we choose both format and colorspace according to setting.
-            if (!hdr_mod$isWayland() && hdr_mod$matchesNonWaylandFormat(format, config, false)) {
-                hdr_mod$applyNonWaylandProvider(format);
-                hdr_mod$chosenColorspace = format.colorSpace();
+                hdr_mod$hasSetHdrMetadata = false;
                 return format;
             }
         }
@@ -80,11 +78,6 @@ public class MixinVulkanGpuSurface {
     private int hdr_mod$chooseCorrectColorspace(int value){
         if(value == 0) value = hdr_mod$chosenColorspace;
         return value;
-    }
-
-    @Unique
-    private boolean hdr_mod$isWayland() {
-        return Objects.equals(SDLVideo.SDL_GetCurrentVideoDriver(), "wayland");
     }
 
     @Unique
@@ -100,30 +93,7 @@ public class MixinVulkanGpuSurface {
     }
 
     @Unique
-    private boolean hdr_mod$isPassthroughOrHdr10ForSdl(int colorSpace) {
-        return colorSpace == VK_COLOR_SPACE_HDR10_ST2084_EXT;
-    }
-
-    @Unique
-    private boolean hdr_mod$isPassthroughOrLinearForSdl(int colorSpace) {
-        return colorSpace == VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT;
-    }
-
-    @Unique
-    private boolean hdr_mod$matchesWaylandFormat(VkSurfaceFormatKHR format, HDRModConfig config, boolean applyConfigCheck) {
-        int fmt = format.format();
-        int colorSpace = format.colorSpace();
-        boolean unormMatches = hdr_mod$isUNORM10bitFormat(fmt)
-            && (!applyConfigCheck || config.useUNORMWindowPixelFormat)
-            && hdr_mod$isPassthroughOrHdr10ForSdl(colorSpace);
-        boolean sfloatMatches = fmt == VK_FORMAT_R16G16B16A16_SFLOAT
-            && (!applyConfigCheck || !config.useUNORMWindowPixelFormat)
-            && hdr_mod$isPassthroughOrLinearForSdl(colorSpace);
-        return unormMatches || sfloatMatches;
-    }
-
-    @Unique
-    private boolean hdr_mod$matchesNonWaylandFormat(VkSurfaceFormatKHR format, HDRModConfig config, boolean applyConfigCheck) {
+    private boolean hdr_mod$matchesFormat(VkSurfaceFormatKHR format, HDRModConfig config, boolean applyConfigCheck) {
         int fmt = format.format();
         int colorSpace = format.colorSpace();
         boolean unormMatches = hdr_mod$isUNORM10bitFormat(fmt)
@@ -141,17 +111,7 @@ public class MixinVulkanGpuSurface {
     }
 
     @Unique
-    private void hdr_mod$applyWaylandProvider(VkSurfaceFormatKHR format) {
-        int bits = (format.format() == VK_FORMAT_R16G16B16A16_UNORM || format.format() == VK_FORMAT_R16G16B16A16_SFLOAT) ? 16 : 10;
-        if (format.colorSpace() == VK_COLOR_SPACE_HDR10_ST2084_EXT) {
-            HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(bits, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
-        } else {
-            HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(bits, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
-        }
-    }
-
-    @Unique
-    private void hdr_mod$applyNonWaylandProvider(VkSurfaceFormatKHR format) {
+    private void hdr_mod$applyProvider(VkSurfaceFormatKHR format) {
         if (format.colorSpace() == VK_COLOR_SPACE_HDR10_ST2084_EXT) {
             int bits = format.format() == VK_FORMAT_R16G16B16A16_UNORM ? 16 : 10;
             HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(bits, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ);
@@ -160,5 +120,32 @@ public class MixinVulkanGpuSurface {
             HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
             LOGGER.info("Got scRGB on Vulkan!");
         }
+    }
+
+    @Unique
+    private boolean hdr_mod$hasSetHdrMetadata = false;
+
+    @Inject(method = "acquireNextTexture", at = @At("HEAD"))
+    private void hdr_mod$setHdrMetadata(CallbackInfo ci){
+        if(hdr_mod$hasSetHdrMetadata || hdr_mod$chosenColorspace != VK_COLOR_SPACE_HDR10_ST2084_EXT){
+            return;
+        }
+
+        try (MemoryStack stack = MemoryStack.stackPush()) {
+            LongBuffer pSwapchains = stack.longs(swapchain);
+            VkHdrMetadataEXT.Buffer pMetadata = VkHdrMetadataEXT.calloc(1, stack);
+            pMetadata.sType$Default();
+            pMetadata.displayPrimaryRed().set(0.708f, 0.292f);
+            pMetadata.displayPrimaryGreen().set(0.170f, 0.797f);
+            pMetadata.displayPrimaryBlue().set(0.131f, 0.046f);
+            pMetadata.whitePoint().set(0.3127f, 0.3290f);
+            pMetadata.maxLuminance(10000.0f);
+            pMetadata.minLuminance(0.001f);
+            pMetadata.maxContentLightLevel(HDRMod.colorManagementInfoProvider.getWindowMaxLuminance(Minecraft.getInstance().getWindow().handle()));
+            pMetadata.maxFrameAverageLightLevel(400.0f);
+            EXTHdrMetadata.vkSetHdrMetadataEXT(device.vkDevice(), pSwapchains, pMetadata);
+        }
+
+        hdr_mod$hasSetHdrMetadata = true;
     }
 }

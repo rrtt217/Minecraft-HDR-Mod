@@ -4,4 +4,7 @@
 ## Changes
 - Remove IMBlocker integration
 - Remove custom GLFW
-- Linux now force to use extended sRGB
+- Linux now force to use extended sRGB on OpenGL
+## Missing Features
+- ReplayMod Integration
+- Basic Flashback Compatibility

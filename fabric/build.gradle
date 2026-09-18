@@ -68,7 +68,7 @@ dependencies {
     compileOnly "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
     // compileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
     // Axiom refuse to start with modImplementation. Just use modCompileOnly, download one from modrinth and put it in run/mods.
-    compileOnly "maven.modrinth:axiom:${axiom_version}-fabric,26.2"
+    compileOnly "maven.modrinth:axiom:${axiom_version}-fabric,26.3"
     compileOnly "maven.modrinth:flashback:${flashback_version}-fabric,26.2"
 
     //implementation "maven.modrinth:xaeroplus:${xaero_plus_version}+fabric-${minecraft_version}"

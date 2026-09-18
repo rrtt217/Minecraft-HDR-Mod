@@ -8,12 +8,9 @@ import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(FramebufferUtils.class)
 public class MixinFramebufferUtils {
-    /*
-    @ModifyArg(method = "resizeOrCreateFramebuffer(Lcom/mojang/blaze3d/pipeline/RenderTarget;IIZ)Lcom/mojang/blaze3d/pipeline/RenderTarget;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/TextureTarget;<init>(Ljava/lang/String;IIZLcom/mojang/blaze3d/GpuFormat;)V"), index = 4)
-
+    @ModifyArg(method = "resizeOrCreateFramebuffer(Lcom/mojang/blaze3d/pipeline/RenderTarget;IIZ)Lcom/mojang/blaze3d/pipeline/RenderTarget;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/pipeline/TextureTarget;<init>(Ljava/lang/String;IILcom/mojang/renderpearl/api/GpuFormat;Lcom/mojang/renderpearl/api/GpuFormat;)V"), index = 3)
     private static GpuFormat hdr_mod$upgradeFlashbackBuffer(GpuFormat format){
         if(format == GpuFormat.RGBA8_UNORM) {return GpuFormat.RGBA16_FLOAT;}
         return format;
     }
-    */
 }
