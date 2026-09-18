@@ -60,31 +60,31 @@ public final class HDRMod {
     public static final KeyMapping TOGGLE_HDR = new KeyMapping(
             "key.hdr_mod.toggle_hdr", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
-            -1, // The default keycode
+            0, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
     public static final KeyMapping VALUE_UP = new KeyMapping(
             "key.hdr_mod.value_up", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
-            -1, // The default keycode
+            0, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
     public static final KeyMapping VALUE_DOWN = new KeyMapping(
             "key.hdr_mod.value_down", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
-            -1, // The default keycode
+            0, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
     public static final KeyMapping TOGGLE_VALUE_ADJUSTED = new KeyMapping(
             "key.hdr_mod.toggle_value_adjusted", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
-            -1, // The default keycode
+            0, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
     public static final KeyMapping TOGGLE_VALUE_ADJUSTED_BACKWARDS = new KeyMapping(
             "key.hdr_mod.toggle_value_adjusted_backwards", // The translation key of the name shown in the Controls screen
             InputConstants.Type.KEYBOARD, // This key mapping is for Keyboards by default
-            -1, // The default keycode
+            0, // The default keycode
             HDRModCategory // The category translation key used to categorize in the Controls screen
     );
 

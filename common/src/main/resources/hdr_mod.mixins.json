@@ -9,7 +9,6 @@
     "debug.MixinDebugScreenEntryList",
     "debug.MixinRenderTarget",
     "features.BossHealthOverlayAccessor",
-    "features.KeyMappingAccessor",
     "features.MixinGpuSurface",
     "features.MixinRenderPass",
     "features.MixinRenderSystem",
