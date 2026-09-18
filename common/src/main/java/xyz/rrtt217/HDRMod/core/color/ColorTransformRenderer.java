@@ -16,6 +16,7 @@ import org.lwjgl.system.MemoryStack;
 import xyz.rrtt217.HDRMod.api.color.Enums;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ColorTransformRenderer implements AutoCloseable {
@@ -35,6 +36,8 @@ public class ColorTransformRenderer implements AutoCloseable {
     }
     public static RenderPipeline COLOR_TRANSFORM;
     public static RenderPipeline COLOR_TRANSFORM_PQ;
+    public static CompiledRenderPipeline COLOR_TRANSFORM_COMPILED;
+    public static CompiledRenderPipeline COLOR_TRANSFORM_COMPILED_PQ;
     private GpuTextureView srcTextureView;
     private GpuTexture dstTexture;
     private GpuTextureView dstTextureView;
@@ -93,8 +96,8 @@ public class ColorTransformRenderer implements AutoCloseable {
             try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Color Transform", this.dstTextureView, Optional.empty())) {
                 RenderSystem.bindDefaultUniforms(renderPass);
 
-                if(this.dstTextureFormat == GpuFormat.RGBA16_UNORM) renderPass.setPipeline(RenderSystem.getCompiledPipeline(COLOR_TRANSFORM_PQ));
-                else renderPass.setPipeline(RenderSystem.getCompiledPipeline(COLOR_TRANSFORM));
+                if(this.dstTextureFormat == GpuFormat.RGBA16_UNORM) renderPass.setPipeline(Objects.requireNonNullElse(RenderSystem.getCompiledPipelineNullable(COLOR_TRANSFORM_PQ), COLOR_TRANSFORM_COMPILED_PQ));
+                else renderPass.setPipeline(Objects.requireNonNullElse(RenderSystem.getCompiledPipelineNullable(COLOR_TRANSFORM), COLOR_TRANSFORM_COMPILED));
                 renderPass.setUniform("InSampler", srcTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
 
                 try (MemoryStack stack = MemoryStack.stackPush()) {

@@ -20,6 +20,7 @@
     "gl.MixinGlCommandEncoder",
     "gl.MixinGlStateManager",
     "gl.MixinGLSurface",
+    "init.MixinGameRenderer",
     "init.MixinMinecraft",
     "init.MixinWindow",
     "upgrade.MixinColorTargetState",

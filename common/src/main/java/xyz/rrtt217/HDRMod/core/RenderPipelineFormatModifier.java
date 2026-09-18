@@ -17,8 +17,8 @@ import java.util.*;
 
 
 public class RenderPipelineFormatModifier {
-    public record PipelineFormatModifyCacheKey(RenderPipeline renderPipeline, List<GpuFormat> gpuFormats) {}
-    private static final Map<PipelineFormatModifyCacheKey,RenderPipeline> pipelineFormatModifyCache = new HashMap<PipelineFormatModifyCacheKey,RenderPipeline>();
+    public record PipelineFormatModifyCacheKey(CompiledRenderPipeline compiledRenderPipeline, List<GpuFormat> gpuFormats) {}
+    private static final Map<PipelineFormatModifyCacheKey, CompiledRenderPipeline> pipelineFormatModifyCache = new HashMap<PipelineFormatModifyCacheKey, CompiledRenderPipeline>();
 
     private static List<PipelineCache> pipelineCaches = new ArrayList<PipelineCache>();
     private static Constructor<RenderPipeline> pipelineConstructor;
@@ -34,19 +34,29 @@ public class RenderPipelineFormatModifier {
     }
 
     public static CompiledRenderPipeline modifyRenderPipelineFormat(CompiledRenderPipeline compiledRenderPipeline, GpuFormat[] formats){
+        PipelineFormatModifyCacheKey key = new PipelineFormatModifyCacheKey(compiledRenderPipeline, List.of(formats));
+        if(pipelineFormatModifyCache.containsKey(key)) {
+            return pipelineFormatModifyCache.get(key);
+        }
         PipelineCache current = RenderSystemAccessor.getCurrentPipelineCache();
         if(current != null){
             RenderPipeline pipeline = getRenderPipelineFromCache(current, compiledRenderPipeline);
             if(pipeline != null){
                 RenderPipeline modified = modifyRenderPipelineFormat(pipeline, formats);
-                return RenderSystem.getCompiledPipeline(modified);
+                CompiledRenderPipeline compiled = RenderSystem.getCompiledPipeline(modified);
+                pipelineFormatModifyCache.put(new PipelineFormatModifyCacheKey(compiledRenderPipeline, List.of(formats)), compiled);
+                return compiled;
             }
         }
         for(PipelineCache cache: pipelineCaches){
             RenderPipeline pipeline = getRenderPipelineFromCache(cache, compiledRenderPipeline);
             if(pipeline != null){
                 RenderPipeline modified = modifyRenderPipelineFormat(pipeline, formats);
-                return RenderSystem.getCompiledPipeline(modified);
+                RenderSystem.setCurrentPipelineCache(cache);
+                CompiledRenderPipeline compiled1 = RenderSystem.getCompiledPipeline(modified);
+                RenderSystem.setCurrentPipelineCache(current);
+                pipelineFormatModifyCache.put(new PipelineFormatModifyCacheKey(compiledRenderPipeline, List.of(formats)), compiled1);
+                return compiled1;
             }
         }
         return null;
@@ -56,12 +66,6 @@ public class RenderPipelineFormatModifier {
         return modifyRenderPipelineFormat(pipeline, Arrays.asList(formats));
     }
     public static RenderPipeline modifyRenderPipelineFormat(RenderPipeline pipeline, List<GpuFormat> formats) {
-        PipelineFormatModifyCacheKey cacheKey = new PipelineFormatModifyCacheKey(pipeline, formats);
-        RenderPipeline cached = pipelineFormatModifyCache.get(cacheKey);
-        if (cached != null) {
-            return cached;
-        }
-
         List<ColorTargetState> original = pipeline.getColorTargetStates();
         if (original.size() != formats.size()) {
             throw new IllegalArgumentException("Color target state count mismatch: pipeline has " + original.size() + " but " + formats.size() + " formats were provided");
@@ -98,8 +102,6 @@ public class RenderPipelineFormatModifier {
                     pipeline.getPrimitiveTopology(),
                     pipeline.pushConstantSize(),
                     pipeline.getSortKey());
-
-            pipelineFormatModifyCache.put(cacheKey, result);
 
             /*
              * Some mods (like vitrail) use custom ShaderSource when calling GpuDevice.precompilePipeline() by themselves, which is reasonable.
