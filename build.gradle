@@ -189,7 +189,15 @@ if (findProject(':fabric') != null && findProject(':neoforge') != null) {
     apply plugin: 'me.modmuss50.mod-publish-plugin'
     publishMods {
         changelog = file("$rootDir/changelog.md").text
-        type = STABLE
+        if(project.mod_version.contains("alpha")) {
+            type = ALPHA
+        }
+        else if (project.mod_version.contains("beta")) {
+            type = BETA
+        }
+        else{
+            type = STABLE
+        }
 
         // CurseForge options used by both Fabric and Forge
         def cfOptions = curseforgeOptions {
