@@ -1,7 +1,4 @@
-# HDR Mod v2.5.1 Changelog
+# HDR Mod v2.5.2 Changelog
 ## Fixes
-- IMBlocker >=6.2.0/5.6.0 compat
-  - Due to API change, IMBlocker < 6.2.0/5.6.0 compatibility will be dropped.
-- Axiom (?) > 6.0.0 compat
-  - Similarly, we dropped compatibility with older versions
-- Super Resolution 0.9.1-alpha.2+ compat
+- Broken rendering when using RGBA16F on Linux because of a hack for Nvidia / missing opaque requirement
+    - Linux Nvidia users should upgrade egl-wayland2 to 1.0.2 or above to avoid crash.
