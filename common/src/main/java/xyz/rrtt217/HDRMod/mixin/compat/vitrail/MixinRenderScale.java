@@ -10,10 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(RenderScale.class)
 public class MixinRenderScale {
-    /*
-    @WrapOperation(method = "<clinit>", at = @At(value = "FIELD", target = "Lcom/mojang/blaze3d/GpuFormat;RGBA8_UNORM:Lcom/mojang/blaze3d/GpuFormat;", opcode = Opcodes.GETSTATIC))
+    @WrapOperation(method = "<clinit>", at = @At(value = "FIELD", target = "Lcom/mojang/renderpearl/api/GpuFormat;RGBA8_UNORM:Lcom/mojang/renderpearl/api/GpuFormat;", opcode = Opcodes.GETSTATIC))
     private static GpuFormat hdr_mod$modifyRenderScaleFormat(Operation<GpuFormat> original) {
         return GpuFormat.RGBA16_FLOAT;
     }
-     */
 }

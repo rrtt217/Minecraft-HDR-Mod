@@ -1,12 +1,7 @@
-# HDR Mod v3.2.2-alpha1-26.3 Changelog
-## New Features
-- Port to 26.3
-## Fixes
-- SDL Vulkan ST2084 PQ Color
-## Changes
-- Remove IMBlocker integration
-- Remove custom GLFW
-- Linux now force to use extended sRGB on OpenGL
-## Missing Features
-- ReplayMod Integration
-- Basic Flashback Compatibility
+# HDR Mod v3.2.2-beta1-26.3 Changelog
+## Fixes Compared to alpha1
+- SDL+OpenGL now use Java FFM + wp_color_management protocol on Wayland, allowing for HDR10/PQ or scRGB again
+   - Thanks for Ramblurr for wayland-java project
+   - This may slightly increase jar size
+- Vitrail 26.3 compat
+- Flashback 26.3 basic compat w/o HDR export support
