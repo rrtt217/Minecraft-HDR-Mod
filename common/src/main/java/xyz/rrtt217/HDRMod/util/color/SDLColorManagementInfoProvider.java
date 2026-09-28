@@ -1,7 +1,10 @@
 package xyz.rrtt217.HDRMod.util.color;
 
 import com.sun.jna.Platform;
+import org.lwjgl.BufferUtils;
 import xyz.rrtt217.HDRMod.api.color.Enums;
+
+import java.nio.IntBuffer;
 
 import static org.lwjgl.sdl.SDLProperties.SDL_GetFloatProperty;
 import static org.lwjgl.sdl.SDLVideo.*;
@@ -9,7 +12,14 @@ import static org.lwjgl.sdl.SDLVideo.*;
 public class SDLColorManagementInfoProvider extends ColorManagementInfoProvider{
     @Override
     public int getBitsPerChannel(long handle) {
-        return 16;
+        IntBuffer value = BufferUtils.createIntBuffer(1);
+        boolean success = SDL_GL_GetAttribute(SDL_GL_RED_SIZE, value);
+        if (success) {
+            return value.get(0);
+        }
+        else  {
+            return 0;
+        }
     }
 
     @Override

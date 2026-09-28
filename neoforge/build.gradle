@@ -76,7 +76,10 @@ dependencies {
 
     //modLocalRuntime "maven.modrinth:renderscale:1.3.6"
     common(project(path: ":common")) { transitive false }
+    common project(':vendor:wayland-lite')
     shadowBundle project(path: ':common', configuration: 'transformProductionNeoForge')
+    // transitive = false: slf4j-api is provided by Minecraft at runtime.
+    shadowBundle(project(':vendor:wayland-lite')) { transitive = false }
 }
 
 processResources {

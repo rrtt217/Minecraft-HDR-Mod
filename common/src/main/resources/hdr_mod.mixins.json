@@ -22,7 +22,6 @@
     "gl.MixinGLSurface",
     "init.MixinGameRenderer",
     "init.MixinMinecraft",
-    "init.MixinWindow",
     "upgrade.MixinColorTargetState",
     "upgrade.MixinLevelRenderer",
     "upgrade.MixinMainTarget",

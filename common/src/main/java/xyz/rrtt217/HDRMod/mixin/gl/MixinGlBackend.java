@@ -42,13 +42,9 @@ public class MixinGlBackend {
         SystemInfo systemInfo = new SystemInfo();
         HardwareAbstractionLayer hardware = systemInfo.getHardware();
         List<GraphicsCard> graphicsCards = hardware.getGraphicsCards();
-        boolean hasNvidiaCard = false;
         boolean hasIntelCard = false;
         boolean hasOnlyIntelCard = true;
         for (GraphicsCard card : graphicsCards) {
-            if (card.getVendor().toLowerCase().contains("nvidia") && !hasNvidiaCard) {
-                hasNvidiaCard = true;
-            }
             if (card.getVendor().toLowerCase().contains("intel") && !hasIntelCard) {
                 hasIntelCard = true;
             }
@@ -57,10 +53,13 @@ public class MixinGlBackend {
             }
         }
         hasOnlyIntelCard = hasOnlyIntelCard && hasIntelCard;
-        //boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (hasNvidiaCard && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
         boolean applyWindowsWorkaround = (hasOnlyIntelCard && Platform.isWindows()) && !config.forceDisableGlfwWorkaround;
 
-        if(!applyWindowsWorkaround && !config.forceActivateGlDxInterop) {
+        if(!applyWindowsWorkaround && config.useUNORMWindowPixelFormat)
+        {
+            SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 10);
+        }
+        else if(!applyWindowsWorkaround && !config.forceActivateGlDxInterop) {
             SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 16);
             SDL_GL_SetAttribute(SDL_GL_FLOATBUFFERS, 1);
         }

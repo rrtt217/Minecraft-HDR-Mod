@@ -55,4 +55,8 @@ dependencies {
     implementation 'com.github.oshi:oshi-core:6.9.3'
     implementation 'ar.com.hjg:pngj:2.1.0'
     implementation "maven.modrinth:vitrail-shaders:${vitrail_version}"
+
+    // Vendored wayland-java sources (see vendor/README.md). The platform
+    // projects shadow this into their production jars.
+    implementation project(':vendor:wayland-lite')
 }

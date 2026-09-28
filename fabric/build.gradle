@@ -98,7 +98,10 @@ dependencies {
     //localRuntime "maven.modrinth:superresolution:${minecraft_version}-${sr_version}+gl-fabric"
 
     common(project(path: ":common")) { transitive false }
+    common project(':vendor:wayland-lite')
     shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
+    // transitive = false: slf4j-api is provided by Minecraft at runtime.
+    shadowBundle(project(':vendor:wayland-lite')) { transitive = false }
 }
 
 processResources {

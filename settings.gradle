@@ -17,3 +17,8 @@ pluginManagement {
 rootProject.name = 'hdr_mod'
 
 include 'common', 'fabric', 'neoforge'
+
+// Vendored, self-contained wayland-java sources (see vendor/README.md).
+// It is a plain java-library, not a Minecraft project, so the root build
+// skips it in allprojects/subprojects.
+include 'vendor:wayland-lite'

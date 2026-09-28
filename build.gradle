@@ -9,7 +9,15 @@ architectury {
     minecraft = project.minecraft_version
 }
 
+// vendor/ holds an independent java-library whose own group/version
+// (org.freedesktop.wayland:wayland-lite) must not be overwritten, and which
+// must not receive the loom/architectury/minecraft setup below.
+def isVendor = { Project p -> p.path.startsWith(':vendor') }
+
 allprojects {
+    if (isVendor(project)) {
+        return
+    }
     group = rootProject.maven_group
     version = rootProject.mod_version
 }
@@ -23,6 +31,9 @@ configurations.configureEach {
 }
 
 subprojects {
+    if (isVendor(project)) {
+        return
+    }
     apply plugin: 'dev.architectury.loom-no-remap'
     apply plugin: 'architectury-plugin'
     apply plugin: 'maven-publish'
