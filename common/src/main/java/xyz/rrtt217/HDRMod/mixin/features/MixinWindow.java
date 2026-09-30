@@ -22,7 +22,7 @@ public class MixinWindow {
 
             if(HDRMod.colorManagementInfoProvider instanceof WaylandSDLColorManagementInfoProvider){
                 try {
-                    ((WaylandSDLColorManagementInfoProvider) HDRMod.colorManagementInfoProvider).getColorManagement().reapply();
+                    ((WaylandSDLColorManagementInfoProvider) HDRMod.colorManagementInfoProvider).getColorManagement().refreshPreferred(1000);
                 } catch (Throwable ignored) {
                 }
             }

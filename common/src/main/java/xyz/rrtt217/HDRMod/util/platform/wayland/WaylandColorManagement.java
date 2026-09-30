@@ -373,11 +373,14 @@ public final class WaylandColorManagement implements AutoCloseable {
     }
 
     /**
-     * Refresh after the compositor's preferred image description changed:
-     * re-reads the preferred luminances and re-applies the last two-argument
-     * {@link #apply(int, int)} request. Does nothing when the last apply used
-     * explicit luminances (the five-argument overload), so callers that manage
-     * luminances themselves are never overridden.
+     * Re-apply the last two-argument {@link #apply(int, int)} request, e.g.
+     * after the preferred luminances changed. Does nothing when the last apply
+     * used explicit luminances (the five-argument overload), so callers that
+     * manage luminances themselves are never overridden.
+     *
+     * <p>Callers must have refreshed the preferred luminances first (e.g. via
+     * {@link #refreshPreferred(int)}, which invokes this after the info event
+     * has been dispatched, outside the event loop).
      *
      * @return the status of the re-apply, or {@link #OK} when nothing was done
      */
@@ -385,7 +388,6 @@ public final class WaylandColorManagement implements AutoCloseable {
         if (!autoLuminances) {
             return OK;
         }
-        refreshPreferred(1000);
         return apply(lastTf, lastPrimaries);
     }
 
@@ -534,6 +536,9 @@ public final class WaylandColorManagement implements AutoCloseable {
         display.flush();
         // The info object destroys itself on 'done'; failure to complete is not fatal.
         waitUntil(() -> infoDone, timeoutMs);
+        // Re-apply with the freshly reported luminances. Done after waitUntil so
+        // we are outside the dispatch callback and never re-enter the event loop.
+        reapply();
     }
 
     private WpImageDescriptionInfoV1Events infoEvents() {
