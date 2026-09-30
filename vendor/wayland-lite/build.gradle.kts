@@ -31,7 +31,7 @@ sourceSets.main {
 
 dependencies {
     // stubs-shared logs through SLF4J; it is part of the public API surface.
-    api("org.slf4j:slf4j-api:1.7.36")
+    compileOnly("org.slf4j:slf4j-api:1.7.36")
     // javax.annotation.* appears in the generated sources. CLASS retention, so
     // this never reaches consumers.
     compileOnly("com.google.code.findbugs:jsr305:3.0.2")
