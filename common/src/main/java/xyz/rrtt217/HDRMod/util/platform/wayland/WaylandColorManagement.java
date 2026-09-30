@@ -45,6 +45,33 @@ import java.util.function.BooleanSupplier;
  * Everything then happens on a private EventQueue (the same isolation trick the
  * C shim uses), and the wl_display is never connected or disconnected here —
  * SDL owns it.
+ *
+ * To make it correct, I referred a lot to <a href="https://github.com/Tom94/glfw/tree/tev">...</a>.
+ * Thanks a lot for tom94's hard effort. Here's the complete original license:
+ *
+ * Copyright (c) 2002-2006 Marcus Geelnard
+ *
+ * Copyright (c) 2006-2019 Camilla Löwy
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ * 1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would
+ *    be appreciated but is not required.
+ *
+ * 2. Altered source versions must be plainly marked as such, and must not
+ *    be misrepresented as being the original software.
+ *
+ * 3. This notice may not be removed or altered from any source
+ *    distribution.
+ *
  */
 public final class WaylandColorManagement implements AutoCloseable {
 
@@ -241,7 +268,7 @@ public final class WaylandColorManagement implements AutoCloseable {
     /**
      * Rendering intent: prefer relative colorimetric (colour-accurate) and fall
      * back to perceptual, which is guaranteed when colour management is
-     * supported. Mirrors {@code _glfwGetWindowRenderingIntentWayland}.
+     * supported.
      */
     private int renderingIntent() {
         if (supportsIntent(WpColorManagerV1RenderIntent.RELATIVE.getValue())) {
