@@ -60,4 +60,8 @@ public class WaylandSDLColorManagementInfoProvider extends SDLColorManagementInf
     public Enums.TransferFunction getWindowTransferFunction(long handle) {
         return Enums.TransferFunction.fromId(tf);
     }
+
+    public WaylandColorManagement getColorManagement() {
+        return colorManagement;
+    }
 }

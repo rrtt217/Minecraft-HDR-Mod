@@ -13,6 +13,7 @@
     "features.MixinRenderPass",
     "features.MixinRenderSystem",
     "features.MixinScreenshot",
+    "features.MixinWindow",
     "features.PipelineCacheAccessor",
     "features.RenderPipelineAccessor",
     "features.RenderSystemAccessor",

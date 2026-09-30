@@ -86,7 +86,6 @@ public final class WaylandColorManagement implements AutoCloseable {
     private String message = "";
 
     private boolean infoDone;
-    private boolean preferredDirty;
     private float minLuminance;
     private float maxLuminance;
     private float sdrWhiteLevel;
@@ -305,9 +304,6 @@ public final class WaylandColorManagement implements AutoCloseable {
      * @param primaries named primaries ({@code set_primaries_named})
      */
     public int apply(int tf, int primaries) throws Throwable {
-        if (preferredDirty) {
-            refreshPreferred(1000);
-        }
         boolean setLuminances = supportsFeature(WpColorManagerV1Feature.SET_LUMINANCES.getValue())
                 && sdrWhiteLevel != 0.0f;
         int minLum = (int) (transferDefaultMinNits(tf) * MIN_LUMINANCE_FACTOR);
@@ -456,12 +452,10 @@ public final class WaylandColorManagement implements AutoCloseable {
         feedback = cm.getSurfaceFeedback(new WpColorManagementSurfaceFeedbackV1EventsV2() {
             @Override
             public void preferredChanged(WpColorManagementSurfaceFeedbackV1Proxy emitter, int identity) {
-                preferredDirty = true;
             }
 
             @Override
             public void preferredChanged2(WpColorManagementSurfaceFeedbackV1Proxy emitter, int hi, int lo) {
-                preferredDirty = true;
             }
         }, surface);
         feedback.setQueue(queue);
@@ -487,7 +481,6 @@ public final class WaylandColorManagement implements AutoCloseable {
         display.flush();
         // The info object destroys itself on 'done'; failure to complete is not fatal.
         waitUntil(() -> infoDone, timeoutMs);
-        preferredDirty = false;
     }
 
     private WpImageDescriptionInfoV1Events infoEvents() {
