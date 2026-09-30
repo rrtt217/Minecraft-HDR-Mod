@@ -117,6 +117,11 @@ public final class WaylandColorManagement implements AutoCloseable {
     private float maxLuminance;
     private float sdrWhiteLevel;
 
+    /** Whether the last apply left luminance choice to us (2-arg overload). */
+    private boolean autoLuminances;
+    private int lastTf;
+    private int lastPrimaries;
+
     private WaylandColorManagement(WlDisplayProxy display, WlSurfaceProxy surface, EventQueue queue,
                             MethodHandle poll, MemorySegment pollfd) {
         this.display = display;
@@ -331,6 +336,9 @@ public final class WaylandColorManagement implements AutoCloseable {
      * @param primaries named primaries ({@code set_primaries_named})
      */
     public int apply(int tf, int primaries) throws Throwable {
+        autoLuminances = true;
+        lastTf = tf;
+        lastPrimaries = primaries;
         boolean setLuminances = supportsFeature(WpColorManagerV1Feature.SET_LUMINANCES.getValue())
                 && sdrWhiteLevel != 0.0f;
         int minLum = (int) (transferDefaultMinNits(tf) * MIN_LUMINANCE_FACTOR);
@@ -359,8 +367,26 @@ public final class WaylandColorManagement implements AutoCloseable {
      * @param referenceLum reference white luminance in cd/m² ({@code set_luminances})
      */
     public int apply(int tf, int primaries, int minLum, int maxLum, int referenceLum) throws Throwable {
+        autoLuminances = false;
         sdrWhiteLevel = referenceLum;
         return applyInternal(tf, primaries, true, minLum, maxLum, referenceLum);
+    }
+
+    /**
+     * Refresh after the compositor's preferred image description changed:
+     * re-reads the preferred luminances and re-applies the last two-argument
+     * {@link #apply(int, int)} request. Does nothing when the last apply used
+     * explicit luminances (the five-argument overload), so callers that manage
+     * luminances themselves are never overridden.
+     *
+     * @return the status of the re-apply, or {@link #OK} when nothing was done
+     */
+    public int reapply() throws Throwable {
+        if (!autoLuminances) {
+            return OK;
+        }
+        refreshPreferred(1000);
+        return apply(lastTf, lastPrimaries);
     }
 
     private int applyInternal(int tf, int primaries, boolean setLuminances,
