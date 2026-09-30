@@ -1,5 +1,6 @@
 package xyz.rrtt217.HDRMod.mixin.vk;
 
+import com.mojang.renderpearl.api.device.GpuSurface;
 import com.mojang.renderpearl.backend.vulkan.VulkanDevice;
 import com.mojang.renderpearl.backend.vulkan.VulkanGpuSurface;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -78,6 +79,11 @@ public class MixinVulkanGpuSurface {
     private int hdr_mod$chooseCorrectColorspace(int value){
         if(value == 0) value = hdr_mod$chosenColorspace;
         return value;
+    }
+
+    @Inject(method = "configure", at = @At("HEAD"))
+    private void hdr_mod$resetHasSetHdrMetadata(GpuSurface.Configuration config, CallbackInfo ci){
+        hdr_mod$hasSetHdrMetadata = false;
     }
 
     @Unique
