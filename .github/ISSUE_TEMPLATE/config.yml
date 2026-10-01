@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Mod Compatibility Meta Issue
+    url: https://github.com/rrtt217/Minecraft-HDR-Mod/issues/27
+    about: Check whether your mod combination is already known-compatible, broken, or untested before filing a bug.
+  - name: Backport Request Meta Issue
+    url: https://github.com/rrtt217/Minecraft-HDR-Mod/issues/11
+    about: The accepted backport list and the progress of existing backport requests.
+  - name: For Shaderpack Devs (wiki)
+    url: https://github.com/rrtt217/Minecraft-HDR-Mod/wiki/For-Shaderpack-Devs
+    about: How to make a shaderpack work with HDR Mod, before opening an issue.

@@ -1,0 +1,108 @@
+name: Bug report
+description: Something in HDR Mod is broken, crashes, or renders incorrectly.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Issues that omit the environment fields below usually
+        need several rounds of back-and-forth before they can be investigated, so
+        please fill them in.
+
+        Do not paste a full log inline — upload it and link it below.
+
+  - type: input
+    id: mod-version
+    attributes:
+      label: HDR Mod version
+      description: The exact version you are running, from the jar filename or Modrinth.
+      placeholder: "3.1.0-26.2"
+    validations:
+      required: true
+
+  - type: input
+    id: mc-version
+    attributes:
+      label: Minecraft version
+      placeholder: "1.21.1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: loader
+    attributes:
+      label: Mod loader
+      options:
+        - Fabric
+        - NeoForge
+        - Forge
+        - Other or unknown
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating system and desktop
+      description: Include the distro or Windows build, and the session type on Linux.
+      placeholder: "Arch Linux, KDE Plasma 6.6, Wayland"
+    validations:
+      required: true
+
+  - type: input
+    id: gpu
+    attributes:
+      label: GPU and driver version
+      placeholder: "NVIDIA RTX 5060 Ti, driver 580.65"
+    validations:
+      required: true
+
+  - type: input
+    id: shaderpack
+    attributes:
+      label: Shaderpack, if any
+      description: Shaderpack name and version, plus the Iris or Oculus version.
+      placeholder: "Photon HDR, Iris 1.10.5"
+    validations:
+      required: false
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What you expected to happen, and what happened instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Launch with ...
+        2. Enable HDR ...
+        3. ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs and crash report
+      description: |
+        Link `latest.log` and the crash report — https://mclo.gs, a gist, or an
+        attachment. Paste the relevant exception directly if the log is short.
+      render: shell
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing issues and this is not a duplicate.
+          required: true
+        - label: I can reproduce this with only HDR Mod and its required dependencies installed.
+          required: false
