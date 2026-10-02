@@ -50,7 +50,7 @@ dependencies {
 
     implementation "maven.modrinth:ixeris:${ixeris_version}+26.2-fabric"
     implementation "maven.modrinth:replaymod:26.2-2.6.27"
-    implementation "maven.modrinth:superresolution:26.2-${sr_version}+gl-fabric"
+    implementation "maven.modrinth:superresolution:${minecraft_version}-${sr_version}+gl-fabric"
 
     implementation 'com.github.oshi:oshi-core:6.9.3'
     implementation 'ar.com.hjg:pngj:2.1.0'

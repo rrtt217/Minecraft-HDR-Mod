@@ -29,7 +29,7 @@ public class MixinFrameResources {
     private GpuTextureView hudlessColorTextureView;
     private Constructor gpuTextureAdapterConstructor;
 
-    /*
+
     @ModifyArg(method = "copyFinalColor", at = @At(value = "INVOKE", target = "Lio/homo/superresolution/common/presentation/capture/FrameTextureResource;copyFrom(Lio/homo/superresolution/core/graphics/impl/texture/ITexture;Z)V"), index = 0)
     private ITexture hdr_mod$transformFinalColorTexture(ITexture texture) {
         long handle = Minecraft.getInstance().getWindow().handle();
@@ -111,5 +111,4 @@ public class MixinFrameResources {
             return texture;
         }
     }
-    */
 }

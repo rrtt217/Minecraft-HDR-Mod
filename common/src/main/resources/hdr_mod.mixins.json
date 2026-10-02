@@ -42,11 +42,11 @@
     "compat.sodium.MixinShaderChunkRenderer",
     "compat.sr.MixinFrameResources",
     "compat.sr.MixinVulkanSwapchain",
-    "compat.sr.VulkanSurfaceAccessor",
     "compat.vitrail.MixinEngineDefines",
     "compat.vitrail.MixinPackPass",
     "compat.vitrail.MixinRenderScale",
-    "compat.vitrail.MixinUniformCatalog"
+    "compat.vitrail.MixinUniformCatalog",
+    "compat.sr.MixinRenderSystems"
   ],
   "mixinextras": {
     "minVersion": "0.5.0"
