@@ -11,7 +11,7 @@ import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 public class WaylandSDLColorManagementInfoProvider extends SDLColorManagementInfoProvider {
     private final WaylandColorManagement colorManagement;
     private final int primaries;
-    private final int tf;
+    private final int transferFunction;
     public WaylandSDLColorManagementInfoProvider(MemorySegment wlDisplayPtr, MemorySegment wlSurfacePtr, int timeoutMs) throws Throwable {
         // Init color management
         this.colorManagement = WaylandColorManagement.attach(wlDisplayPtr, wlSurfacePtr, timeoutMs);
@@ -24,7 +24,7 @@ public class WaylandSDLColorManagementInfoProvider extends SDLColorManagementInf
                 LOGGER.warn(colorManagement.message());
             }
             primaries = Enums.Primaries.SRGB.getId();
-            tf = Enums.TransferFunction.EXT_LINEAR.getId();
+            transferFunction = Enums.TransferFunction.EXT_LINEAR.getId();
         }
         else{
             int status = colorManagement.apply(Enums.TransferFunction.ST2084_PQ.getId(), Enums.Primaries.BT2020.getId());
@@ -32,7 +32,7 @@ public class WaylandSDLColorManagementInfoProvider extends SDLColorManagementInf
                 LOGGER.warn(colorManagement.message());
             }
             primaries = Enums.Primaries.BT2020.getId();
-            tf = Enums.TransferFunction.ST2084_PQ.getId();
+            transferFunction = Enums.TransferFunction.ST2084_PQ.getId();
         }
     }
 
@@ -58,7 +58,7 @@ public class WaylandSDLColorManagementInfoProvider extends SDLColorManagementInf
 
     @Override
     public Enums.TransferFunction getWindowTransferFunction(long handle) {
-        return Enums.TransferFunction.fromId(tf);
+        return Enums.TransferFunction.fromId(transferFunction);
     }
 
     public WaylandColorManagement getColorManagement() {

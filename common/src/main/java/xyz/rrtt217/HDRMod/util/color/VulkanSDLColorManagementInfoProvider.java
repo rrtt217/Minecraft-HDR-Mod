@@ -5,6 +5,7 @@ import xyz.rrtt217.HDRMod.api.color.Enums;
 
 import static org.lwjgl.sdl.SDLProperties.SDL_GetFloatProperty;
 import static org.lwjgl.sdl.SDLVideo.*;
+import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
 
 public class VulkanSDLColorManagementInfoProvider extends VulkanColorManagementInfoProvider {
     public VulkanSDLColorManagementInfoProvider(int bitsPerChannel, Enums.Primaries primaries, Enums.TransferFunction transferFunction) {

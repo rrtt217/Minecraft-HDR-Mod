@@ -95,7 +95,7 @@ dependencies {
     //modLocalRuntime "maven.modrinth:spark:1.10.156-fabric"
     //modLocalRuntime "maven.modrinth:fabric-permissions-api:0.6.1"
     //localRuntime "maven.modrinth:lambdynamiclights:4.10.2+26.1.2"
-    localRuntime "maven.modrinth:superresolution:${minecraft_version}-${sr_version}+gl-fabric"
+    //localRuntime "maven.modrinth:superresolution:${minecraft_version}-${sr_version}+gl-fabric"
 
     common(project(path: ":common")) { transitive false }
     common project(':vendor:wayland-lite')

@@ -4,16 +4,12 @@ import xyz.rrtt217.HDRMod.api.color.Enums;
 
 public abstract class VulkanColorManagementInfoProvider extends ColorManagementInfoProvider {
     // We will set these members in MixinVulkanGpuSurface, if not on Wayland.
-    private Enums.Primaries primaries;
-    private Enums.TransferFunction transferFunction;
+    Enums.Primaries primaries;
+    Enums.TransferFunction transferFunction;
     public VulkanColorManagementInfoProvider(int bitsPerChannel, Enums.Primaries primaries, Enums.TransferFunction transferFunction) {
         this.bitsPerChannel = bitsPerChannel;
         this.primaries = primaries;
         this.transferFunction = transferFunction;
-    }
-    @Override
-    public int getBitsPerChannel(long handle) {
-        return bitsPerChannel;
     }
     @Override
     public Enums.Primaries getWindowPrimaries(long handle) {

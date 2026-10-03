@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.util.color.WaylandSDLColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.util.color.WaylandVulkanSDLColorManagementInfoProvider;
 
 @Mixin(Window.class)
 public class MixinWindow {
@@ -23,6 +24,11 @@ public class MixinWindow {
             if(HDRMod.colorManagementInfoProvider instanceof WaylandSDLColorManagementInfoProvider){
                 try {
                     ((WaylandSDLColorManagementInfoProvider) HDRMod.colorManagementInfoProvider).getColorManagement().refreshPreferred(1000);
+                } catch (Throwable ignored) {
+                }
+            } else if (HDRMod.colorManagementInfoProvider instanceof WaylandVulkanSDLColorManagementInfoProvider) {
+                try {
+                    ((WaylandVulkanSDLColorManagementInfoProvider) HDRMod.colorManagementInfoProvider).getColorManagement().refreshPreferred(1000);
                 } catch (Throwable ignored) {
                 }
             }
