@@ -25,6 +25,7 @@
     "init.MixinMinecraft",
     "init.MixinRenderSystem",
     "init.MixinWindow",
+    "init.WindowAccessor",
     "upgrade.MixinColorTargetState",
     "upgrade.MixinGpuDevice",
     "upgrade.MixinLevelRenderer",
