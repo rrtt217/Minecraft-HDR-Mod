@@ -21,6 +21,7 @@ import xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin;
 import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
+import xyz.rrtt217.HDRMod.util.platform.Platform;
 
 import java.nio.FloatBuffer;
 import java.util.List;
@@ -29,7 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-@Mixin(value = Window.class, priority = 1010)
+@Mixin(value = Window.class, priority = 1100)
     public abstract class MixinWindow {
     @Shadow
     @Final
@@ -47,17 +48,9 @@ import java.util.regex.Pattern;
             SystemInfo systemInfo = new SystemInfo();
             HardwareAbstractionLayer hardware = systemInfo.getHardware();
             List<GraphicsCard> graphicsCards = hardware.getGraphicsCards();
-            boolean hasNvidiaCard = false;
-            boolean nvidiaNeedsWaylandWorkaround = false;
             boolean hasIntelCard = false;
             boolean hasOnlyIntelCard = true;
             for (GraphicsCard card : graphicsCards) {
-                if (card.getVendor().toLowerCase().contains("nvidia") && !hasNvidiaCard) {
-                    hasNvidiaCard = true;
-                    if (!hdr_mod$nvidiaWaylandFp16Supported(card)) {
-                        nvidiaNeedsWaylandWorkaround = true;
-                    }
-                }
                 if (card.getVendor().toLowerCase().contains("intel") && !hasIntelCard) {
                     hasIntelCard = true;
                 }
@@ -66,7 +59,7 @@ import java.util.regex.Pattern;
                 }
             }
             hasOnlyIntelCard = hasOnlyIntelCard && hasIntelCard;
-            boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (nvidiaNeedsWaylandWorkaround && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
+            boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11) && !config.forceDisableGlfwWorkaround;
             boolean applyWindowsWorkaround = (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32) && !config.forceDisableGlfwWorkaround;
             if(platform != GLFW.GLFW_PLATFORM_X11 || HDRModMixinPlugin.hasGlfwLib) {
                 // 10 bpc for int
@@ -78,9 +71,9 @@ import java.util.regex.Pattern;
                 }
                 // 16 bpc for float
                 else {
-                GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 16);
-                GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
-                GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);
+                    GLFW.glfwWindowHint(GLFW.GLFW_RED_BITS, 16);
+                    GLFW.glfwWindowHint(GLFW.GLFW_GREEN_BITS, 16);
+                    GLFW.glfwWindowHint(GLFW.GLFW_BLUE_BITS, 16);
                 }
                 if(platform == GLFW.GLFW_PLATFORM_WIN32 && config.forceActivateGlDxInterop)
                 {
