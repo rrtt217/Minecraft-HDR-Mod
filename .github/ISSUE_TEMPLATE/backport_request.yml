@@ -1,0 +1,72 @@
+name: Backport request
+description: Ask for HDR Mod on another Minecraft version.
+title: "[backport request] "
+labels: ["backport"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Backport requests are tracked from the
+        [Backport Request Meta Issue](https://github.com/rrtt217/Minecraft-HDR-Mod/issues/11),
+        and are linked there as sub-issues.
+
+        Versions before 1.18.2 are unlikely to be accepted. 1.7.10 and 1.12.2 are the
+        hardest cases: they use LWJGL2, which cannot be given an HDR-capable swapchain
+        format through mixin alone.
+
+  - type: input
+    id: target-version
+    attributes:
+      label: Target Minecraft version
+      placeholder: "1.20.4"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: loader
+    attributes:
+      label: Mod loader
+      options:
+        - Fabric
+        - NeoForge
+        - Forge
+        - Any
+    validations:
+      required: true
+
+  - type: input
+    id: shader-stack
+    attributes:
+      label: Shader stack on that version
+      description: What you would run for shaders there — Iris, Oculus, OptiFine, or none.
+      placeholder: "Oculus + Embeddium"
+    validations:
+      required: false
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why this version?
+      description: What you are playing or maintaining, and why the existing versions do not cover it.
+    validations:
+      required: true
+
+  - type: textarea
+    id: existing
+    attributes:
+      label: Existing coverage
+      description: |
+        Did you check whether this version is already on the accepted list in the meta
+        issue? Link any related or duplicate request if you found one.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I read the accepted-version list in the Backport Request Meta Issue.
+          required: true
+        - label: I understand this is a request, not a commitment to deliver.
+          required: true
