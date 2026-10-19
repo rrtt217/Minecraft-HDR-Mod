@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.api.color.Enums;
+import xyz.rrtt217.HDRMod.mixin.init.WindowAccessor;
 import xyz.rrtt217.HDRMod.util.color.VulkanSDLColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.util.color.WaylandVulkanSDLColorManagementInfoProvider;
 
@@ -43,6 +44,14 @@ public class MixinVulkanGpuSurface {
     @Unique
     private int hdr_mod$chosenColorspace = 0;
 
+    @Unique
+    private int hdr_mod$SDRFormat = 0;
+
+    @Unique
+    private boolean hdr_mod$isWindowsIntel(){
+        return this.device.getDeviceInfo().vendorName().toLowerCase().contains("intel") && Platform.isWindows();
+    }
+
     /**
      * @author rrtt217
      * @reason Allow HDR surface
@@ -57,18 +66,38 @@ public class MixinVulkanGpuSurface {
                 hdr_mod$chosenColorspace = format.colorSpace();
                 return format;
             }
+
+            // Record SDR Format for future use.
+            if (hdr_mod$isSDRFormat(format)) {
+                hdr_mod$SDRFormat = format.format();
+            }
+
+            if(hdr_mod$isWindowsIntel() && format.format() == VK_FORMAT_R16G16B16A16_SFLOAT) {
+                // Force unadvertised format for Windows Intel. At least this works under FSE.
+                if (hasBlazeSdl) {
+                    HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
+                } else {
+                    HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
+                }
+                LOGGER.info("Got scRGB on Vulkan!");
+                hdr_mod$chosenColorspace = VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT;
+                return format;
+            }
+
             // On Wayland, we prefer passthrough, we choose format according to setting. As for colorspace, we use passthrough to prevent conflict with glfw side.
             if (hdr_mod$isWayland() && hdr_mod$matchesWaylandFormat(format, config, true)) {
                 hdr_mod$applyWaylandProvider(format);
                 hdr_mod$chosenColorspace = format.colorSpace();
                 return format;
             }
+
             // On platforms other than Wayland, we choose both format and colorspace according to setting.
-            if (!hdr_mod$isWayland() && hdr_mod$matchesNonWaylandFormat(format, config, true)) {
+            if (!hdr_mod$isWayland() && !hdr_mod$isWindowsIntel() && hdr_mod$matchesNonWaylandFormat(format, config, true)) {
                 hdr_mod$applyNonWaylandProvider(format);
                 hdr_mod$chosenColorspace = format.colorSpace();
                 return format;
             }
+
         }
 
         LOGGER.warn("Failed to find format and colorspace according to config, trying fallback...");
@@ -91,8 +120,36 @@ public class MixinVulkanGpuSurface {
         throw new IllegalStateException("Could not find compatible swapchain format");
     }
 
+    @ModifyArg(method = "configure", at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkSwapchainCreateInfoKHR;imageFormat(I)Lorg/lwjgl/vulkan/VkSwapchainCreateInfoKHR;"))
+    private int hdr_mod$chooseCorrectFormat(int value){
+        // Windows Intel Non-FSE fallback.
+        Window window = Minecraft.getInstance().getWindow();
+        boolean isExclusiveFullscreen = ((WindowAccessor) (Object) window).getExclusiveFullscreen() && window.isFullscreen();
+        if(!isExclusiveFullscreen && hdr_mod$isWindowsIntel()) return hdr_mod$SDRFormat;
+        // Common path.
+        return value;
+    }
+
     @ModifyArg(method = "configure", at = @At(value = "INVOKE", target = "Lorg/lwjgl/vulkan/VkSwapchainCreateInfoKHR;imageColorSpace(I)Lorg/lwjgl/vulkan/VkSwapchainCreateInfoKHR;"))
     private int hdr_mod$chooseCorrectColorspace(int value){
+        // HDR Metadata is invalidated after swapchain rebuild.
+        hdr_mod$hasSetHdrMetadata = false;
+        // Windows Intel Non-FSE fallback.
+        Window window = Minecraft.getInstance().getWindow();
+        boolean isExclusiveFullscreen = ((WindowAccessor) (Object) window).getExclusiveFullscreen() && window.isFullscreen();
+        if(!isExclusiveFullscreen && hdr_mod$isWindowsIntel()) {
+            hdr_mod$setupSdrProvider(8);
+            return 0;
+        }
+        else if (hdr_mod$isWindowsIntel()){
+            // Recover HDR on FSE.
+            if (hasBlazeSdl) {
+                HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
+            } else {
+                HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
+            }
+        }
+        // Common path.
         if(value == 0) value = hdr_mod$chosenColorspace;
         return value;
     }
@@ -105,7 +162,12 @@ public class MixinVulkanGpuSurface {
     @Unique
     private boolean hdr_mod$isVanillaFallback(VkSurfaceFormatKHR format) {
         boolean hasColorSpaceExtension = this.device.instance().getEnabledExtensions().contains(VK_EXT_SWAPCHAIN_COLOR_SPACE_EXTENSION_NAME);
-        return !hasColorSpaceExtension && format.colorSpace() == 0 && (format.format() == 37 || format.format() == 44);
+        return !hasColorSpaceExtension && hdr_mod$isSDRFormat(format);
+    }
+
+    @Unique
+    private boolean hdr_mod$isSDRFormat(VkSurfaceFormatKHR format){
+        return format.colorSpace() == 0 && (format.format() == 37 || format.format() == 44);
     }
 
     @Unique
