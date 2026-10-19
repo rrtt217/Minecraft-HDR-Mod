@@ -37,17 +37,9 @@ public class MixinGlBackend {
             SystemInfo systemInfo = new SystemInfo();
             HardwareAbstractionLayer hardware = systemInfo.getHardware();
             List<GraphicsCard> graphicsCards = hardware.getGraphicsCards();
-            boolean hasNvidiaCard = false;
-            boolean nvidiaNeedsWaylandWorkaround = false;
             boolean hasIntelCard = false;
             boolean hasOnlyIntelCard = true;
             for (GraphicsCard card : graphicsCards) {
-                if (card.getVendor().toLowerCase().contains("nvidia") && !hasNvidiaCard) {
-                    hasNvidiaCard = true;
-                    if (!hdr_mod$nvidiaWaylandFp16Supported(card)) {
-                        nvidiaNeedsWaylandWorkaround = true;
-                    }
-                }
                 if (card.getVendor().toLowerCase().contains("intel") && !hasIntelCard) {
                     hasIntelCard = true;
                 }
@@ -56,7 +48,7 @@ public class MixinGlBackend {
                 }
             }
             hasOnlyIntelCard = hasOnlyIntelCard && hasIntelCard;
-            boolean applyLinuxWorkaround = (platform == GLFW.GLFW_PLATFORM_X11 || (nvidiaNeedsWaylandWorkaround && platform == GLFW.GLFW_PLATFORM_WAYLAND)) && !config.forceDisableGlfwWorkaround;
+            boolean applyLinuxWorkaround = platform == GLFW.GLFW_PLATFORM_X11 && !config.forceDisableGlfwWorkaround;
             boolean applyWindowsWorkaround = (hasOnlyIntelCard && platform == GLFW.GLFW_PLATFORM_WIN32) && !config.forceDisableGlfwWorkaround;
             if(applyWindowsWorkaround || config.forceDisableGlfwWorkaround) {
                 if(config.useNewGlDxInteropInGLFW) {
@@ -124,20 +116,5 @@ public class MixinGlBackend {
             }
 
             return false;
-        }
-
-        // Still we can't ensure that it works. Need more test. GLFW side has made correct preparation though.
-
-        @Unique
-        private static final int NVIDIA_WAYLAND_FP16_MIN_DRIVER = 610;
-
-        @Unique
-        private boolean hdr_mod$nvidiaWaylandFp16Supported(GraphicsCard card) {
-            if (!card.getVendor().toLowerCase().contains("nvidia")) return false;
-            String version = card.getVersionInfo();
-            if (version == null) return false;
-            Matcher m = Pattern.compile("^(\\d+)").matcher(version.trim());
-            if (!m.find()) return false;
-            return Integer.parseInt(m.group(1)) >= NVIDIA_WAYLAND_FP16_MIN_DRIVER;
         }
 }

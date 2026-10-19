@@ -1,4 +1,9 @@
-# HDR Mod v3.2.2 Changelog
+# HDR Mod v3.2.3 Changelog
+## New Features
+- Windows Intel Vulkan HDR
+    - Only works under exclusive full screen
 ## Fixes
-- Super Resolution 0.9.1-alpha.2+ compat
-- Vitrail 0.10.0-alpha+ compat
+- Broken rendering when using RGBA16F on Linux because of a hack for Nvidia / missing opaque requirement
+    - Linux Nvidia users should upgrade egl-wayland2 to 1.0.2 or above to avoid crash.
+- Compatibility with latest Super Resolution
+- Some Vulkan HDR metadata related bugs

@@ -1,0 +1,51 @@
+name: Feature request
+description: Suggest a new capability or an improvement to HDR Mod.
+title: "[Feature] "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For compatibility with another mod, check the
+        [Mod Compatibility Meta Issue](https://github.com/rrtt217/Minecraft-HDR-Mod/issues/27)
+        first — it lists what is known-compatible, known-broken, and untested.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the situation you are stuck in, not the implementation.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you considered
+      description: Existing settings, other mods, or workarounds you tried.
+    validations:
+      required: false
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment, if this is version-specific
+      description: MC version, loader, and OS. Leave blank if the request is not version-specific.
+      placeholder: "1.21.1, Fabric, Windows 11"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing issues and this is not a duplicate.
+          required: true
