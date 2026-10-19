@@ -1,8 +1,9 @@
 package xyz.rrtt217.HDRMod.mixin.vk;
 
-import com.mojang.renderpearl.api.device.GpuSurface;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.renderpearl.backend.vulkan.VulkanDevice;
 import com.mojang.renderpearl.backend.vulkan.VulkanGpuSurface;
+import com.sun.jna.Platform;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.sdl.SDLVideo;
@@ -74,11 +75,7 @@ public class MixinVulkanGpuSurface {
 
             if(hdr_mod$isWindowsIntel() && format.format() == VK_FORMAT_R16G16B16A16_SFLOAT) {
                 // Force unadvertised format for Windows Intel. At least this works under FSE.
-                if (hasBlazeSdl) {
-                    HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
-                } else {
-                    HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
-                }
+                HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
                 LOGGER.info("Got scRGB on Vulkan!");
                 hdr_mod$chosenColorspace = VK_COLOR_SPACE_EXTENDED_SRGB_LINEAR_EXT;
                 return format;
@@ -124,8 +121,7 @@ public class MixinVulkanGpuSurface {
     private int hdr_mod$chooseCorrectFormat(int value){
         // Windows Intel Non-FSE fallback.
         Window window = Minecraft.getInstance().getWindow();
-        boolean isExclusiveFullscreen = ((WindowAccessor) (Object) window).getExclusiveFullscreen() && window.isFullscreen();
-        if(!isExclusiveFullscreen && hdr_mod$isWindowsIntel()) return hdr_mod$SDRFormat;
+        if(!window.isExclusiveFullscreen() && hdr_mod$isWindowsIntel()) return hdr_mod$SDRFormat;
         // Common path.
         return value;
     }
@@ -136,18 +132,13 @@ public class MixinVulkanGpuSurface {
         hdr_mod$hasSetHdrMetadata = false;
         // Windows Intel Non-FSE fallback.
         Window window = Minecraft.getInstance().getWindow();
-        boolean isExclusiveFullscreen = ((WindowAccessor) (Object) window).getExclusiveFullscreen() && window.isFullscreen();
-        if(!isExclusiveFullscreen && hdr_mod$isWindowsIntel()) {
+        if(!window.isExclusiveFullscreen() && hdr_mod$isWindowsIntel()) {
             hdr_mod$setupSdrProvider(8);
             return 0;
         }
         else if (hdr_mod$isWindowsIntel()){
             // Recover HDR on FSE.
-            if (hasBlazeSdl) {
-                HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
-            } else {
-                HDRMod.colorManagementInfoProvider = new VulkanColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
-            }
+            HDRMod.colorManagementInfoProvider = new VulkanSDLColorManagementInfoProvider(16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR);
         }
         // Common path.
         if(value == 0) value = hdr_mod$chosenColorspace;
