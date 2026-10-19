@@ -263,7 +263,8 @@ public class MixinVulkanGpuSurface {
 
     @Inject(method = "acquireNextTexture", at = @At("HEAD"))
     private void hdr_mod$setHdrMetadata(CallbackInfo ci){
-        if(hdr_mod$hasSetHdrMetadata || HDRMod.colorManagementInfoProvider instanceof WaylandVulkanSDLColorManagementInfoProvider){
+        HDRModConfig config = HDRMod.configHolder.getConfig();
+        if(hdr_mod$hasSetHdrMetadata || HDRMod.colorManagementInfoProvider instanceof WaylandVulkanSDLColorManagementInfoProvider || !config.setHdrMetadata){
             return;
         }
         try (MemoryStack stack = MemoryStack.stackPush()) {
