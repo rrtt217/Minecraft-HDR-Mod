@@ -12,13 +12,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static org.lwjgl.vulkan.EXTSwapchainColorspace.VK_COLOR_SPACE_HDR10_ST2084_EXT;
 import static org.lwjgl.vulkan.EXTSwapchainColorspace.VK_COLOR_SPACE_PASS_THROUGH_EXT;
 import static org.lwjgl.vulkan.VK10.VK_FORMAT_A2B10G10R10_UNORM_PACK32;
-import static org.lwjgl.vulkan.VK10.VK_SUCCESS;
 
 @Mixin(targets = "io.homo.superresolution.common.presentation.vulkan.VulkanSwapchain")
 public class MixinVulkanSwapchain {
@@ -45,10 +42,5 @@ public class MixinVulkanSwapchain {
     @ModifyExpressionValue(method = "chooseSurfaceFormat", at = @At("MIXINEXTRAS:EXPRESSION"))
     private boolean hdr_mod$changeRequiredFormat(boolean original, @Local(name = "candidate") VkSurfaceFormatKHR candidate) {
         return candidate.format() == VK_FORMAT_A2B10G10R10_UNORM_PACK32;
-    }
-
-    @Inject(method = "presentImage(IZJJJZ)I", at = @At("HEAD"), cancellable = true)
-    private void hdr_mod$cancelPresentBeforeShown(int imageIndex, boolean outOfBandPresent, long targetSwapchain, long presentReadyBinary, long immutablePresentId, boolean applicationManaged, CallbackInfoReturnable<Integer> cir){
-        if(!((VulkanSurfaceAccessor) (Object) surface).getShown()) cir.setReturnValue(VK_SUCCESS);
     }
 }
