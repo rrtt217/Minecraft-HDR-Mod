@@ -20,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.api.color.Enums;
-import xyz.rrtt217.HDRMod.mixin.init.WindowAccessor;
 import xyz.rrtt217.HDRMod.util.color.VulkanSDLColorManagementInfoProvider;
 import xyz.rrtt217.HDRMod.util.color.WaylandVulkanSDLColorManagementInfoProvider;
 
