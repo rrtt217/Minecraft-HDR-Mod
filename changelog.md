@@ -1,5 +1,5 @@
-# HDR Mod v2.5.1 Changelog
+# HDR Mod v2.5.2 Changelog
 ## Fixes
-- Axiom (?) > 6.0.0 compat
-  - We dropped compatibility with older versions
-- Super Resolution 0.9.1-alpha.2+ compat
+- Broken rendering when using RGBA16F on Linux because of a hack for Nvidia / missing opaque requirement
+    - Linux Nvidia users should upgrade egl-wayland2 to 1.0.2 or above to avoid crash.
+- Fixed compatibility with latest Super Resolution

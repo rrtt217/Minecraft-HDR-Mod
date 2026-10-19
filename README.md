@@ -37,7 +37,8 @@ A minecraft mod that enables native HDR on Windows / macOS / Linux with Iris sha
     - If HDR is broken when shaders are enabled, please reset "Colorspace" setting in Iris/Oculus to "sRGB".
     - Clean temp file if your game doesn't start or some features are broken (path can be found in log, %TEMP%/glfw on Windows and /tmp/glfw on Linux).
     - For Linux Nvidia users, if your game can't start, or you feel too much banding ingame, here's a potential workaround (using Zink, so performance degradation is expected):
-      - Use these environment variables:
+      - For PrismLauncher or HMCL users, enable Zink in settings;
+      - For other launchers, use these environment variables:
         ```
         export __GLX_VENDOR_LIBRARY_NAME=mesa
         export __EGL_VENDOR_LIBRARY_FILENAMES=/run/opengl-driver/share/glvnd/egl_vendor.d/50_mesa.json
