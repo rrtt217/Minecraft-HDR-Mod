@@ -266,7 +266,8 @@ public class MixinVulkanGpuSurface {
 
     @Inject(method = "acquireNextTexture", at = @At("HEAD"))
     private void hdr_mod$setHdrMetadata(CallbackInfo ci){
-        if(hdr_mod$hasSetHdrMetadata || (hdr_mod$isWayland() && !hasBlazeSdl)){
+        HDRModConfig config = HDRMod.configHolder.getConfig();
+        if(hdr_mod$hasSetHdrMetadata || (hdr_mod$isWayland() && !hasBlazeSdl) || !config.setHdrMetadata){
             return;
         }
         try (MemoryStack stack = MemoryStack.stackPush()) {
