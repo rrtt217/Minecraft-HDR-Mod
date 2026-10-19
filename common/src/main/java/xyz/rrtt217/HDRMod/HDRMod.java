@@ -19,6 +19,7 @@ import xyz.rrtt217.HDRMod.compat.sr.SRVulkanPresentationColorManagementInfoProvi
 import xyz.rrtt217.HDRMod.core.api.HDRModApiImpl;
 import xyz.rrtt217.HDRMod.core.color.BrightnessValueControl;
 import org.slf4j.Logger;
+import xyz.rrtt217.HDRMod.compat.flashback.FlashbackHdrBridge;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.util.color.ColorManagementInfoProvider;
 
@@ -92,6 +93,7 @@ public final class HDRMod {
     }
 
     public static void init() {
+        FlashbackHdrBridge.tryRegister();
         // Register config.
         configHolder = AutoConfig.register(HDRModConfig.class, Toml4jConfigSerializer::new);
         // Register Key Mapping.
