@@ -30,7 +30,7 @@ public class MixinOpenGlFrameCapturer {
     }
 
 
-    @Inject(method = "renderFrame(IFLcom/replaymod/render/capturer/CaptureData;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At(value = "INVOKE", target = "Lcom/replaymod/core/versions/MCVer;popMatrix()V"))
+    @Inject(method = "renderFrame(IFLcom/replaymod/render/capturer/CaptureData;)Lcom/replaymod/render/frame/OpenGlFrame;", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;getDynamicUniforms()Lnet/minecraft/client/renderer/DynamicGpuData;"))
     private void hdr_mod$doReplayModColorTransform(CallbackInfoReturnable<OpenGlFrame> cir) {
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport){
@@ -56,7 +56,7 @@ public class MixinOpenGlFrameCapturer {
         }
         return size;
     }
-    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/GpuDevice;createBuffer(Ljava/util/function/Supplier;IJ)Lcom/mojang/blaze3d/buffers/GpuBuffer;"), index = 2)
+    @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/device/GpuDevice;createBuffer(Ljava/util/function/Supplier;IJ)Lcom/mojang/renderpearl/api/buffers/GpuBuffer;"), index = 2)
     private long hdr_mod$enlargeGpuBuffer(long l){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport){
@@ -65,8 +65,8 @@ public class MixinOpenGlFrameCapturer {
         }
         return l;
     }
-    /*
-    @Redirect(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;copyTextureToBuffer(Lcom/mojang/blaze3d/textures/GpuTexture;Lcom/mojang/blaze3d/buffers/GpuBuffer;JLjava/lang/Runnable;I)V"))
+
+    @Redirect(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/CommandEncoder;copyTextureToBuffer(Lcom/mojang/renderpearl/api/textures/GpuTexture;Lcom/mojang/renderpearl/api/buffers/GpuBuffer;JLjava/lang/Runnable;I)V"))
     private void hdr_mod$copyTextureToBuffer(CommandEncoder instance, GpuTexture gpuTexture, GpuBuffer gpuBuffer, long l, Runnable runnable, int i){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
         if(config.enableReplayHDRVideoExport){
@@ -76,7 +76,7 @@ public class MixinOpenGlFrameCapturer {
             instance.copyTextureToBuffer(gpuTexture, gpuBuffer, l, runnable, i);
         }
     }
-    */
+
     @ModifyArg(method = "captureFrame", at = @At(value = "INVOKE", target = "Lcom/replaymod/render/frame/OpenGlFrame;<init>(ILcom/replaymod/lib/de/johni0702/minecraft/gui/utils/lwjgl/ReadableDimension;ILjava/nio/ByteBuffer;)V"), index = 2)
     private int hdr_mod$modifyOpenGlFrameReturn(int bpp){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
