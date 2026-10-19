@@ -80,13 +80,6 @@ public class HDRModConfig implements ConfigData {
     // Due to export pixel format, the primaries is always Rec.2020 and tf always PQ.
 
     @ConfigEntry.Gui.Tooltip
-    @ConfigEntry.Category("ime")
-    public boolean enableCharCallbackReplacement = true;
-    @ConfigEntry.Gui.Tooltip
-    @ConfigEntry.Category("ime")
-    public boolean enableIMBlockerSetPreeditCallbackIntegration = Platform.isLinux();
-
-    @ConfigEntry.Gui.Tooltip
     @ConfigEntry.Category("advanced")
     public boolean useUNORMWindowPixelFormat = Platform.isLinux();
     @ConfigEntry.Gui.Tooltip
