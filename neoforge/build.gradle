@@ -64,7 +64,7 @@ dependencies {
     implementation "net.caffeinemc:sodium-neoforge:${sodium_version}+mc${minecraft_version}"
     implementation "maven.modrinth:iris:${iris_version}-neoforge"
     //compileOnly "maven.modrinth:imblocker-original:${imblocker_version}-neoforge,${minecraft_version}"
-    //compileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-neoforge"
+    compileOnly "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-neoforge"
 
     implementation "org.anarres:jcpp:1.4.14"
     implementation "org.antlr:antlr4-runtime:4.13.1"

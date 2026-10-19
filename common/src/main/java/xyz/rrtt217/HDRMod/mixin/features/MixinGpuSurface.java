@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.renderpearl.api.device.GpuDevice;
 import com.mojang.renderpearl.api.textures.GpuTextureView;
 import com.mojang.renderpearl.frontend.FrontendGpuSurface;
+import me.decce.ixeris.api.IxerisApi;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.sdl.SDLVideo;
@@ -23,6 +24,7 @@ import java.util.Objects;
 import static org.lwjgl.sdl.SDLProperties.SDL_GetPointerProperty;
 import static org.lwjgl.sdl.SDLVideo.*;
 import static xyz.rrtt217.HDRMod.HDRMod.*;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasIxeris;
 
 @Mixin(FrontendGpuSurface.class)
 public class MixinGpuSurface {
@@ -44,7 +46,18 @@ public class MixinGpuSurface {
                     long wlSurfaceHandle = SDL_GetPointerProperty(SDL_GetWindowProperties(handle), SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER, 0);
                     LOGGER.info("WLDisplayHandle: " + wlDisplayHandle);
                     LOGGER.info("WLSurfaceHandle: " + wlSurfaceHandle);
-                    HDRMod.colorManagementInfoProvider = new WaylandSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle), 3000);
+
+                    if(hasIxeris)
+                        IxerisApi.getInstance().runOnMainThread(() -> {
+                            try{
+                                HDRMod.colorManagementInfoProvider = new WaylandSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle), 3000);
+                            }
+                            catch (Throwable throwable){
+                                LOGGER.error("Failed to load color management info", throwable);
+                            }
+                        });
+                    else
+                        HDRMod.colorManagementInfoProvider = new WaylandSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle), 3000);
                 } catch (Throwable throwable) {
                     LOGGER.error("Failed to load color management info", throwable);
                 }

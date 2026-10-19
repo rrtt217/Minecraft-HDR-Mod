@@ -6,3 +6,4 @@
 - Compatibility with latest Super Resolution
 - Some Vulkan HDR metadata related bugs
 - ReplayMod Compat
+- Ixeris Compat

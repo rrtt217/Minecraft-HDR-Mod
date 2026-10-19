@@ -48,7 +48,7 @@ dependencies {
     implementation "maven.modrinth:sodium:mc${minecraft_version}-${sodium_version}-fabric"
     implementation "maven.modrinth:imblocker-original:${imblocker_version}-fabric,${minecraft_version}"
 
-    implementation "maven.modrinth:ixeris:${ixeris_version}+26.2-fabric"
+    implementation "maven.modrinth:ixeris:${ixeris_version}+${minecraft_version}-fabric"
     implementation "maven.modrinth:replaymod:26.3-2.6.28"
     implementation "maven.modrinth:superresolution:${minecraft_version}-${sr_version}+gl-fabric"
 

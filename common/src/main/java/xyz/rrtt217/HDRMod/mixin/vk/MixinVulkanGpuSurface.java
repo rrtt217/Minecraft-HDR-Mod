@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.renderpearl.backend.vulkan.VulkanDevice;
 import com.mojang.renderpearl.backend.vulkan.VulkanGpuSurface;
 import com.sun.jna.Platform;
+import me.decce.ixeris.api.IxerisApi;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import org.lwjgl.sdl.SDLVideo;
@@ -32,6 +33,7 @@ import static org.lwjgl.sdl.SDLVideo.*;
 import static org.lwjgl.vulkan.EXTSwapchainColorspace.*;
 import static org.lwjgl.vulkan.VK10.*;
 import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasIxeris;
 
 @Mixin(VulkanGpuSurface.class)
 public class MixinVulkanGpuSurface {
@@ -218,10 +220,26 @@ public class MixinVulkanGpuSurface {
         LOGGER.info("WLSurfaceHandle: " + wlSurfaceHandle);
         try {
             if (format.format() != VK_FORMAT_R16G16B16A16_SFLOAT) {
-                HDRMod.colorManagementInfoProvider = new WaylandVulkanSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle),bits, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ, 3000);
+                if(hasIxeris)
+                    IxerisApi.getInstance().runOnMainThread(() -> {
+                        try {
+                            HDRMod.colorManagementInfoProvider = new WaylandVulkanSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle),bits, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ, 3000);
+                        } catch (Throwable ignored) {
+                        }
+                    });
+                else
+                    HDRMod.colorManagementInfoProvider = new WaylandVulkanSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle),bits, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ, 3000);
                 LOGGER.info("Got HDR10 on Vulkan!");
             } else {
-                HDRMod.colorManagementInfoProvider = new WaylandVulkanSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle),16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR, 3000);
+                if(hasIxeris)
+                    IxerisApi.getInstance().runOnMainThread(() -> {
+                        try {
+                            HDRMod.colorManagementInfoProvider = new WaylandVulkanSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle),16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR, 3000);
+                        } catch (Throwable ignored) {
+                        }
+                    });
+                else
+                    HDRMod.colorManagementInfoProvider = new WaylandVulkanSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle),16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR, 3000);
                 LOGGER.info("Got scRGB on Vulkan!");
             }
         } catch (Throwable ignored) {
