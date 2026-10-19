@@ -46,9 +46,4 @@ public class MixinVulkanSwapchain {
     private boolean hdr_mod$changeRequiredFormat(boolean original, @Local(name = "candidate") VkSurfaceFormatKHR candidate) {
         return candidate.format() == VK_FORMAT_A2B10G10R10_UNORM_PACK32;
     }
-
-    @Inject(method = "presentImage(IZJJJZ)I", at = @At("HEAD"), cancellable = true, remap = false)
-    private void hdr_mod$cancelPresentBeforeShown(int imageIndex, boolean outOfBandPresent, long targetSwapchain, long presentReadyBinary, long immutablePresentId, boolean applicationManaged, CallbackInfoReturnable<Integer> cir){
-        if(!((VulkanSurfaceAccessor) (Object) surface).getShown()) cir.setReturnValue(VK_SUCCESS);
-    }
 }
