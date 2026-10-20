@@ -28,7 +28,7 @@ public class MixinGlBackend {
 
     @WrapOperation(method = "createWindow", at = @At(value = "INVOKE", target = "Lorg/lwjgl/sdl/SDLVideo;SDL_GL_SetAttribute(II)Z"))
     private boolean hdr_mod$skipsRGB(int attr, int value, Operation<Boolean> original){
-        if(attr == SDL_GL_FRAMEBUFFER_SRGB_CAPABLE) return true;
+        if(attr == SDL_GL_FRAMEBUFFER_SRGB_CAPABLE) return original.call(attr, 0);
         return original.call(attr, value);
     }
 

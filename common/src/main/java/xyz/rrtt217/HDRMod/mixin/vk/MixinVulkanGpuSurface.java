@@ -223,7 +223,8 @@ public class MixinVulkanGpuSurface {
                     IxerisApi.getInstance().runOnMainThread(() -> {
                         try {
                             HDRMod.colorManagementInfoProvider = new WaylandVulkanSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle),bits, Enums.Primaries.BT2020, Enums.TransferFunction.ST2084_PQ, 3000);
-                        } catch (Throwable ignored) {
+                        } catch (Throwable throwable) {
+                            LOGGER.error("Failed to load color management info", throwable);
                         }
                     });
                 else
@@ -234,14 +235,16 @@ public class MixinVulkanGpuSurface {
                     IxerisApi.getInstance().runOnMainThread(() -> {
                         try {
                             HDRMod.colorManagementInfoProvider = new WaylandVulkanSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle),16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR, 3000);
-                        } catch (Throwable ignored) {
+                        } catch (Throwable throwable) {
+                            LOGGER.error("Failed to load color management info", throwable);
                         }
                     });
                 else
                     HDRMod.colorManagementInfoProvider = new WaylandVulkanSDLColorManagementInfoProvider(MemorySegment.ofAddress(wlDisplayHandle), MemorySegment.ofAddress(wlSurfaceHandle),16, Enums.Primaries.SRGB, Enums.TransferFunction.EXT_LINEAR, 3000);
                 LOGGER.info("Got scRGB on Vulkan!");
             }
-        } catch (Throwable ignored) {
+        } catch (Throwable throwable) {
+            LOGGER.error("Failed to load color management info", throwable);
         }
     }
 

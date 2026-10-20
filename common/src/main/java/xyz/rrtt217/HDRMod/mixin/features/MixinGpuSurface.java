@@ -84,7 +84,7 @@ public class MixinGpuSurface {
 
         if(minecraft == null) minecraft = Minecraft.getInstance();
 
-        if (minecraft.gameRenderer.mainRenderTarget().getColorTextureView() != null && !textureView.equals(HDRMod.PresentationColorTransformRenderer.getSrcTextureView()))
+        if(!textureView.equals(HDRMod.PresentationColorTransformRenderer.getSrcTextureView()))
             HDRMod.PresentationColorTransformRenderer.setSrcTextureView(textureView);
         HDRMod.PresentationColorTransformRenderer.render();
 

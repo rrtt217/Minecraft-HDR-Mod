@@ -10,6 +10,7 @@
     "debug.MixinRenderTarget",
     "features.BossHealthOverlayAccessor",
     "features.MixinGpuSurface",
+    "features.MixinPipelineCache",
     "features.MixinRenderPass",
     "features.MixinRenderSystem",
     "features.MixinScreenshot",
@@ -41,12 +42,12 @@
     "compat.replaymod.MixinRenderSettingsEncodingPreset",
     "compat.sodium.MixinShaderChunkRenderer",
     "compat.sr.MixinFrameResources",
+    "compat.sr.MixinRenderSystems",
     "compat.sr.MixinVulkanSwapchain",
     "compat.vitrail.MixinEngineDefines",
     "compat.vitrail.MixinPackPass",
     "compat.vitrail.MixinRenderScale",
-    "compat.vitrail.MixinUniformCatalog",
-    "compat.sr.MixinRenderSystems"
+    "compat.vitrail.MixinUniformCatalog"
   ],
   "mixinextras": {
     "minVersion": "0.5.0"

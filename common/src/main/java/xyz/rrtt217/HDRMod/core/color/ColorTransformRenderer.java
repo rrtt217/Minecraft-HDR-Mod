@@ -1,29 +1,38 @@
 package xyz.rrtt217.HDRMod.core.color;
 
+import com.mojang.blaze3d.pipeline.PipelineCache;
 import com.mojang.renderpearl.api.GpuFormat;
-import com.mojang.renderpearl.api.buffers.GpuBuffer;
 import com.mojang.renderpearl.api.commands.RenderPass;
 import com.mojang.renderpearl.api.pipeline.*;
 import com.mojang.renderpearl.api.textures.FilterMode;
 import com.mojang.renderpearl.api.textures.GpuTexture;
 import com.mojang.renderpearl.api.textures.GpuTextureView;
-import com.mojang.renderpearl.api.vertex.VertexFormat;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.resources.Identifier;
+import org.apache.commons.io.IOUtils;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.system.MemoryStack;
+import xyz.rrtt217.HDRMod.HDRMod;
 import xyz.rrtt217.HDRMod.api.color.Enums;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.Optional;
 
+import static xyz.rrtt217.HDRMod.HDRMod.LOGGER;
+
 public class ColorTransformRenderer implements AutoCloseable {
-    private static RenderPipeline.Builder builder;
+    public static RenderPipeline COLOR_TRANSFORM;
+    public static RenderPipeline COLOR_TRANSFORM_PQ;
     static{
         BindGroupLayout COLOR_TRANSFORM_LAYOUT = BindGroupLayout.builder().build();
-        builder = RenderPipeline.builder(RenderPipeline.builder().withBindGroupLayout(BindGroupLayouts.GLOBALS).buildSnippet()).withLocation("pipeline/color_transform").withFragmentShader(Identifier.fromNamespaceAndPath("hdr_mod","color_transform")).withVertexShader("core/screenquad").withBindGroupLayout(BindGroupLayouts.IN_SAMPLER).withBindGroupLayout(COLOR_TRANSFORM_LAYOUT)
+        RenderPipeline.Builder builder = RenderPipeline.builder(RenderPipeline.builder().buildSnippet()).withLocation("pipeline/color_transform").withFragmentShader(Identifier.fromNamespaceAndPath("hdr_mod", "color_transform")).withVertexShader("core/screenquad").withBindGroupLayout(BindGroupLayouts.IN_SAMPLER).withBindGroupLayout(COLOR_TRANSFORM_LAYOUT)
                 .withPrimitiveTopology(PrimitiveTopology.TRIANGLES).withPushConstantSize(16);
         for(Enums.Primaries p : Enums.Primaries.values()) {
             builder = builder.withShaderDefine("PRIMARIES_"+p.toString(), p.getId());
@@ -34,10 +43,44 @@ public class ColorTransformRenderer implements AutoCloseable {
         COLOR_TRANSFORM = builder.withColorTargetState(new ColorTargetState(Optional.empty(), GpuFormat.RGBA16_FLOAT, 15)).build();
         COLOR_TRANSFORM_PQ = builder.withColorTargetState(new ColorTargetState(Optional.empty(), GpuFormat.RGBA16_UNORM, 15)).build();
     }
-    public static RenderPipeline COLOR_TRANSFORM;
-    public static RenderPipeline COLOR_TRANSFORM_PQ;
-    public static CompiledRenderPipeline COLOR_TRANSFORM_COMPILED;
-    public static CompiledRenderPipeline COLOR_TRANSFORM_COMPILED_PQ;
+
+    // Self-owned pipeline cache.
+    private static final PipelineCache cache;
+    static {
+        ShaderSource shaderSource = new ShaderSource() {
+            public @Nullable String getShader(final Identifier id, final ShaderType type) {
+                Identifier location = type.idConverter().idToFile(id);
+                try {
+                    return Minecraft.getInstance().getVanillaPackResources().asResourceManager().getResourceOrThrow(location).readAllAsString();
+                } catch (Exception exception) {
+                    // small hack
+                    if(id.equals(Identifier.fromNamespaceAndPath("hdr_mod","color_transform")) && type.equals(ShaderType.FRAGMENT)) {
+                        ClassLoader loader = HDRMod.class.getClassLoader();
+                        try(InputStream is = loader.getResourceAsStream("assets/hdr_mod/shaders/color_transform.fsh")){
+                            if (is != null) {
+                                return new String(IOUtils.toByteArray(is), StandardCharsets.UTF_8);
+                            }
+                        }
+                        catch (IOException ignored) {
+                        }
+                    }
+                    LOGGER.error("Couldn't preload shader {}", location, exception);
+                    return null;
+                }
+            }
+
+            @Override
+            public @org.jspecify.annotations.Nullable CachedIncludeSource getInclude(Identifier id) {
+                return null;
+            }
+
+            @Override
+            public void close() {
+            }
+        };
+        cache = new PipelineCache(RenderSystem.getDevice(),shaderSource);
+    }
+
     private GpuTextureView srcTextureView;
     private GpuTexture dstTexture;
     private GpuTextureView dstTextureView;
@@ -50,8 +93,7 @@ public class ColorTransformRenderer implements AutoCloseable {
 
     public ColorTransformRenderer(GpuTextureView srcTextureView, String string) {
         this.srcTextureView = srcTextureView;
-        //this.colorTransformUbo = new ColorTransformUBO(string);
-        // Set a group of default UBO values. You may call updateColorTransformUniforms manually to update later.
+        // Set a group of default Uniform/PushConstants values. You may call updateColorTransformUniforms manually to update later.
         updateColorTransformUniforms(203.0F, 0.0F, Enums.Primaries.SRGB, Enums.TransferFunction.SRGB);
         this.dstTextureFormat = GpuFormat.RGBA16_FLOAT;
         this.dstTexture = RenderSystem.getDevice().createTexture(() -> "Color Transform Destination Texture",GpuTexture.USAGE_COPY_DST | GpuTexture.USAGE_COPY_SRC | GpuTexture.USAGE_TEXTURE_BINDING | GpuTexture.USAGE_RENDER_ATTACHMENT, dstTextureFormat, srcTextureView.getWidth(0), srcTextureView.getHeight(0), 1, 1);
@@ -96,8 +138,12 @@ public class ColorTransformRenderer implements AutoCloseable {
             try (RenderPass renderPass = RenderSystem.getDevice().createCommandEncoder().createRenderPass(() -> "Color Transform", this.dstTextureView, Optional.empty())) {
                 RenderSystem.bindDefaultUniforms(renderPass);
 
-                if(this.dstTextureFormat == GpuFormat.RGBA16_UNORM) renderPass.setPipeline(Objects.requireNonNullElse(RenderSystem.getCompiledPipelineNullable(COLOR_TRANSFORM_PQ), COLOR_TRANSFORM_COMPILED_PQ));
-                else renderPass.setPipeline(Objects.requireNonNullElse(RenderSystem.getCompiledPipelineNullable(COLOR_TRANSFORM), COLOR_TRANSFORM_COMPILED));
+                if(this.dstTextureFormat == GpuFormat.RGBA16_UNORM) {
+                    renderPass.setPipeline(Objects.requireNonNull(cache.get(COLOR_TRANSFORM_PQ)));
+                }
+                else {
+                    renderPass.setPipeline(Objects.requireNonNull(cache.get(COLOR_TRANSFORM)));
+                }
                 renderPass.setUniform("InSampler", srcTextureView, RenderSystem.getSamplerCache().getClampToEdge(FilterMode.NEAREST));
 
                 try (MemoryStack stack = MemoryStack.stackPush()) {
