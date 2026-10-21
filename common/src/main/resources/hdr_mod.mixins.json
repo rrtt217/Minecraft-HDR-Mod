@@ -35,7 +35,6 @@
   ],
   "mixins": [
     "compat.iris.MixinIrisExclusiveUniforms",
-    "compat.iris.MixinIrisPipelines",
     "compat.iris.MixinStandardMacros",
     "compat.replaymod.MixinOpenGlFrameCapturer",
     "compat.replaymod.MixinPboOpenGlFrameCapturer",

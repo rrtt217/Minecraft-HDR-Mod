@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.renderpearl.api.GpuFormat;
 import com.mojang.renderpearl.api.pipeline.*;
 import com.mojang.renderpearl.api.vertex.VertexFormat;
+import net.irisshaders.iris.pipeline.IrisPipelines;
 import net.minecraft.client.renderer.ShaderDefines;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
@@ -14,6 +15,8 @@ import xyz.rrtt217.HDRMod.mixin.features.RenderSystemAccessor;
 
 import java.lang.reflect.Constructor;
 import java.util.*;
+
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasIris;
 
 
 public class RenderPipelineFormatModifier {
@@ -103,12 +106,10 @@ public class RenderPipelineFormatModifier {
                     pipeline.pushConstantSize(),
                     pipeline.getSortKey());
 
-            /*
-             * Some mods (like vitrail) use custom ShaderSource when calling GpuDevice.precompilePipeline() by themselves, which is reasonable.
-             * We capture the custom ShaderSource they use when they call GpuDevice.precompilePipeline(), and call GpuDevice.precompilePipeline()
-             * again by us when modifyRenderPipelineFormat is called, using their custom ShaderSource, so no "Couldn't find source" will happen
-             * when rebuilding programs on-the-fly with fixed ColorTargetState format.
-             */
+            if(hasIris){
+                IrisPipelines.copyPipeline(pipeline, result);
+            }
+
             return result;
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException("Failed to create modified RenderPipeline for " + pipeline, e);
