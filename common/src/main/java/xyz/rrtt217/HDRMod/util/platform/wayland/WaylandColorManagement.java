@@ -46,6 +46,14 @@ import java.util.function.BooleanSupplier;
  * C shim uses), and the wl_display is never connected or disconnected here —
  * SDL owns it.
  *
+ * The private queue only decides who dispatches our events; the connection is
+ * still shared, and libwayland binds an event to a queue when the reply is
+ * demarshalled. The registry is created on the default queue before setQueue()
+ * can move it, so a reply read by SDL/Mesa in that window leaves its globals on
+ * the default queue. The handshake therefore also dispatches pending
+ * default-queue events; everything created afterwards is born on (or explicitly
+ * moved to) the private queue and stays isolated from SDL's dispatch.
+ *
  * To make it correct, I referred a lot to <a href="https://github.com/Tom94/glfw/tree/tev">...</a>.
  * Thanks a lot for tom94's hard effort. Here's the complete original license:
  *
@@ -107,6 +115,14 @@ public final class WaylandColorManagement implements AutoCloseable {
     private final Set<Integer> intents = new HashSet<>();
     private boolean featuresDone;
 
+    /**
+     * Whether {@link #pump(int)} should also dispatch the default queue. Only
+     * discovery needs it: the registry inherits the default queue at creation,
+     * so its globals can be demarshalled there by another thread before
+     * setQueue() runs. Later objects are born on the private queue.
+     */
+    private boolean dispatchDefaultQueue;
+
     private boolean descReady;
     private boolean descFailed;
     private long descIdentity;
@@ -142,11 +158,20 @@ public final class WaylandColorManagement implements AutoCloseable {
         WlSurfaceProxy surface = new WlSurfaceProxy(wlSurfacePtr);
 
         Arena arena = Arena.global();
-        SymbolLookup libc = SymbolLookup.libraryLookup("libc.so.6", arena);
-        MethodHandle poll = Linker.nativeLinker().downcallHandle(
+        Linker linker = Linker.nativeLinker();
+        // The default lookup resolves symbols that the process already has
+        // (RTLD_DEFAULT) and is not a restricted method. Only fall back to the
+        // glibc soname if the runtime does not expose libc that way.
+        SymbolLookup libc = linker.defaultLookup();
+        if (libc.find("poll").isEmpty()) {
+            libc = SymbolLookup.libraryLookup("libc.so.6", arena);
+        }
+        // nfds_t is unsigned long on Linux: 8 bytes on LP64, 4 bytes on ILP32.
+        ValueLayout nfdsLayout = (ValueLayout) linker.canonicalLayouts().get("long");
+        MethodHandle poll = linker.downcallHandle(
                 libc.find("poll").orElseThrow(() -> new UnsatisfiedLinkError("poll")),
                 FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS,
-                        ValueLayout.JAVA_LONG, ValueLayout.JAVA_INT));
+                        nfdsLayout, ValueLayout.JAVA_INT));
         MemorySegment pollfd = arena.allocate(8);
 
         WaylandColorManagement cm = new WaylandColorManagement(display, surface, queue, poll, pollfd);
@@ -186,8 +211,28 @@ public final class WaylandColorManagement implements AutoCloseable {
         });
         registry.setQueue(queue);
 
-        if (!waitUntil(() -> bound[0] != null && featuresDone, timeoutMs)) {
-            message = "timed out discovering wp_color_manager_v1 (bound=" + (bound[0] != null) + ")";
+        boolean discovered;
+        dispatchDefaultQueue = true;
+        try {
+            discovered = waitUntil(() -> bound[0] != null && featuresDone, timeoutMs);
+        } finally {
+            dispatchDefaultQueue = false;
+        }
+
+        if (!discovered) {
+            // Stop the listener from binding a manager after attach() has
+            // already failed; pending globals for it are discarded on dispatch.
+            if (bound[0] != null) {
+                bound[0].destroy();
+            }
+            if (registry != null) {
+                registry.destroy();
+                registry = null;
+            }
+            display.flush();
+            message = bound[0] == null
+                    ? "no wp_color_manager_v1 global discovered within " + timeoutMs + "ms (bound=false)"
+                    : "wp_color_manager_v1 bound but no done event within " + timeoutMs + "ms (bound=true)";
             return;
         }
         cm = bound[0];
@@ -196,7 +241,8 @@ public final class WaylandColorManagement implements AutoCloseable {
     /**
      * Wait with a deadline using the prepare-read / poll / read-events /
      * dispatch-pending cycle, exactly like the C shim, so we never block
-     * forever and never dispatch SDL's objects.
+     * forever and never leave events unread. Callbacks only ever run inside
+     * this loop, on this thread.
      */
     private boolean waitUntil(BooleanSupplier cond, int timeoutMs) throws Throwable {
         long deadline = System.currentTimeMillis() + timeoutMs;
@@ -208,12 +254,17 @@ public final class WaylandColorManagement implements AutoCloseable {
 
     /** One non-blocking-ish iteration of the queue. */
     public void pump(int timeoutMs) throws Throwable {
-        if (display.prepareReadQueue(queue) == 0) {
-            display.flush();
+        boolean canRead = display.prepareReadQueue(queue) == 0;
+        // Flush unconditionally: another thread may hold a read intent (or our
+        // queue may still hold events), and skipping the flush then would leave
+        // freshly marshalled requests in the buffer for the whole wait.
+        display.flush();
+        if (canRead) {
             pollfd.set(ValueLayout.JAVA_INT, 0, display.getFD());
             pollfd.set(ValueLayout.JAVA_SHORT, 4, (short) POLLIN);
             // poll(fds, nfds, timeout): exactly ONE pollfd, timeout in ms.
-            int n = (int) poll.invoke(pollfd, 1L, timeoutMs);
+            // nfds is int on ILP32 and long on LP64; the literal adapts.
+            int n = (int) poll.invoke(pollfd, 1, timeoutMs);
             if (n > 0) {
                 display.readEvents();
             } else {
@@ -221,6 +272,13 @@ public final class WaylandColorManagement implements AutoCloseable {
             }
         }
         display.dispatchQueuePending(queue);
+        // Enabled only while discovering: a reply demarshalled by another thread
+        // before setQueue() ran sits on the default queue, where our private
+        // queue can never see it. This is what SDL's own event pump would do on
+        // this same thread, only earlier.
+        if (dispatchDefaultQueue) {
+            display.dispatchPending();
+        }
     }
 
     public boolean supportsFeature(int feature) {

@@ -3,3 +3,4 @@
 - Compatibility with latest unreleased Iris 1.20+
 - Compatibility with mods that make Iris override pipelines
 - Vanilla F2 screenshot on Vulkan and its hooks
+- Wayland Color Management timeout on NeoForge + Vulkan
