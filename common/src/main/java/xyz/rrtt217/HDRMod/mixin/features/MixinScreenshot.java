@@ -3,11 +3,18 @@ package xyz.rrtt217.HDRMod.mixin.features;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.GpuFormat;
+import com.mojang.blaze3d.PrimitiveTopology;
+import com.mojang.blaze3d.pipeline.ColorTargetState;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderTarget;
+import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.textures.FilterMode;
 import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTextureView;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Screenshot;
+import net.minecraft.client.renderer.BindGroupLayouts;
 import net.minecraft.network.chat.Component;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,6 +28,7 @@ import xyz.rrtt217.HDRMod.util.state.ScreenshotStateListener;
 import xyz.rrtt217.HDRMod.core.screenshot.PngjHDRScreenshot;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @Mixin(Screenshot.class)
@@ -30,7 +38,7 @@ public class MixinScreenshot {
     @Unique
     private static GpuTextureView hdr_mod$vanillaScreenshotFlipTextureView;
     @Unique
-    private static final RenderPipeline hdr_mod$vanillaScreenshotConvertRenderPipeline = RenderPipeline.builder(new RenderPipeline.Snippet[0]).withBindGroupLayout(BindGroupLayouts.GLOBALS).withLocation("pipeline/screenshot_convert").withVertexShader("core/screenquad").withFragmentShader("core/blit_screen").withBindGroupLayout(BindGroupLayouts.IN_SAMPLER).withPrimitiveTopology(PrimitiveTopology.TRIANGLES).withColorTargetState(new ColorTargetState(Optional.empty(), GpuFormat.RGBA8_UNORM, 15)).build();;
+    private static final RenderPipeline hdr_mod$vanillaScreenshotConvertRenderPipeline = RenderPipeline.builder(new RenderPipeline.Snippet[0]).withLocation("pipeline/screenshot_convert").withVertexShader("core/screenquad").withFragmentShader("core/blit_screen").withBindGroupLayout(BindGroupLayouts.IN_SAMPLER).withPrimitiveTopology(PrimitiveTopology.TRIANGLES).withColorTargetState(new ColorTargetState(Optional.empty(), GpuFormat.RGBA8_UNORM, 15)).build();;
     @Inject(method = "grab(Ljava/io/File;Ljava/lang/String;Lcom/mojang/blaze3d/pipeline/RenderTarget;ILjava/util/function/Consumer;)V", at = @At("HEAD"), cancellable = true)
     private static void onVanillaScreenshotCalled(File file, @Nullable String string, RenderTarget renderTarget, int i, Consumer<Component> consumer, CallbackInfo ci){
         HDRModConfig config = AutoConfig.getConfigHolder(HDRModConfig.class).getConfig();
