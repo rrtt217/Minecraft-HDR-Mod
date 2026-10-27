@@ -10,6 +10,7 @@
     "debug.MixinRenderTarget",
     "features.BossHealthOverlayAccessor",
     "features.MixinGpuSurface",
+    "features.MixinMinecraft",
     "features.MixinPipelineCache",
     "features.MixinRenderPass",
     "features.MixinRenderSystem",
