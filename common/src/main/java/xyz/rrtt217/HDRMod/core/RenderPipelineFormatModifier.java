@@ -18,6 +18,7 @@ import xyz.rrtt217.HDRMod.mixin.features.RenderSystemAccessor;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
+import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.LOGGER;
 import static xyz.rrtt217.HDRMod.mixin.HDRModMixinPlugin.hasIris;
 
 
@@ -57,25 +58,45 @@ public class RenderPipelineFormatModifier {
         Map<RenderPipeline, CompiledRenderPipeline> currentMap = ((PipelineCacheAccessor) cache).getCache();
 
         MatchKey target;
+        List<VertexFormat> targetFormats;
         if (compiledRenderPipeline instanceof FrontendRenderPipeline fe) {
             target = MatchKey.of(fe);
+            targetFormats = fe.vertexFormats();
         } else {
             target = null;
+            targetFormats = null;
         }
 
-        return currentMap.entrySet().stream()
+        // Some vanilla programs share the same pipeline attributes except vertex formats; we have to check it.
+        // There's a fallback in case Iris or other mods modifies it.
+        Optional<RenderPipeline> exact = currentMap.entrySet().stream()
                 .filter(e -> {
                     CompiledRenderPipeline v = e.getValue();
                     if (target != null) {
                         return v instanceof FrontendRenderPipeline fe
-                                && MatchKey.of(fe).equals(target);
+                                && MatchKey.of(fe).equals(target) && Objects.equals(fe.vertexFormats(), targetFormats);
                     }
                     return Objects.equals(v, compiledRenderPipeline);
                 }
                 )
                 .map(Map.Entry::getKey)
-                .findFirst()
-                .orElse(null);
+                .findFirst();
+        if (exact.isPresent()) return exact.get();
+        else {
+            LOGGER.warn("Did not find the exact pipeline in cache, trying again without checking vertex format");
+            return currentMap.entrySet().stream()
+                    .filter(e -> {
+                                CompiledRenderPipeline v = e.getValue();
+                                if (target != null) {
+                                    return v instanceof FrontendRenderPipeline fe
+                                            && MatchKey.of(fe).equals(target);
+                                }
+                                return Objects.equals(v, compiledRenderPipeline);
+                            }
+                    )
+                    .map(Map.Entry::getKey)
+                    .findFirst().orElse(null);
+        }
     }
 
     public static CompiledRenderPipeline modifyRenderPipelineFormat(CompiledRenderPipeline compiledRenderPipeline, GpuFormat[] formats){
