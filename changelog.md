@@ -1,6 +1,3 @@
-# HDR Mod v3.2.5-26.3 Changelog
+# HDR Mod v3.2.6-26.3 Changelog
 ## Fixes
-- Compatibility with latest unreleased Iris 1.20+
-- Compatibility with mods that make Iris override pipelines
-- Vanilla F2 screenshot on Vulkan and its hooks
-- Wayland Color Management timeout on NeoForge + Vulkan
+- Enchanted items do not render (#94, #95)
