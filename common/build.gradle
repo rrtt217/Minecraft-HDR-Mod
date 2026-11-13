@@ -56,6 +56,8 @@ dependencies {
     implementation 'ar.com.hjg:pngj:2.1.0'
     implementation "maven.modrinth:vitrail-shaders:${vitrail_version}+mc${minecraft_version}"
 
+    compileOnly 'ca.weblite:java-objc-bridge:1.1'
+
     // Vendored wayland-java sources (see vendor/README.md). The platform
     // projects shadow this into their production jars.
     implementation project(':vendor:wayland-lite')

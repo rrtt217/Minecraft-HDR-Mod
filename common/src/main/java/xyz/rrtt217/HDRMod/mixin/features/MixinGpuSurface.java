@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.renderpearl.api.device.GpuDevice;
 import com.mojang.renderpearl.api.textures.GpuTextureView;
 import com.mojang.renderpearl.frontend.FrontendGpuSurface;
+import com.sun.jna.Platform;
 import me.decce.ixeris.api.IxerisApi;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
@@ -17,6 +18,7 @@ import xyz.rrtt217.HDRMod.api.color.Enums;
 import xyz.rrtt217.HDRMod.config.HDRModConfig;
 import xyz.rrtt217.HDRMod.core.color.ColorTransformRenderer;
 import xyz.rrtt217.HDRMod.util.color.WaylandSDLColorManagementInfoProvider;
+import xyz.rrtt217.HDRMod.util.platform.mac.MacOpenGlEdr;
 
 import java.lang.foreign.MemorySegment;
 import java.util.Objects;
@@ -62,6 +64,16 @@ public class MixinGpuSurface {
                     LOGGER.error("Failed to load color management info", throwable);
                 }
             }
+
+            if(Platform.isMac() && device != null && device.getDeviceInfo().backendName().toLowerCase().contains("gl")){
+                try {
+                    MacOpenGlEdr.setWantsExtendedDynamicRangeOpenGLSurface(true);
+                }
+                catch (Throwable throwable){
+                    LOGGER.error("Failed to set wants extended dynamic range OpenGL surface on MacOS, HDR might be unavaliable:", throwable);
+                }
+            }
+
             int bpc = HDRMod.colorManagementInfoProvider.getBitsPerChannel(handle);
             float SDRWhiteLevel = HDRMod.colorManagementInfoProvider.getWindowSdrWhiteLevel(handle);
             float maxLuminance = HDRMod.colorManagementInfoProvider.getWindowMaxLuminance(handle);
